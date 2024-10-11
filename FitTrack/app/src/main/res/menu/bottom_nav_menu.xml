@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/Profile"
-        android:title="Profile"
+        android:title="profile"
         android:icon="@drawable/person_foreground"/>
     <item
         android:id="@+id/Friends"
-        android:title="Friends"
+        android:title="friends"
         android:icon="@drawable/friends_foreground"/>
     <item
         android:id="@+id/Workout"
-        android:title="Workout"
+        android:title="workout"
         android:icon="@drawable/dumbbell"/>
     <item
         android:id="@+id/Stats"
-        android:title="Stats"
+        android:title="stats"
         android:icon="@drawable/graph_foreground"/>
     <item
         android:id="@+id/Nutrition"
-        android:title="Nutrition"
+        android:title="nutrition"
         android:icon="@drawable/food_foreground"/>
 
 </menu>
