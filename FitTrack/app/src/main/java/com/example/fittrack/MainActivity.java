@@ -1,5 +1,6 @@
 package com.example.fittrack;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.MenuItem;
@@ -12,6 +13,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -21,6 +24,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     WorkoutFragment workoutFragment = new WorkoutFragment();
     StatsFragment statsFragment = new StatsFragment();
     NutritionFragment nutritionFragment = new NutritionFragment();
+    FirebaseAuth auth;
+    FirebaseUser user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.Profile);
         bottomNavigationView.setBackgroundColor(getResources().getColor(R.color.top_background));
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        if (user == null){
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        //user.getEmail();
 
     }
 
