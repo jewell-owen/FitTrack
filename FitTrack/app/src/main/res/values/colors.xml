@@ -3,9 +3,24 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="primary_background">#F7ECE1</color>
-    <color name="secondary_background">#CAC4CE</color>
-    <color name="primary">#539987</color>
+<!--    <color name="background">#E8E9F3</color>-->
+<!--    <color name="top_background">#CACBE3</color>-->
+<!--    <color name="dark_text">#666666</color>-->
+<!--    <color name="light_text">#999999</color>-->
+<!--    <color name="primary">#18768B</color>-->
+<!--    <color name="secondary">#B1E5F2</color>-->
+<!--    <color name="accent">#7B435B</color>-->
+<!--    <color name="dark">#272635</color>-->
+<!--    <color name="text_primary">#04030F</color>-->
+
+    <color name="background">#CCC7B9</color>
+    <color name="on_background">#CCC7B9</color>
+    <color name="top_background">#E2D4BA</color>
+    <color name="dark_text">#666666</color>
+    <color name="light_text">#EAF9D9</color>
+    <color name="primary">#653239</color>
+    <color name="secondary">#AF7A6D</color>
     <color name="accent">#7B435B</color>
+    <color name="dark">#272635</color>
     <color name="text_primary">#04030F</color>
 </resources>

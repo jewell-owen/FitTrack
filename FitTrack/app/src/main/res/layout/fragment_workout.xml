@@ -1,15 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".WorkoutFragment">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/background"
+tools:context=".WorkoutFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/workout_title_tv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Workout" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent"
+        android:textAlignment="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="Workout"
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:background="@drawable/top_background"
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
 
-</FrameLayout>
+    <ImageButton
+        android:id="@+id/workout_start_workout_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/baseline_add_24"
+        android:background="@drawable/button_background"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toTopOf="@id/workout_title_tv"
+        app:layout_constraintBottom_toBottomOf="@id/workout_title_tv"
+        app:layout_constraintEnd_toEndOf="@id/workout_title_tv">
+    </ImageButton>
+
+    <Button
+        android:id="@+id/workout_add_plan_btn"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="Planned Workout"
+        android:textColor="@color/light_text"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/workout_title_tv">
+    </Button>
+
+    <Button
+        android:id="@+id/workout_my_workouts_btn"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="My Workouts"
+        android:textColor="@color/light_text"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/workout_title_tv">
+    </Button>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
