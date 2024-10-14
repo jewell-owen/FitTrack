@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.Profile);
+        bottomNavigationView.setBackgroundColor(getResources().getColor(R.color.top_background));
+
     }
 
     @Override

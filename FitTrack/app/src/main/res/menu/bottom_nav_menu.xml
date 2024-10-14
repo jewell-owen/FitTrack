@@ -4,11 +4,11 @@
     <item
         android:id="@+id/Profile"
         android:title="Profile"
-        android:icon="@drawable/person_foreground"/>
+        android:icon="@drawable/baseline_person_24"/>
     <item
         android:id="@+id/Friends"
         android:title="Friends"
-        android:icon="@drawable/friends_foreground"/>
+        android:icon="@drawable/baseline_people_24"/>
     <item
         android:id="@+id/Workout"
         android:title="Workout"
@@ -16,9 +16,9 @@
     <item
         android:id="@+id/Stats"
         android:title="Stats"
-        android:icon="@drawable/graph_foreground"/>
+        android:icon="@drawable/baseline_graph_24"/>
     <item
         android:id="@+id/Nutrition"
         android:title="Nutrition"
-        android:icon="@drawable/food_foreground"/>
+        android:icon="@drawable/baseline_food_24"/>
 </menu>
