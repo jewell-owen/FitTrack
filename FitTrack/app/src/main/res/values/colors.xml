@@ -23,4 +23,8 @@
     <color name="accent">#7B435B</color>
     <color name="dark">#272635</color>
     <color name="text_primary">#04030F</color>
+
+    <color name="redButton">#cc3300</color>
+    <color name="greenButton">#339966</color>
+    <color name="resetButton">#808080</color>
 </resources>
