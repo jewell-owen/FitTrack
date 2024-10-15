@@ -1,6 +1,5 @@
 package com.example.fittrack;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -11,9 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 /**
@@ -26,22 +27,44 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    // Workout home screen UI items
+    private TextView titleTextView;
     private ImageButton startWorkoutButton;
     private Button myWorkoutsButton;
     private Button plannedWorkoutButton;
+
+    // Current workout UI items
     private ImageButton finishWorkoutButton;
     private ImageButton cancelWorkoutButton;
     private HorizontalScrollView exerciseScrollView;
-    private Button resetButton;
-    private TextView timerTextView;
-    private Button startStopButton;
-    private ConstraintLayout restTimerLayout;
     private LinearLayout cardLayout;
-    private TextView titleTextView;
+    private ConstraintLayout restTimerLayout;
+    // Timer layout UI items
+        private Button resetButton;
+        private TextView timerTextView;
+        private Button startStopButton;
 
+    //My workouts list UI items
+    private ImageButton myWorkoutsBackButton;
+    private ImageButton addNewMyWorkoutButton;
+    private ScrollView myWorkoutsScrollView;
+    private LinearLayout myWorkoutsLinearLayout;
+
+    //Create new workout UI items
+    private EditText workoutNameEditText;
+    private ImageButton cancelNewWorkoutButton;
+    private ImageButton addExerciseButton;
+    private ScrollView myWorkoutExercisesScrollView;
+    private LinearLayout myWorkoutExercisesLinearLayout;
+    private Button saveNewWorkoutButton;
+
+    // Place holder for selectedWorkout
+    private String plannedWorkout = null;
 
     private String mParam1;
     private String mParam2;
+
 
     public WorkoutFragment() {
         // Required empty public constructor
@@ -100,16 +123,30 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         titleTextView = view.findViewById(R.id.workout_title_tv);
         cardLayout = view.findViewById(R.id.workout_card_ll);
 
+        //My workouts list UI items initialization
+        addNewMyWorkoutButton = view.findViewById(R.id.workout_add_my_workout_btn);
+        myWorkoutsBackButton = view.findViewById(R.id.workout_my_workouts_back_btn);
+        myWorkoutsScrollView = view.findViewById(R.id.workout_my_workouts_scroll_view);
+        myWorkoutsLinearLayout = view.findViewById(R.id.workout_my_workouts_ll);
+
+        //Create new workout UI items initialization
+        workoutNameEditText = view.findViewById(R.id.workout_name_et);
+        cancelNewWorkoutButton = view.findViewById(R.id.workout_new_workout_back_btn);
+        addExerciseButton = view.findViewById(R.id.workout_add_exercise_btn);
+        myWorkoutExercisesScrollView = view.findViewById(R.id.workout_my_exercises_scroll_view);
+        myWorkoutExercisesLinearLayout = view.findViewById(R.id.workout_my_exercises_ll);
+        saveNewWorkoutButton = view.findViewById(R.id.workout_my_workout_save_btn);
+
 
         startWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if (plannedWorkout != null){
+                if (plannedWorkout != null){
 //                    titleTextView.setText(plannedWorkout.getName());
-//                }
-//                else {
-//                    titleTextView.setText("Freestyle");
-//                }
+                }
+                else {
+                    titleTextView.setText("Freestyle");
+                }
                 plannedWorkoutButton.setVisibility(View.GONE);
                 myWorkoutsButton.setVisibility(View.GONE);
                 startWorkoutButton.setVisibility(View.GONE);
@@ -119,9 +156,22 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
                 restTimerLayout.setVisibility(View.VISIBLE);
                 timerTextView.setVisibility(View.VISIBLE);
 
-                createCards();
+                createEmptyExerciseCard();
 
-
+                cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        plannedWorkoutButton.setVisibility(View.VISIBLE);
+                        myWorkoutsButton.setVisibility(View.VISIBLE);
+                        startWorkoutButton.setVisibility(View.VISIBLE);
+                        finishWorkoutButton.setVisibility(View.GONE);
+                        cancelWorkoutButton.setVisibility(View.GONE);
+                        exerciseScrollView.setVisibility(View.GONE);
+                        restTimerLayout.setVisibility(View.GONE);
+                        timerTextView.setVisibility(View.GONE);
+                        titleTextView.setText("Workout");
+                    }
+                });
             }
         });
 
@@ -136,24 +186,86 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         myWorkoutsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                plannedWorkoutButton.setVisibility(View.GONE);
+                myWorkoutsButton.setVisibility(View.GONE);
+                startWorkoutButton.setVisibility(View.GONE);
+                addNewMyWorkoutButton.setVisibility(View.VISIBLE);
+                myWorkoutsBackButton.setVisibility(View.VISIBLE);
+                myWorkoutsScrollView.setVisibility(View.VISIBLE);
+                titleTextView.setText("Workouts");
 
+                addNewMyWorkoutButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        addNewMyWorkoutButton.setVisibility(View.GONE);
+                        myWorkoutsBackButton.setVisibility(View.GONE);
+                        myWorkoutsScrollView.setVisibility(View.GONE);
+                        myWorkoutExercisesScrollView.setVisibility(View.VISIBLE);
+                        cancelNewWorkoutButton.setVisibility(View.VISIBLE);
+                        workoutNameEditText.setVisibility(View.VISIBLE);
+                        addExerciseButton.setVisibility(View.VISIBLE);
+                        saveNewWorkoutButton.setVisibility(View.VISIBLE);
+                        titleTextView.setText("");
+
+                        cancelNewWorkoutButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                myWorkoutExercisesScrollView.setVisibility(View.GONE);
+                                cancelNewWorkoutButton.setVisibility(View.GONE);
+                                workoutNameEditText.setVisibility(View.GONE);
+                                addExerciseButton.setVisibility(View.GONE);
+                                saveNewWorkoutButton.setVisibility(View.GONE);
+                                addNewMyWorkoutButton.setVisibility(View.VISIBLE);
+                                myWorkoutsBackButton.setVisibility(View.VISIBLE);
+                                myWorkoutsScrollView.setVisibility(View.VISIBLE);
+                                titleTextView.setText("Workouts");
+                            }
+                        });
+
+                        saveNewWorkoutButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
+
+                        addExerciseButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
+                    }
+                });
+
+                myWorkoutsBackButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view) {
+                        plannedWorkoutButton.setVisibility(View.VISIBLE);
+                        myWorkoutsButton.setVisibility(View.VISIBLE);
+                        startWorkoutButton.setVisibility(View.VISIBLE);
+                        addNewMyWorkoutButton.setVisibility(View.GONE);
+                        myWorkoutsBackButton.setVisibility(View.GONE);
+                        myWorkoutsScrollView.setVisibility(View.GONE);
+                        titleTextView.setText("Workout");
+                    }
+                });
             }
         });
 
         return view;
     }
 
-    private void createCards() {
+    private void createEmptyExerciseCard() {
         // Create a new CardView for each card
-        CardView cardView = createCardView();
+        CardView cardView = createEmptyExerciseCardView();
         cardLayout.addView(cardView);
     }
 
-    private CardView createCardView()  {
+    private CardView createEmptyExerciseCardView()  {
         // Inflate the CardView layout
         LayoutInflater inflater = LayoutInflater.from(getContext());
         CardView cardView = (CardView) inflater.inflate(R.layout.card_empty_exercise, cardLayout, false);
-
 
         // Set values to the views in the CardView
         ImageButton btnCard = cardView.findViewById(R.id.card_select_exercise_btn);
@@ -164,7 +276,6 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
 
             }
         });
-
         return cardView;
     }
 }
