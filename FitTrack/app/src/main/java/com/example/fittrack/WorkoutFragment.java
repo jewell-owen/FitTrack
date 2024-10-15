@@ -59,6 +59,11 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
     private LinearLayout myWorkoutExercisesLinearLayout;
     private Button saveNewWorkoutButton;
 
+    //Select planned workout UI items
+    private ImageButton plannedWorkoutsBackButton;
+    private ScrollView plannedWorkoutsScrollView;
+    private LinearLayout plannedWorkoutsLinearLayout;
+
     // Place holder for selectedWorkout
     private String plannedWorkout = null;
 
@@ -110,18 +115,22 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         }
 
         View view = inflater.inflate(R.layout.fragment_workout, container, false);
+
+        //Workout home screen UI items initialization
+        titleTextView = view.findViewById(R.id.workout_title_tv);
         startWorkoutButton = view.findViewById(R.id.workout_start_workout_btn);
         plannedWorkoutButton = view.findViewById(R.id.workout_add_plan_btn);
         myWorkoutsButton = view.findViewById(R.id.workout_my_workouts_btn);
+
+        //Current workout UI items initialization
         finishWorkoutButton = view.findViewById(R.id.workout_finish_workout_btn);
         cancelWorkoutButton = view.findViewById(R.id.workout_cancel_workout_btn);
         exerciseScrollView = view.findViewById(R.id.workout_scroll_view);
+        cardLayout = view.findViewById(R.id.workout_card_ll);
+        restTimerLayout = view.findViewById(R.id.workout_rest_timer_cl);
         resetButton = view.findViewById(R.id.btnReset);
         timerTextView = view.findViewById(R.id.workout_timer_tv);
         startStopButton = view.findViewById(R.id.btnStartStop);
-        restTimerLayout = view.findViewById(R.id.workout_rest_timer_cl);
-        titleTextView = view.findViewById(R.id.workout_title_tv);
-        cardLayout = view.findViewById(R.id.workout_card_ll);
 
         //My workouts list UI items initialization
         addNewMyWorkoutButton = view.findViewById(R.id.workout_add_my_workout_btn);
@@ -136,6 +145,11 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         myWorkoutExercisesScrollView = view.findViewById(R.id.workout_my_exercises_scroll_view);
         myWorkoutExercisesLinearLayout = view.findViewById(R.id.workout_my_exercises_ll);
         saveNewWorkoutButton = view.findViewById(R.id.workout_my_workout_save_btn);
+
+        //Select planned workout UI items initialization
+        plannedWorkoutsBackButton = view.findViewById(R.id.workout_planned_workouts_back_btn);
+        plannedWorkoutsScrollView = view.findViewById(R.id.workout_planned_workouts_scroll_view);
+        plannedWorkoutsLinearLayout = view.findViewById(R.id.workout_planned_workouts_ll);
 
 
         startWorkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -178,7 +192,25 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         plannedWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                plannedWorkoutButton.setVisibility(View.GONE);
+                myWorkoutsButton.setVisibility(View.GONE);
+                startWorkoutButton.setVisibility(View.GONE);
+                plannedWorkoutsBackButton.setVisibility(View.VISIBLE);
+                plannedWorkoutsScrollView.setVisibility(View.VISIBLE);
+                plannedWorkoutsLinearLayout.setVisibility(View.VISIBLE);
+                titleTextView.setText("Set Plan");
 
+                plannedWorkoutsBackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        plannedWorkoutButton.setVisibility(View.VISIBLE);
+                        myWorkoutsButton.setVisibility(View.VISIBLE);
+                        startWorkoutButton.setVisibility(View.VISIBLE);
+                        plannedWorkoutsBackButton.setVisibility(View.GONE);
+                        plannedWorkoutsScrollView.setVisibility(View.GONE);
+                        titleTextView.setText("Workout");
+                    }
+                });
             }
 
         });
