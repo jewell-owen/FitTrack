@@ -1,6 +1,6 @@
-Proposal Link: https://docs.google.com/document/d/1dlitszfWSlt0KNFnJ0Do3sMn3TRSu2GVeFinxWP7OPI/edit?tab=t.0
+Proposal Link: https://docs.google.com/document/d/1dlitszfWSlt0KNFnJ0Do3sMn3TRSu2GVeFinxWP7OPI/edit?usp=sharing
 
-Basic Project Requirements: The code structure should follow the MVC pattern to the extent appropriate. Use helper methods to reduce code duplication. The UI is up to you. It should be intuitive and reasonably aesthetically appealing. The source code (classes, methods, and fields/member variables) should be documented using the Javadoc comment format. Additionally, any non-intuitive UI or features should be explained with in-app documentation.
+Data storage and user authentication with Google Firebase.
 
 Exercise API - https://freewebapi.com/health-and-fitness-apis/exercise-api/ (Free, I think)
 
