@@ -1,4 +1,4 @@
-Proposal Link: https://docs.google.com/document/d/1dlitszfWSlt0KNFnJ0Do3sMn3TRSu2GVeFinxWP7OPI/edit?tab=t.0
+Proposal Link: https://docs.google.com/document/d/1dlitszfWSlt0KNFnJ0Do3sMn3TRSu2GVeFinxWP7OPI/edit?usp=sharing
 
 Data storage and user authentication with Google Firebase.
 
