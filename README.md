@@ -4,9 +4,11 @@ Data storage and user authentication with Google Firebase.
 
 
 Exercise API - https://www.api-ninjas.com/api/exercises (Free = 10,000 calls per month)
+
 Exercise API - https://freewebapi.com/health-and-fitness-apis/exercise-api/ (Free = 600 calls per month)
 
 Nutrition API - https://www.nutritionix.com/business/api? (Up to two users for free, with barcode scanning)
+
 Nutrition API - https://platform.fatsecret.com/api-editions (Free edition does not have barcode scanning)
 
 ![image](https://github.com/user-attachments/assets/6d29b33c-a050-42f1-a049-32ff4864391a)
