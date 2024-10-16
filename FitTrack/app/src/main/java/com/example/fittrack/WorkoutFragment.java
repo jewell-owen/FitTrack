@@ -117,7 +117,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_workout, container, false);
 
         //Workout home screen UI items initialization
-        titleTextView = view.findViewById(R.id.workout_title_tv);
+        titleTextView = view.findViewById(R.id.exercises_title_tv);
         startWorkoutButton = view.findViewById(R.id.workout_start_workout_btn);
         plannedWorkoutButton = view.findViewById(R.id.workout_add_plan_btn);
         myWorkoutsButton = view.findViewById(R.id.workout_my_workouts_btn);
