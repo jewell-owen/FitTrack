@@ -16,10 +16,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -27,6 +34,7 @@ public class SignupActivity extends AppCompatActivity {
     private Button signupButton;
     private Button loginButton;
     private FirebaseAuth mAuth;
+    FirebaseFirestore db;
 
 //    @Override
 //    public void onStart() {
@@ -51,6 +59,7 @@ public class SignupActivity extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         emailEditText = findViewById(R.id.signup_email_et);
         passwordEditText = findViewById(R.id.signup_password_et);
         signupButton = findViewById(R.id.signup_btn);
@@ -90,13 +99,28 @@ public class SignupActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     //FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(SignupActivity.this, "Account Created.",
-                                            Toast.LENGTH_SHORT).show();
-                                    emailEditText.setText("");
-                                    passwordEditText.setText("");
-                                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                    Map<String, Object> user = new HashMap<>();
+                                    user.put("email", email);
+                                    user.put("password", password);
+
+
+                                    db.collection("users")
+                                            .add(user)
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                @Override
+                                                public void onSuccess(DocumentReference documentReference) {
+                                                    Toast.makeText(SignupActivity.this, "Account Created.", Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e){
+                                                    Toast.makeText(SignupActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                                                }
+
+                                            });
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Toast.makeText(SignupActivity.this, "Authentication failed.",

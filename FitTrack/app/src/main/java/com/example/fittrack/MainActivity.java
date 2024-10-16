@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     NutritionFragment nutritionFragment = new NutritionFragment();
     FirebaseAuth auth;
     FirebaseUser user;
+
 
 
     @Override
