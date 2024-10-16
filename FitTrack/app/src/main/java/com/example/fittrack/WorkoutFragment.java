@@ -264,7 +264,11 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
                         addExerciseButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
+                                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
+                                getActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.flFragment, exerciseSelect)
+                                        .commit();
                             }
                         });
                     }
@@ -305,7 +309,11 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         btnCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, exerciseSelect)
+                        .commit();
             }
         });
         return cardView;

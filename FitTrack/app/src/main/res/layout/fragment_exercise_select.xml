@@ -8,7 +8,7 @@
     tools:context=".ExerciseSelectFragment">
 
     <TextView
-        android:id="@+id/select_exercises_title_tv"
+        android:id="@+id/exercise_select_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/accent"
@@ -23,7 +23,7 @@
     </TextView>
 
     <ImageButton
-        android:id="@+id/select_exercises_back_btn"
+        android:id="@+id/exercise_select_back_btn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:paddingStart="10dp"
@@ -31,13 +31,13 @@
         android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintTop_toTopOf="@+id/select_exercises_title_tv"
-        app:layout_constraintBottom_toBottomOf="@+id/select_exercises_title_tv"
+        app:layout_constraintTop_toTopOf="@+id/exercise_select_title_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/exercise_select_title_tv"
         app:layout_constraintStart_toStartOf="parent">
     </ImageButton>
 
     <EditText
-        android:id="@+id/select_exercise_et"
+        android:id="@+id/exercise_select_et"
         android:layout_width="300dp"
         android:paddingStart="10dp"
         android:layout_height="60dp"
@@ -49,12 +49,12 @@
         android:textColor="@color/primary"
         android:textAlignment="gravity"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/select_exercises_title_tv"
+        app:layout_constraintTop_toBottomOf="@id/exercise_select_title_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
-        android:id="@+id/select_exercise_name_filter_btn"
+        android:id="@+id/exercise_select_name_filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -63,11 +63,11 @@
         android:text="Name"
         android:layout_marginTop="20dp"
         android:layout_marginStart="10dp"
-        app:layout_constraintTop_toBottomOf="@id/select_exercise_et"
+        app:layout_constraintTop_toBottomOf="@id/exercise_select_et"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/select_exercise_muscle_filter_btn"
+        android:id="@+id/exercise_select_muscle_filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -75,11 +75,11 @@
         android:textColor="@color/light_text"
         android:text="Muscle"
         android:layout_marginStart="13dp"
-        app:layout_constraintTop_toTopOf="@id/select_exercise_name_filter_btn"
-        app:layout_constraintStart_toEndOf="@id/select_exercise_name_filter_btn" />
+        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn"
+        app:layout_constraintStart_toEndOf="@id/exercise_select_name_filter_btn" />
 
     <Button
-        android:id="@+id/select_exercise_equipment_filter_btn"
+        android:id="@+id/exercise_select_equipment_filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -87,11 +87,11 @@
         android:textColor="@color/light_text"
         android:text="Equipment"
         android:layout_marginEnd="13dp"
-        app:layout_constraintTop_toTopOf="@id/select_exercise_name_filter_btn"
-        app:layout_constraintEnd_toStartOf="@id/select_exercise_difficulty_filter_btn" />
+        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn"
+        app:layout_constraintEnd_toStartOf="@id/exercise_select_difficulty_filter_btn" />
 
     <Button
-        android:id="@+id/select_exercise_difficulty_filter_btn"
+        android:id="@+id/exercise_select_difficulty_filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -99,20 +99,20 @@
         android:textColor="@color/light_text"
         android:text="Difficulty"
         android:layout_marginEnd="10dp"
-        app:layout_constraintTop_toTopOf="@id/select_exercise_name_filter_btn"
+        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
-        android:id="@+id/select_exercise_scroll_view"
+        android:id="@+id/exercise_select_scroll_view"
         android:layout_width="360dp"
         android:layout_height="400dp"
         android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/select_exercise_name_filter_btn"
+        app:layout_constraintTop_toBottomOf="@id/exercise_select_name_filter_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/select_exercise_ll"
+            android:id="@+id/exercise_select_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
