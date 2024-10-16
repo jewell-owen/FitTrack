@@ -17,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link WorkoutFragment#newInstance} factory method to
@@ -27,6 +30,10 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference myWorkoutsCollection = db.collection("users").document("user").collection("workouts");
 
     // Workout home screen UI items
     private TextView titleTextView;

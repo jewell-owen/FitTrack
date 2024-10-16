@@ -103,7 +103,6 @@ public class SignupActivity extends AppCompatActivity {
                                     user.put("email", email);
                                     user.put("password", password);
 
-
                                     db.collection("users")
                                             .add(user)
                                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
