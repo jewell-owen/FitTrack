@@ -3,6 +3,7 @@ package com.example.fittrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,8 +27,10 @@ import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -103,15 +107,49 @@ public class LoginActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                     FirebaseUser user = mAuth.getCurrentUser();
 
-                                    db.collection("users").whereEqualTo("email", "user.getEmail();").whereIn("Uid", Arrays.asList("")).get()
-                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                    if (!queryDocumentSnapshots.isEmpty()) {
-                                                        
+                                    if (user != null) {
+                                        db.collection("users").whereEqualTo("email", user.getEmail()).get()
+                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                        if (!queryDocumentSnapshots.isEmpty()) {
+                                                            // Get the first matching document
+                                                            DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+
+                                                            // Check if the Uid field is missing or empty
+                                                            if (!document.contains("Uid") || document.getString("Uid").isEmpty()) {
+                                                                // Update the document with the Uid
+                                                                db.collection("users").document(document.getId())
+                                                                        .update("Uid", user.getUid())
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                // Uid updated successfully
+                                                                                Log.d("Firestore", "Uid updated successfully");
+                                                                            }
+                                                                        })
+                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                // Handle any errors
+                                                                                Log.w("Firestore", "Error updating Uid", e);
+                                                                            }
+                                                                        });
+                                                            }
+                                                        } else {
+                                                            // Handle the case where the user document doesn't exist, if necessary
+                                                            Log.d("Firestore", "User document not found");
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        // Handle any errors in the query
+                                                        Log.w("Firestore", "Error fetching user document", e);
+                                                    }
+                                                });
+                                    }
 
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
