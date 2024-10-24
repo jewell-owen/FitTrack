@@ -28,9 +28,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -108,52 +111,30 @@ public class LoginActivity extends AppCompatActivity {
                                     FirebaseUser user = mAuth.getCurrentUser();
 
                                     if (user != null) {
-                                        db.collection("users").whereEqualTo("email", user.getEmail()).get()
-                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                        if (!queryDocumentSnapshots.isEmpty()) {
-                                                            // Get the first matching document
-                                                            DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                                        String userUid = user.getUid();
 
-                                                            // Check if the Uid field is missing or empty
-                                                            if (!document.contains("Uid") || document.getString("Uid").isEmpty()) {
-                                                                // Update the document with the Uid
-                                                                db.collection("users").document(document.getId())
-                                                                        .update("Uid", user.getUid())
-                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                            @Override
-                                                                            public void onSuccess(Void aVoid) {
-                                                                                // Uid updated successfully
-                                                                                Log.d("Firestore", "Uid updated successfully");
-                                                                            }
-                                                                        })
-                                                                        .addOnFailureListener(new OnFailureListener() {
-                                                                            @Override
-                                                                            public void onFailure(@NonNull Exception e) {
-                                                                                // Handle any errors
-                                                                                Log.w("Firestore", "Error updating Uid", e);
-                                                                            }
-                                                                        });
-                                                            }
-                                                        } else {
-                                                            // Handle the case where the user document doesn't exist, if necessary
-                                                            Log.d("Firestore", "User document not found");
-                                                        }
+                                        // Create or update the user document using the Firebase UID as the document ID
+                                        Map<String, Object> userData = new HashMap<>();
+                                        userData.put("email", user.getEmail());
+
+                                        db.collection("users").document(userUid)
+                                                .set(userData, SetOptions.merge()) // Use merge to avoid overwriting existing fields
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                        startActivity(intent);
+                                                        finish();
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
-                                                        // Handle any errors in the query
-                                                        Log.w("Firestore", "Error fetching user document", e);
                                                     }
                                                 });
                                     }
 
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
+
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Toast.makeText(LoginActivity.this, "Authentication failed.",

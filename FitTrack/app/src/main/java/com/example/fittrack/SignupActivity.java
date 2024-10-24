@@ -103,27 +103,13 @@ public class SignupActivity extends AppCompatActivity {
                                     user.put("email", email);
                                     user.put("password", password);
 
-                                    db.collection("users")
-                                            .add(user)
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                @Override
-                                                public void onSuccess(DocumentReference documentReference) {
-                                                    Toast.makeText(SignupActivity.this, "Account Created.", Toast.LENGTH_SHORT).show();
-                                                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e){
-                                                    Toast.makeText(SignupActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                                                }
+                                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
 
-                                            });
                                 } else {
                                     // If sign in fails, display a message to the user.
-                                    Toast.makeText(SignupActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignupActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

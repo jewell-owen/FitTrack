@@ -1,11 +1,14 @@
 package com.example.fittrack;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +19,18 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +45,8 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
 
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference myWorkoutsCollection = db.collection("users").document("user").collection("workouts");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
 
     // Workout home screen UI items
     private TextView titleTextView;
@@ -264,7 +277,26 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
                         saveNewWorkoutButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                Map<String, Object> workout = new HashMap<>();
+                                workout.put("name", workoutNameEditText.getText().toString());
 
+                                Log.d("Firestore", "Attempting to add workout for user: " + user.getUid());
+
+                                db.collection("users").document(user.getUid()).collection("workouts")
+                                        .add(workout)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                Log.d("Firestore", "Workout added with ID: " + documentReference.getId());
+                                                workoutNameEditText.setText(""); // Clear input field
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e("Firestore", "Error adding workout", e);
+                                            }
+                                        });
                             }
                         });
 
