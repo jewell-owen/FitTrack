@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,13 +24,19 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.fittrack.adapter.SavedWorkoutAdapter;
+import com.example.fittrack.viewmodel.WorkoutViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +46,7 @@ import java.util.Map;
  * Use the {@link WorkoutFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WorkoutFragment extends Fragment implements View.OnClickListener{
+public class WorkoutFragment extends Fragment implements View.OnClickListener, SavedWorkoutAdapter.OnWorkoutSelectedListener{
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,6 +56,10 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
+
+    private WorkoutViewModel mViewModel;
+    private Query mQuery;
+    private SavedWorkoutAdapter mAdapter;
 
     // Workout home screen UI items
     private TextView titleTextView;
@@ -68,8 +81,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
     //My workouts list UI items
     private ImageButton myWorkoutsBackButton;
     private ImageButton addNewMyWorkoutButton;
-    private ScrollView myWorkoutsScrollView;
-    private LinearLayout myWorkoutsLinearLayout;
+    private RecyclerView myWorkoutsRecyclerView;
 
     //Create new workout UI items
     private EditText workoutNameEditText;
@@ -127,6 +139,24 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        // Start listening for Firestore updates
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAdapter != null) {
+            mAdapter.stopListening();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -155,8 +185,8 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         //My workouts list UI items initialization
         addNewMyWorkoutButton = view.findViewById(R.id.workout_add_my_workout_btn);
         myWorkoutsBackButton = view.findViewById(R.id.workout_my_workouts_back_btn);
-        myWorkoutsScrollView = view.findViewById(R.id.workout_my_workouts_scroll_view);
-        myWorkoutsLinearLayout = view.findViewById(R.id.workout_my_workouts_ll);
+        myWorkoutsRecyclerView = view.findViewById(R.id.workout_my_workouts_recycler);
+
 
         //Create new workout UI items initialization
         workoutNameEditText = view.findViewById(R.id.workout_name_et);
@@ -170,6 +200,14 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         plannedWorkoutsBackButton = view.findViewById(R.id.workout_planned_workouts_back_btn);
         plannedWorkoutsScrollView = view.findViewById(R.id.workout_planned_workouts_scroll_view);
         plannedWorkoutsLinearLayout = view.findViewById(R.id.workout_planned_workouts_ll);
+
+        myWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        myWorkoutsRecyclerView.setAdapter(mAdapter);
+
+        mViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
+        initRecyclerView();
+
+
 
 
         startWorkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -197,31 +235,42 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    private void createEmptyExerciseCard() {
-        // Create a new CardView for each card
-        CardView cardView = createEmptyExerciseCardView();
-        cardLayout.addView(cardView);
+    private void initRecyclerView() {
+        if (mQuery == null) {
+            Log.w("TAG", "No query, not initializing RecyclerView");
+        }
+
+        mAdapter = new SavedWorkoutAdapter(mQuery, this) {
+
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (getItemCount() == 0) {
+                    myWorkoutsRecyclerView.setVisibility(View.GONE);
+                   // mEmptyView.setVisibility(View.VISIBLE);
+                } else {
+                    myWorkoutsRecyclerView.setVisibility(View.VISIBLE);
+                    //mEmptyView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+               // Snackbar.make(findViewById(android.R.id.content), "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+            }
+        };
+
+        //myWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        myWorkoutsRecyclerView.setAdapter(mAdapter);
     }
 
-    private CardView createEmptyExerciseCardView()  {
-        // Inflate the CardView layout
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        CardView cardView = (CardView) inflater.inflate(R.layout.card_empty_exercise, cardLayout, false);
+    @Override
+    public void onWorkoutSelected(DocumentSnapshot restaurant) {
+        //@ToDo
+        // Go to the saved workout fragment page for the selected restaurant
 
-        // Set values to the views in the CardView
-        ImageButton btnCard = cardView.findViewById(R.id.card_select_exercise_btn);
 
-        btnCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.flFragment, exerciseSelect)
-                        .commit();
-            }
-        });
-        return cardView;
     }
 
     private void addNewSavedWorkout(){
@@ -243,6 +292,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
                 });
     }
 
+
     private void goNewWorkout() {
         if (plannedWorkout != null){
 //                    titleTextView.setText(plannedWorkout.getName());
@@ -259,7 +309,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         restTimerLayout.setVisibility(View.VISIBLE);
         timerTextView.setVisibility(View.VISIBLE);
 
-        createEmptyExerciseCard();
+
 
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,7 +338,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         startWorkoutButton.setVisibility(View.GONE);
         addNewMyWorkoutButton.setVisibility(View.VISIBLE);
         myWorkoutsBackButton.setVisibility(View.VISIBLE);
-        myWorkoutsScrollView.setVisibility(View.VISIBLE);
+        myWorkoutsRecyclerView.setVisibility(View.VISIBLE);
         titleTextView.setText("Workouts");
 
         addNewMyWorkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -312,14 +362,14 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         startWorkoutButton.setVisibility(View.VISIBLE);
         addNewMyWorkoutButton.setVisibility(View.GONE);
         myWorkoutsBackButton.setVisibility(View.GONE);
-        myWorkoutsScrollView.setVisibility(View.GONE);
+        myWorkoutsRecyclerView.setVisibility(View.GONE);
         titleTextView.setText("Workout");
     }
 
     private void goNewSavedWorkout(){
         addNewMyWorkoutButton.setVisibility(View.GONE);
         myWorkoutsBackButton.setVisibility(View.GONE);
-        myWorkoutsScrollView.setVisibility(View.GONE);
+        myWorkoutsRecyclerView.setVisibility(View.GONE);
         myWorkoutExercisesScrollView.setVisibility(View.VISIBLE);
         cancelNewWorkoutButton.setVisibility(View.VISIBLE);
         workoutNameEditText.setVisibility(View.VISIBLE);
@@ -361,7 +411,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener{
         saveNewWorkoutButton.setVisibility(View.GONE);
         addNewMyWorkoutButton.setVisibility(View.VISIBLE);
         myWorkoutsBackButton.setVisibility(View.VISIBLE);
-        myWorkoutsScrollView.setVisibility(View.VISIBLE);
+        myWorkoutsRecyclerView.setVisibility(View.VISIBLE);
         titleTextView.setText("Workouts");
     }
 
