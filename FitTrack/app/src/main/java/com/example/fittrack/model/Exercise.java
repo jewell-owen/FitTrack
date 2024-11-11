@@ -13,6 +13,7 @@ public class Exercise {
     public static final String FIELD_MUSCLE = "muscle";
     public static final String FIELD_DIFFICULTY = "difficulty";
     public static final String FIELD_INSTRUCTIONS = "instructions";
+    public static final String FIELD_EQUIPMENT = "equipment";
 
     private String name;
     private String type;

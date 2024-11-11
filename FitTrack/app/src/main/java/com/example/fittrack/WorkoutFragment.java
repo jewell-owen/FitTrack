@@ -1,10 +1,8 @@
 package com.example.fittrack;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,16 +20,14 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.fittrack.adapter.ExerciseAdapter;
 import com.example.fittrack.adapter.SavedWorkoutAdapter;
 import com.example.fittrack.viewmodel.WorkoutViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,7 +42,7 @@ import java.util.Map;
  * Use the {@link WorkoutFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WorkoutFragment extends Fragment implements View.OnClickListener, SavedWorkoutAdapter.OnWorkoutSelectedListener{
+public class WorkoutFragment extends Fragment implements View.OnClickListener, SavedWorkoutAdapter.OnWorkoutSelectedListener, ExerciseAdapter.OnExerciseSelectedListener{
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -58,8 +54,10 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
     FirebaseUser user = mAuth.getCurrentUser();
 
     private WorkoutViewModel mViewModel;
-    private Query mQuery;
-    private SavedWorkoutAdapter mAdapter;
+    private Query mQueryWorkouts;
+    private Query mQueryExercises;
+    private SavedWorkoutAdapter mAdapterWorkouts;
+    private ExerciseAdapter mAdapterExercises;
 
     // Workout home screen UI items
     private TextView titleTextView;
@@ -87,8 +85,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
     private EditText workoutNameEditText;
     private ImageButton cancelNewWorkoutButton;
     private ImageButton addExerciseButton;
-    private ScrollView myWorkoutExercisesScrollView;
-    private LinearLayout myWorkoutExercisesLinearLayout;
+    private RecyclerView myWorkoutExercisesRecyclerView;
     private Button saveNewWorkoutButton;
 
     //Select planned workout UI items
@@ -143,16 +140,22 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         super.onStart();
 
         // Start listening for Firestore updates
-        if (mAdapter != null) {
-            mAdapter.startListening();
+        if (mAdapterWorkouts != null) {
+            mAdapterWorkouts.startListening();
+        }
+        if (mAdapterExercises != null) {
+            mAdapterExercises.startListening();
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAdapter != null) {
-            mAdapter.stopListening();
+        if (mAdapterWorkouts != null) {
+            mAdapterWorkouts.stopListening();
+        }
+        if (mAdapterExercises != null) {
+            mAdapterExercises.stopListening();
         }
     }
 
@@ -192,8 +195,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         workoutNameEditText = view.findViewById(R.id.workout_name_et);
         cancelNewWorkoutButton = view.findViewById(R.id.workout_new_workout_back_btn);
         addExerciseButton = view.findViewById(R.id.workout_add_exercise_btn);
-        myWorkoutExercisesScrollView = view.findViewById(R.id.workout_my_exercises_scroll_view);
-        myWorkoutExercisesLinearLayout = view.findViewById(R.id.workout_my_exercises_ll);
+        myWorkoutExercisesRecyclerView = view.findViewById(R.id.workout_saved_workout_exercises_recycler);
         saveNewWorkoutButton = view.findViewById(R.id.workout_my_workout_save_btn);
 
         //Select planned workout UI items initialization
@@ -202,14 +204,15 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         plannedWorkoutsLinearLayout = view.findViewById(R.id.workout_planned_workouts_ll);
 
         myWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        myWorkoutsRecyclerView.setAdapter(mAdapter);
+        myWorkoutsRecyclerView.setAdapter(mAdapterWorkouts);
+
+        myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
 
         mViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
         Query query = db.collection("users").document(user.getUid()).collection("workouts");
-        mQuery = query;
-        //mAdapter.setQuery(query);
-        initRecyclerView();
-
+        mQueryWorkouts = query;
+        initSavedWorkoutsRecyclerView();
 
 
 
@@ -238,12 +241,39 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         return view;
     }
 
-    private void initRecyclerView() {
-        if (mQuery == null) {
+    private void initSavedWorkoutExercisesRecyclerView() {
+        if (mQueryExercises == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
         }
 
-        mAdapter = new SavedWorkoutAdapter(mQuery, this) {
+        mAdapterExercises = new ExerciseAdapter(mQueryExercises, this) {
+
+            @Override
+            protected void onDataChanged() {
+                // Show/hide content if the query returns empty.
+                if (myWorkoutExercisesRecyclerView.getVisibility() == View.VISIBLE){
+                    //Handle update
+                }
+
+            }
+
+            @Override
+            protected void onError(FirebaseFirestoreException e) {
+                // Show a snackbar on errors
+                // Snackbar.make(findViewById(android.R.id.content), "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+            }
+        };
+
+        //myWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
+    }
+
+    private void initSavedWorkoutsRecyclerView() {
+        if (mQueryWorkouts == null) {
+            Log.w("TAG", "No query, not initializing RecyclerView");
+        }
+
+        mAdapterWorkouts = new SavedWorkoutAdapter(mQueryWorkouts, this) {
 
             @Override
             protected void onDataChanged() {
@@ -262,14 +292,22 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         };
 
         //myWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        myWorkoutsRecyclerView.setAdapter(mAdapter);
+        myWorkoutsRecyclerView.setAdapter(mAdapterWorkouts);
+    }
+
+
+
+    @Override
+    public void onWorkoutSelected(DocumentSnapshot workout) {
+        Query query = db.collection("users").document(user.getUid()).collection("workouts").document(workout.toString()).collection("exercises");
+        mQueryExercises = query;
+        initSavedWorkoutExercisesRecyclerView();
+        goToSavedWorkout(workout.getString("name"));
+
     }
 
     @Override
-    public void onWorkoutSelected(DocumentSnapshot restaurant) {
-        //@ToDo
-        // Go to the saved workout fragment page for the selected workout
-
+    public void onExerciseSelected(DocumentSnapshot restaurant) {
 
     }
 
@@ -370,7 +408,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         addNewMyWorkoutButton.setVisibility(View.GONE);
         myWorkoutsBackButton.setVisibility(View.GONE);
         myWorkoutsRecyclerView.setVisibility(View.INVISIBLE);
-        myWorkoutExercisesScrollView.setVisibility(View.VISIBLE);
+        myWorkoutExercisesRecyclerView.setVisibility(View.VISIBLE);
         cancelNewWorkoutButton.setVisibility(View.VISIBLE);
         workoutNameEditText.setVisibility(View.VISIBLE);
         addExerciseButton.setVisibility(View.VISIBLE);
@@ -403,8 +441,47 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         });
     }
 
+    private void goToSavedWorkout(String workout){
+        addNewMyWorkoutButton.setVisibility(View.GONE);
+        myWorkoutsBackButton.setVisibility(View.GONE);
+        titleTextView.setVisibility(View.INVISIBLE);
+        myWorkoutsRecyclerView.setVisibility(View.INVISIBLE);
+        myWorkoutExercisesRecyclerView.setVisibility(View.VISIBLE);
+        cancelNewWorkoutButton.setVisibility(View.VISIBLE);
+        workoutNameEditText.setVisibility(View.VISIBLE);
+        addExerciseButton.setVisibility(View.VISIBLE);
+        saveNewWorkoutButton.setVisibility(View.VISIBLE);
+        workoutNameEditText.setText(workout);
+
+
+        cancelNewWorkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backNewSavedWorkout();
+            }
+        });
+
+        saveNewWorkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewSavedWorkout();
+            }
+        });
+
+        addExerciseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, exerciseSelect)
+                        .commit();
+            }
+        });
+    }
+
     private void backNewSavedWorkout(){
-        myWorkoutExercisesScrollView.setVisibility(View.GONE);
+        myWorkoutExercisesRecyclerView.setVisibility(View.INVISIBLE);
         cancelNewWorkoutButton.setVisibility(View.GONE);
         workoutNameEditText.setVisibility(View.GONE);
         addExerciseButton.setVisibility(View.GONE);
@@ -440,5 +517,6 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         plannedWorkoutsScrollView.setVisibility(View.GONE);
         titleTextView.setText("Workout");
     }
+
 
 }

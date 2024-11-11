@@ -11,21 +11,21 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fittrack.R;
-import com.example.fittrack.model.SavedWorkout;
+import com.example.fittrack.model.Exercise;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
-public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.ViewHolder> {
+public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder> {
 
-    public interface OnWorkoutSelectedListener {
+    public interface OnExerciseSelectedListener {
 
-        void onWorkoutSelected(DocumentSnapshot restaurant);
+        void onExerciseSelected(DocumentSnapshot restaurant);
 
     }
 
-    private OnWorkoutSelectedListener mListener;
+    private OnExerciseSelectedListener mListener;
 
-    public SavedWorkoutAdapter(Query query, OnWorkoutSelectedListener listener) {
+    public ExerciseAdapter(Query query, OnExerciseSelectedListener listener) {
         super(query);
         mListener = listener;
     }
@@ -34,7 +34,7 @@ public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(inflater.inflate(R.layout.card_planned_workout, parent, false));
+        return new ViewHolder(inflater.inflate(R.layout.card_exercise, parent, false));
     }
 
     @Override
@@ -42,34 +42,44 @@ public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.Vi
         holder.bind(getSnapshot(position), mListener);
     }
 
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameView;
-        ImageButton goToButton;
+        TextView muscleView;
+        TextView equipmentView;
+        TextView typeView;
+        TextView difficultyView;
+
+        ImageButton deleteExerciseButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            nameView = itemView.findViewById(R.id.planned_workout_card_workout_name_tv);
-            goToButton = itemView.findViewById(R.id.planned_workout_card_select_workout_btn);
+            nameView = itemView.findViewById(R.id.exercise_card_exercise_name_tv);
+            muscleView = itemView.findViewById(R.id.exercise_card_exercise_muscle_tv);
+            equipmentView = itemView.findViewById(R.id.exercise_card_exercise_equipment_tv);
+            typeView = itemView.findViewById(R.id.exercise_card_exercise_type_tv);
+            difficultyView = itemView.findViewById(R.id.exercise_card_exercise_difficulty_tv);
+            deleteExerciseButton = itemView.findViewById(R.id.exercise_card_delete_exercise_btn);
 
         }
 
         public void bind(final DocumentSnapshot snapshot,
-                         final OnWorkoutSelectedListener listener) {
+                         final OnExerciseSelectedListener listener) {
 
-            SavedWorkout savedWorkout = snapshot.toObject(SavedWorkout.class);
+            Exercise exercise = snapshot.toObject(Exercise.class);
             Resources resources = itemView.getResources();
 
 
-            nameView.setText(savedWorkout.getName());
+            nameView.setText(exercise.getName());
 
             // Click listener
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {
-                        listener.onWorkoutSelected(snapshot);
+                        listener.onExerciseSelected(snapshot);
                     }
                 }
             });

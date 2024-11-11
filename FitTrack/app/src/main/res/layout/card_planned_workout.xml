@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/card_workout_name_tv"
+            android:id="@+id/planned_workout_card_workout_name_tv"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:text="Exercise Name"
@@ -30,7 +30,7 @@
         </TextView>
 
         <ImageButton
-            android:id="@+id/card_select_workout_btn"
+            android:id="@+id/planned_workout_card_select_workout_btn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
