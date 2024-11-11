@@ -205,6 +205,9 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         myWorkoutsRecyclerView.setAdapter(mAdapter);
 
         mViewModel = new ViewModelProvider(this).get(WorkoutViewModel.class);
+        Query query = db.collection("users").document(user.getUid()).collection("workouts");
+        mQuery = query;
+        //mAdapter.setQuery(query);
         initRecyclerView();
 
 
@@ -245,13 +248,10 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
             @Override
             protected void onDataChanged() {
                 // Show/hide content if the query returns empty.
-                if (getItemCount() == 0) {
-                    myWorkoutsRecyclerView.setVisibility(View.GONE);
-                   // mEmptyView.setVisibility(View.VISIBLE);
-                } else {
-                    myWorkoutsRecyclerView.setVisibility(View.VISIBLE);
-                    //mEmptyView.setVisibility(View.GONE);
+                if (myWorkoutsRecyclerView.getVisibility() == View.VISIBLE){
+                   //Handle update
                 }
+
             }
 
             @Override
@@ -268,7 +268,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
     @Override
     public void onWorkoutSelected(DocumentSnapshot restaurant) {
         //@ToDo
-        // Go to the saved workout fragment page for the selected restaurant
+        // Go to the saved workout fragment page for the selected workout
 
 
     }
@@ -362,14 +362,14 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         startWorkoutButton.setVisibility(View.VISIBLE);
         addNewMyWorkoutButton.setVisibility(View.GONE);
         myWorkoutsBackButton.setVisibility(View.GONE);
-        myWorkoutsRecyclerView.setVisibility(View.GONE);
+        myWorkoutsRecyclerView.setVisibility(View.INVISIBLE);
         titleTextView.setText("Workout");
     }
 
     private void goNewSavedWorkout(){
         addNewMyWorkoutButton.setVisibility(View.GONE);
         myWorkoutsBackButton.setVisibility(View.GONE);
-        myWorkoutsRecyclerView.setVisibility(View.GONE);
+        myWorkoutsRecyclerView.setVisibility(View.INVISIBLE);
         myWorkoutExercisesScrollView.setVisibility(View.VISIBLE);
         cancelNewWorkoutButton.setVisibility(View.VISIBLE);
         workoutNameEditText.setVisibility(View.VISIBLE);
