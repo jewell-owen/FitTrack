@@ -18,12 +18,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        //load the values from .properties file
+        // Load the values from .properties file
         val keystoreFile = project.rootProject.file("apikeys.properties")
         val properties = Properties()
         properties.load(keystoreFile.inputStream())
 
-        //return empty key in case something goes wrong
+        // Return empty key in case something goes wrong
         val apiKey = properties.getProperty("API_KEY") ?: ""
 
         buildConfigField(
@@ -31,9 +31,15 @@ android {
             name = "API_KEY",
             value = apiKey
         )
+
+    }
+
+    buildFeatures {
+        buildConfig = true // Enable custom BuildConfig fields
     }
 
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -49,7 +55,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
