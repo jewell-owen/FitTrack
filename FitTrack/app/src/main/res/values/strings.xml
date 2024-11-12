@@ -6,4 +6,5 @@
     <string name="stop">Stop</string>
     <string name="reset">Reset</string>
     <string name="workout_name">Workout Name</string>
+    <string name="nutrition">Nutrition</string>
 </resources>

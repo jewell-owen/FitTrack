@@ -28,7 +28,7 @@
         android:width="200dp"
         android:drawableLeft="@drawable/baseline_person_24"
         android:drawablePadding="5dp"
-        android:hint="Username"
+        android:hint="Email"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

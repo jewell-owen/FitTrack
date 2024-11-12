@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText emailEditText, passwordEditText;
+    private EditText emailEditText, passwordEditText, confirmPassText;
     private Button signupButton;
     private Button loginButton;
     private FirebaseAuth mAuth;
@@ -62,6 +62,7 @@ public class SignupActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         emailEditText = findViewById(R.id.signup_email_et);
         passwordEditText = findViewById(R.id.signup_password_et);
+        confirmPassText = findViewById(R.id.signup_confirm_password_et);
         signupButton = findViewById(R.id.signup_btn);
         loginButton = findViewById(R.id.signup_login_btn);
 
@@ -77,9 +78,10 @@ public class SignupActivity extends AppCompatActivity {
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email, password;
+                String email, password, confirmPass;
                 email = emailEditText.getText().toString();
                 password = passwordEditText.getText().toString();
+                confirmPass = confirmPassText.getText().toString();
 
                 // Perform signup logic here
                 if (TextUtils.isEmpty(email)){
@@ -92,27 +94,41 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    //FirebaseUser user = mAuth.getCurrentUser();
-                                    Map<String, Object> user = new HashMap<>();
-                                    user.put("email", email);
-                                    user.put("password", password);
+                if (TextUtils.isEmpty(confirmPass)){
+                    Toast.makeText(SignupActivity.this, "Confirm password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                if(!password.equals(confirmPass)){
+                    // If both passwords are not the same and displays message
+                    Toast.makeText(SignupActivity.this,"Passwords do not match", Toast.LENGTH_SHORT).show();
 
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(SignupActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        //FirebaseUser user = mAuth.getCurrentUser();
+                                        Map<String, Object> user = new HashMap<>();
+                                        user.put("email", email);
+                                        user.put("password", password);
+
+                                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        // Successful sign up and displays message
+                                        Toast.makeText(SignupActivity.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
+
+
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Toast.makeText(SignupActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             }
         });
     }
