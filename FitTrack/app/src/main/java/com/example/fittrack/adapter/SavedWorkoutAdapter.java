@@ -34,7 +34,7 @@ public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(inflater.inflate(R.layout.card_planned_workout, parent, false));
+        return new ViewHolder(inflater.inflate(R.layout.card_saved_workout, parent, false));
     }
 
     @Override

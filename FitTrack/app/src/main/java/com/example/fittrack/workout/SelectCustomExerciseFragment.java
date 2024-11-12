@@ -1,4 +1,4 @@
-package com.example.fittrack;
+package com.example.fittrack.workout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.fittrack.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CustomExerciseFragment extends Fragment implements View.OnClickListener {
+public class SelectCustomExerciseFragment extends Fragment implements View.OnClickListener {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -41,7 +42,7 @@ public class CustomExerciseFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_custom_exercise, container, false);
+        View view = inflater.inflate(R.layout.fragment_select_custom_exercise, container, false);
 
         if (getArguments() != null) {
             workoutId = getArguments().getString("id");

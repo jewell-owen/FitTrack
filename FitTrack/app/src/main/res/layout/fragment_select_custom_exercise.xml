@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".ExerciseSelectFragment">
+    tools:context=".workout.SelectLibraryExerciseFragment">
 
     <TextView
         android:id="@+id/exercise_select_title_tv"

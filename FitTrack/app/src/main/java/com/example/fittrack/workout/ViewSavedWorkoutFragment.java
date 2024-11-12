@@ -1,4 +1,4 @@
-package com.example.fittrack;
+package com.example.fittrack.workout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,10 +15,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.fittrack.R;
 import com.example.fittrack.adapter.ExerciseAdapter;
-import com.example.fittrack.adapter.SavedWorkoutAdapter;
 import com.example.fittrack.viewmodel.SavedWorkoutViewModel;
-import com.example.fittrack.viewmodel.WorkoutViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +31,7 @@ import com.google.firebase.firestore.Query;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SavedWorkoutFragment extends Fragment implements View.OnClickListener,  ExerciseAdapter.OnExerciseSelectedListener{
+public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickListener,  ExerciseAdapter.OnExerciseSelectedListener{
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -53,20 +52,20 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
 
     private EditText savedWorkoutNameEditText;
     private ImageButton savedWorkoutBackButton;
-    private ImageButton savedWorkoutAddExistingExerciseButton;
-    private ImageButton savedWorkoutAddCustomExerciseButton;
+    private Button savedWorkoutAddExistingExerciseButton;
+    private Button savedWorkoutAddCustomExerciseButton;
     private Button savedWorkoutSaveButton;
     private RecyclerView myWorkoutExercisesRecyclerView;
 
     private String workout = "";
     private String id = "";
 
-    public SavedWorkoutFragment() {
+    public ViewSavedWorkoutFragment() {
         // Required empty public constructor
     }
 
-    public static SavedWorkoutFragment newInstance(String param1, String param2) {
-        SavedWorkoutFragment fragment = new SavedWorkoutFragment();
+    public static ViewSavedWorkoutFragment newInstance(String param1, String param2) {
+        ViewSavedWorkoutFragment fragment = new ViewSavedWorkoutFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -114,7 +113,7 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        View view = inflater.inflate(R.layout.fragment_saved_workout, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_saved_workout, container, false);
 
         savedWorkoutNameEditText = view.findViewById(R.id.saved_workout_name_et);
         savedWorkoutBackButton = view.findViewById(R.id.saved_workout_back_btn);
@@ -154,7 +153,7 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
         savedWorkoutAddExistingExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
+                SelectLibraryExerciseFragment exerciseSelect = new SelectLibraryExerciseFragment();
                 Bundle args = new Bundle();
                 args.putString("id", id);
                 exerciseSelect.setArguments(args);
@@ -169,7 +168,7 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
         savedWorkoutAddCustomExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CustomExerciseFragment customExercise = new CustomExerciseFragment();
+                SelectCustomExerciseFragment customExercise = new SelectCustomExerciseFragment();
                 Bundle args = new Bundle();
                 args.putString("id", id);
                 customExercise.setArguments(args);
@@ -184,7 +183,34 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
         savedWorkoutSaveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                //addNewSavedWorkout();
+                // Get the workout name from the EditText
+                String newWorkoutName = savedWorkoutNameEditText.getText().toString().trim();
+
+                // Reference to the workout document in Firestore
+                DocumentReference workoutRef = db.collection("users")
+                        .document(user.getUid())
+                        .collection("workouts")
+                        .document(id);
+
+                // Create a map with the updated name
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("name", newWorkoutName);
+
+                // Update the "name" field in Firestore
+                workoutRef.update(updates)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Close the fragment/activity upon successful update
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Log or handle the failure
+                            }
+                        });
             }
         });
 
@@ -218,7 +244,30 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
-    public void onExerciseSelected(DocumentSnapshot restaurant) {
+    public void onExerciseSelected(DocumentSnapshot exercise) {
+        //In this case this method is called when delete button is clicked not the exercise itself
+        // Reference to the workout document in Firestore
+        DocumentReference workoutRef = db.collection("users")
+                .document(user.getUid())
+                .collection("workouts")
+                .document(id)
+                .collection("exercises")
+                .document(exercise.getId());
+
+        // Delete the workout document
+        workoutRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
 
     }
 

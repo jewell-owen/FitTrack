@@ -50,6 +50,7 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
         TextView equipmentView;
         TextView typeView;
         TextView difficultyView;
+        TextView instructionsView;
 
         ImageButton deleteExerciseButton;
 
@@ -62,6 +63,7 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
             typeView = itemView.findViewById(R.id.exercise_card_exercise_type_tv);
             difficultyView = itemView.findViewById(R.id.exercise_card_exercise_difficulty_tv);
             deleteExerciseButton = itemView.findViewById(R.id.exercise_card_delete_exercise_btn);
+            instructionsView = itemView.findViewById(R.id.exercise_card_exercise_instructions_tv);
 
         }
 
@@ -75,6 +77,7 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
             String equipment = "Equipment: " + exercise.getEquipment();
             String type = "Type: " + exercise.getType();
             String difficulty = "Difficulty: " + exercise.getDifficulty();
+            String instructions = "Instructions: " + exercise.getInstructions();
 
 
             nameView.setText(exercise.getName());
@@ -82,9 +85,10 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
             equipmentView.setText(equipment);
             typeView.setText(type);
             difficultyView.setText(difficulty);
+            instructionsView.setText(instructions);
 
             // Click listener
-            itemView.setOnClickListener(new View.OnClickListener() {
+            deleteExerciseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {

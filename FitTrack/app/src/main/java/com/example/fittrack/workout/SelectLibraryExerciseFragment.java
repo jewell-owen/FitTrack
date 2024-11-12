@@ -1,4 +1,4 @@
-package com.example.fittrack;
+package com.example.fittrack.workout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -25,8 +24,8 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.example.fittrack.adapter.SavedWorkoutAdapter;
-import com.example.fittrack.viewmodel.WorkoutViewModel;
+import com.example.fittrack.BuildConfig;
+import com.example.fittrack.R;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,18 +34,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONException;
 
-public class ExerciseSelectFragment extends Fragment implements View.OnClickListener {
+public class SelectLibraryExerciseFragment extends Fragment implements View.OnClickListener {
 
     private ImageButton exerciseSelectBackButton;
     private ImageButton exerciseSelectSearchButton;
@@ -77,7 +72,7 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_exercise_select, container, false);
+        View view = inflater.inflate(R.layout.fragment_select_library_exercise, container, false);
 
         exerciseSelectBackButton = view.findViewById(R.id.exercise_select_back_btn);
         exerciseSelectSearchButton = view.findViewById(R.id.exercise_select_search_btn);
@@ -197,6 +192,7 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
                 exercise.put("equipment", equipment);
                 exercise.put("type", type);
                 exercise.put("difficulty", difficulty);
+                exercise.put("instructions", instructions);
                 Log.d("TAG", "workoutId: " + workoutId);
                 db.collection("users").document(user.getUid()).collection("workouts").document(workoutId).collection("exercises").add(exercise)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
