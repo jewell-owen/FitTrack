@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         mViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
 
+        String apiKey = BuildConfig.API_KEY;
+        Log.i("API_KEY", apiKey);
+
 
     }
 
