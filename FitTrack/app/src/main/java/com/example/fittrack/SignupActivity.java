@@ -100,7 +100,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 if(!password.equals(confirmPass)){
-                    // If both passwords are not the same and displays message 
+                    // If both passwords are not the same and displays message
                     Toast.makeText(SignupActivity.this,"Passwords do not match", Toast.LENGTH_SHORT).show();
 
                 } else {
