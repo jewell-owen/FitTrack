@@ -45,7 +45,7 @@
         android:layout_marginTop="20dp"
         android:drawableLeft="@drawable/baseline_search_24"
         android:background="@drawable/card_background"
-        android:hint="Select filter, enter search key"
+        android:hint="@string/search_button_desc"
         android:textColor="@color/primary"
         android:textAlignment="gravity"
         android:gravity="center"
