@@ -25,11 +25,18 @@ android {
 
         // Return empty key in case something goes wrong
         val apiKeyExercise = propertiesExercise.getProperty("API_KEY_EXERCISE") ?: ""
+        val apiKeyNutrition = propertiesExercise.getProperty("API_KEY_NUTRITION") ?: ""
 
         buildConfigField(
             type = "String",
             name = "API_KEY_EXERCISE",
             value = apiKeyExercise
+        )
+
+        buildConfigField(
+            type = "String",
+            name = "API_KEY_NUTRITION",
+            value = apiKeyNutrition
         )
 
     }
