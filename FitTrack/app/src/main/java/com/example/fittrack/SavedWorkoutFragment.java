@@ -5,6 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fittrack.adapter.ExerciseAdapter;
 import com.example.fittrack.adapter.SavedWorkoutAdapter;
+import com.example.fittrack.viewmodel.SavedWorkoutViewModel;
 import com.example.fittrack.viewmodel.WorkoutViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,10 +45,20 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseUser user = mAuth.getCurrentUser();
 
+    private SavedWorkoutViewModel mViewModel;
+
     private Query mQueryExercises;
     private ExerciseAdapter mAdapterExercises;
 
+
+    private EditText savedWorkoutNameEditText;
+    private ImageButton savedWorkoutBackButton;
+    private ImageButton savedWorkoutAddExerciseButton;
+    private Button savedWorkoutSaveButton;
     private RecyclerView myWorkoutExercisesRecyclerView;
+
+    private String workout = "";
+    private String id = "";
 
     public SavedWorkoutFragment() {
         // Required empty public constructor
@@ -101,17 +115,68 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
 
         View view = inflater.inflate(R.layout.fragment_saved_workout, container, false);
 
-
+        savedWorkoutNameEditText = view.findViewById(R.id.saved_workout_name_et);
+        savedWorkoutBackButton = view.findViewById(R.id.saved_workout_back_btn);
+        savedWorkoutAddExerciseButton = view.findViewById(R.id.saved_workout_add_exercise_btn);
+        savedWorkoutSaveButton = view.findViewById(R.id.workout_my_workout_save_btn);
         myWorkoutExercisesRecyclerView = view.findViewById(R.id.workout_saved_workout_exercises_recycler);
 
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
 
-        Query query = db.collection("users").document(user.getUid()).collection("workouts").document().collection("exercises");
+
+
+        Query query = null;
+        mViewModel = new ViewModelProvider(this).get(SavedWorkoutViewModel.class);
+
+        if (getArguments() != null){
+            workout = getArguments().getString("workout");
+            id = getArguments().getString("id");
+
+            savedWorkoutNameEditText.setText(workout);
+            query = db.collection("users").document(user.getUid()).collection("workouts").document(id).collection("exercises");
+        }
+
+
         mQueryExercises = query;
         initSavedWorkoutExercisesRecyclerView();
 
+        savedWorkoutBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+            }
+
+        });
+
+        savedWorkoutAddExerciseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
+//                getActivity().getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.flFragment, exerciseSelect)
+//                        .addToBackStack(null)
+//                    .commit();
+
+                CustomExerciseFragment customExercise = new CustomExerciseFragment();
+                Bundle args = new Bundle();
+                args.putString("id", id);
+                customExercise.setArguments(args);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, customExercise)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        savedWorkoutSaveButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                //addNewSavedWorkout();
+            }
+        });
 
 
         return view;
@@ -135,8 +200,6 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
 
             @Override
             protected void onError(FirebaseFirestoreException e) {
-                // Show a snackbar on errors
-                // Snackbar.make(findViewById(android.R.id.content), "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
             }
         };
 
@@ -168,15 +231,6 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
 //                });
 //    }
 //
-//     addExerciseButton.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-//            ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
-//            getActivity().getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.flFragment, exerciseSelect)
-//                    .commit();
-//        }
 
 
 }

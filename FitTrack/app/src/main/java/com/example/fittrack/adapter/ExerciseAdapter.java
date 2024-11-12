@@ -71,8 +71,17 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
             Exercise exercise = snapshot.toObject(Exercise.class);
             Resources resources = itemView.getResources();
 
+            String muscle = "Muscle: " + exercise.getMuscle();
+            String equipment = "Equipment: " + exercise.getEquipment();
+            String type = "Type: " + exercise.getType();
+            String difficulty = "Difficulty: " + exercise.getDifficulty();
+
 
             nameView.setText(exercise.getName());
+            muscleView.setText(muscle);
+            equipmentView.setText(equipment);
+            typeView.setText(type);
+            difficultyView.setText(difficulty);
 
             // Click listener
             itemView.setOnClickListener(new View.OnClickListener() {

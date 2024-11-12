@@ -238,8 +238,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
 
             @Override
             protected void onError(FirebaseFirestoreException e) {
-                // Show a snackbar on errors
-               // Snackbar.make(findViewById(android.R.id.content), "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
+
             }
         };
 
@@ -253,18 +252,14 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
     public void onWorkoutSelected(DocumentSnapshot workout) {
         SavedWorkoutFragment savedWorkout = new SavedWorkoutFragment();
         Bundle args = new Bundle();
-        args.putString("workout", workout.toString());
+        args.putString("id", workout.getId());
+        args.putString("workout", workout.get("name").toString());
         savedWorkout.setArguments(args);
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flFragment, savedWorkout)
                 .commit();
     }
-
-
-
-
-
 
     private void goNewWorkout() {
         if (plannedWorkout != null){

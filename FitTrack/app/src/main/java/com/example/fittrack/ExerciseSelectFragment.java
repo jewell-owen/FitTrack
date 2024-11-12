@@ -8,7 +8,7 @@ import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 
-public class ExerciseSelectFragment extends Fragment implements View.OnClickListener{
+public class ExerciseSelectFragment extends Fragment implements View.OnClickListener {
 
     private ImageButton exerciseSelectBackButton;
 
@@ -18,6 +18,8 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
         View view = inflater.inflate(R.layout.fragment_exercise_select, container, false);
 
         exerciseSelectBackButton = view.findViewById(R.id.exercise_select_back_btn);
+
+        Fragment temp = this;
 
         exerciseSelectBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
