@@ -93,7 +93,7 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
             }
         });
 
-        String apiKey = BuildConfig.API_KEY;
+        String apiKey = BuildConfig.API_KEY_EXERCISE;
 
         exerciseSelectNameFilterButton.setOnClickListener(view1 -> updateFilter("name", exerciseSelectNameFilterButton));
         exerciseSelectMuscleFilterButton.setOnClickListener(view1 -> updateFilter("muscle", exerciseSelectMuscleFilterButton));

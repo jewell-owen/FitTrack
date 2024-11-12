@@ -19,17 +19,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Load the values from .properties file
-        val keystoreFile = project.rootProject.file("apikeys.properties")
-        val properties = Properties()
-        properties.load(keystoreFile.inputStream())
+        val keystoreFileExercise = project.rootProject.file("local.properties")
+        val propertiesExercise = Properties()
+        propertiesExercise.load(keystoreFileExercise.inputStream())
 
         // Return empty key in case something goes wrong
-        val apiKey = properties.getProperty("API_KEY") ?: ""
+        val apiKeyExercise = propertiesExercise.getProperty("API_KEY_EXERCISE") ?: ""
 
         buildConfigField(
             type = "String",
-            name = "API_KEY",
-            value = apiKey
+            name = "API_KEY_EXERCISE",
+            value = apiKeyExercise
         )
 
     }
