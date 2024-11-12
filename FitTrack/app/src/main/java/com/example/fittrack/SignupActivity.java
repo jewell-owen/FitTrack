@@ -100,7 +100,7 @@ public class SignupActivity extends AppCompatActivity {
                 }
 
                 if(!password.equals(confirmPass)){
-                    // If both passwords are not the same
+                    // If both passwords are not the same and displays message 
                     Toast.makeText(SignupActivity.this,"Passwords do not match", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -118,6 +118,9 @@ public class SignupActivity extends AppCompatActivity {
                                         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                                         startActivity(intent);
                                         finish();
+                                        // Successful sign up and displays message
+                                        Toast.makeText(SignupActivity.this, "Sign Up Successful", Toast.LENGTH_SHORT).show();
+
 
                                     } else {
                                         // If sign in fails, display a message to the user.
