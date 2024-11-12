@@ -50,7 +50,7 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
     private Button exerciseSelectDifficultyFilterButton;
     private EditText exerciseSelectEditText;
     private LinearLayout cardLinearLayout;
-    private HorizontalScrollView exerciseSelectScrollView;
+    private ScrollView exerciseSelectScrollView;
 
     private URL url = null;
 
@@ -109,7 +109,7 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
                 url = new URL(requestURL);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestProperty("accept", "application/json");
-                connection.setRequestProperty("X-Api-Key", apiKey); // Set the API key header
+                connection.setRequestProperty("X-Api-Key", apiKey);
 
                 InputStream responseStream = connection.getInputStream();
                 ObjectMapper mapper = new ObjectMapper();
@@ -126,9 +126,16 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
                         String difficulty = exercise.has("difficulty") ? exercise.get("difficulty").asText() : "";
                         String instructions = exercise.has("instructions") ? exercise.get("instructions").asText() : "";
 
+                        // Log each exercise being processed
+                        Log.d("Exercise Processed", "Name: " + name);
+
                         // Create a CardView for each exercise and add it to the list
-                        CardView cardView = createCardView(name, type, muscle, equipment, difficulty, instructions);
-                        cardViews.add(cardView);
+                        try {
+                            CardView cardView = createCardView(name, type, muscle, equipment, difficulty, instructions);
+                            cardViews.add(cardView);
+                        } catch (JSONException e) {
+                            Log.e("CardView Error", "Error creating card view for exercise: " + name, e);
+                        }
                     }
                 }
 
@@ -145,39 +152,10 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
                 Log.e("API Error", "Malformed URL", e);
             } catch (IOException e) {
                 Log.e("API Error", "IO Exception", e);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
             }
         }));
 
         return view;
-    }
-
-    private void createExerciseCards(JsonNode root) throws JSONException {
-        cardLinearLayout.removeAllViews();
-
-            // Loop through each element in the root JsonNode
-            if (root.isArray()) { // Ensure that root is an array
-                for (JsonNode exercise : root) {
-                    // Retrieve exercise details
-                    String name = exercise.has("name") ? exercise.get("name").asText() : "";
-                    String type = exercise.has("type") ? exercise.get("type").asText() : "";
-                    String muscle = exercise.has("muscle") ? exercise.get("muscle").asText() : "";
-                    String equipment = exercise.has("equipment") ? exercise.get("equipment").asText() : "";
-                    String difficulty = exercise.has("difficulty") ? exercise.get("difficulty").asText() : "";
-                    String instructions = exercise.has("instructions") ? exercise.get("instructions").asText() : "";
-
-                    // Create a new CardView for each exercise
-                    CardView cardView = createCardView(name, type, muscle, equipment, difficulty, instructions);
-
-                    // Add the CardView to the LinearLayout
-                    cardLinearLayout.addView(cardView);
-                }
-
-            }
-            else {
-                Log.e("createExerciseCards", "Expected an array in root JSON node");
-            }
     }
 
     private CardView createCardView(String name, String type, String muscle, String equipment, String difficulty, String instructions) throws JSONException {
