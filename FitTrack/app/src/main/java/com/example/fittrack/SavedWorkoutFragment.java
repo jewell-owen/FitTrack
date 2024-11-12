@@ -123,7 +123,7 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
         savedWorkoutSaveButton = view.findViewById(R.id.workout_my_workout_save_btn);
         myWorkoutExercisesRecyclerView = view.findViewById(R.id.workout_saved_workout_exercises_recycler);
 
-        myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
 
 
@@ -146,7 +146,7 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
         savedWorkoutBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                getActivity().getSupportFragmentManager().popBackStack();
             }
 
         });

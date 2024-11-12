@@ -258,6 +258,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener, S
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.flFragment, savedWorkout)
+                .addToBackStack(null)
                 .commit();
     }
 

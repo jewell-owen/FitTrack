@@ -19,7 +19,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -27,12 +29,16 @@ import com.example.fittrack.adapter.SavedWorkoutAdapter;
 import com.example.fittrack.viewmodel.WorkoutViewModel;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,6 +59,8 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
     private ScrollView exerciseSelectScrollView;
 
     private URL url = null;
+
+    private String workoutId = "";
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -81,6 +89,9 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
         exerciseSelectScrollView = view.findViewById(R.id.exercise_select_scroll_view);
         cardLinearLayout = view.findViewById(R.id.exercise_select_card_ll);
 
+        if (getArguments() != null) {
+            workoutId = getArguments().getString("id");
+        }
 
         filter = "name";
         selectedFilterButton = exerciseSelectNameFilterButton;
@@ -180,7 +191,25 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
 
         btnSelectExercise.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                //Handle exercise selection (reuse code from custom exercise fragment)
+                Map<String, Object> exercise = new HashMap<>();
+                exercise.put("name", name);
+                exercise.put("muscle", muscle);
+                exercise.put("equipment", equipment);
+                exercise.put("type", type);
+                exercise.put("difficulty", difficulty);
+                Log.d("TAG", "workoutId: " + workoutId);
+                db.collection("users").document(user.getUid()).collection("workouts").document(workoutId).collection("exercises").add(exercise)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                            }
+                        });
             }
         });
 
