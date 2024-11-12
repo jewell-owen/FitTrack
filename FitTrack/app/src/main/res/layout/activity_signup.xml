@@ -47,18 +47,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/signup_email_et" />
 
+    <EditText
+        android:id="@+id/signup_password_confirm_et"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:width="200dp"
+        android:drawableLeft="@drawable/baseline_lock_24"
+        android:drawablePadding="5dp"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signup_password_et" />
+
     <Button
         android:id="@+id/signup_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:width="200dp"
+        android:background="@drawable/button_background"
         android:text="Signup"
         android:textColor="@color/light_text"
-        android:background="@drawable/button_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/signup_password_et" />
+        app:layout_constraintTop_toBottomOf="@+id/signup_password_confirm_et" />
 
     <TextView
         android:id="@+id/signup_login_tv"
