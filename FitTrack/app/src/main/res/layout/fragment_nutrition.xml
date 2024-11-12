@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".NutritionFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/nutrition_title_tv"
+        android:id="@+id/exercise_select_title_tv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Nutrition" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/accent"
+        android:textAlignment="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/nutrition"
+        android:textStyle="bold"
+        android:textSize="50sp"
+        android:background="@drawable/top_background"
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
+
+    <!-- TODO: Update blank fragment layout -->
+
 
 </FrameLayout>
