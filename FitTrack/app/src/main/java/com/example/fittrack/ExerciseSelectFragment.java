@@ -7,20 +7,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.example.fittrack.adapter.SavedWorkoutAdapter;
+import com.example.fittrack.viewmodel.WorkoutViewModel;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONException;
 
 public class ExerciseSelectFragment extends Fragment implements View.OnClickListener {
 
@@ -31,14 +49,22 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
     private Button exerciseSelectEquipmentFilterButton;
     private Button exerciseSelectDifficultyFilterButton;
     private EditText exerciseSelectEditText;
+    private LinearLayout cardLinearLayout;
+    private HorizontalScrollView exerciseSelectScrollView;
 
     private URL url = null;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
 
     private String search = "";
     private String filter = "";
     private Button selectedFilterButton;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +78,9 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
         exerciseSelectEquipmentFilterButton = view.findViewById(R.id.exercise_select_equipment_filter_btn);
         exerciseSelectDifficultyFilterButton = view.findViewById(R.id.exercise_select_difficulty_filter_btn);
         exerciseSelectEditText = view.findViewById(R.id.exercise_select_et);
+        exerciseSelectScrollView = view.findViewById(R.id.exercise_select_scroll_view);
+        cardLinearLayout = view.findViewById(R.id.exercise_select_card_ll);
+
 
         filter = "name";
         selectedFilterButton = exerciseSelectNameFilterButton;
@@ -86,16 +115,100 @@ public class ExerciseSelectFragment extends Fragment implements View.OnClickList
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode root = mapper.readTree(responseStream);
 
+                // Collect card views in a list on the background thread
+                List<CardView> cardViews = new ArrayList<>();
+                if (root.isArray()) {
+                    for (JsonNode exercise : root) {
+                        String name = exercise.has("name") ? exercise.get("name").asText() : "";
+                        String type = exercise.has("type") ? exercise.get("type").asText() : "";
+                        String muscle = exercise.has("muscle") ? exercise.get("muscle").asText() : "";
+                        String equipment = exercise.has("equipment") ? exercise.get("equipment").asText() : "";
+                        String difficulty = exercise.has("difficulty") ? exercise.get("difficulty").asText() : "";
+                        String instructions = exercise.has("instructions") ? exercise.get("instructions").asText() : "";
+
+                        // Create a CardView for each exercise and add it to the list
+                        CardView cardView = createCardView(name, type, muscle, equipment, difficulty, instructions);
+                        cardViews.add(cardView);
+                    }
+                }
+
+                // Run on UI thread to add all cards to the layout
+                getActivity().runOnUiThread(() -> {
+                    cardLinearLayout.removeAllViews(); // Clear previous views
+                    for (CardView cardView : cardViews) {
+                        cardLinearLayout.addView(cardView);
+                    }
+                });
+
                 Log.d("API Response", root.toString());
             } catch (MalformedURLException e) {
                 Log.e("API Error", "Malformed URL", e);
             } catch (IOException e) {
                 Log.e("API Error", "IO Exception", e);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
             }
         }));
 
         return view;
     }
+
+    private void createExerciseCards(JsonNode root) throws JSONException {
+        cardLinearLayout.removeAllViews();
+
+            // Loop through each element in the root JsonNode
+            if (root.isArray()) { // Ensure that root is an array
+                for (JsonNode exercise : root) {
+                    // Retrieve exercise details
+                    String name = exercise.has("name") ? exercise.get("name").asText() : "";
+                    String type = exercise.has("type") ? exercise.get("type").asText() : "";
+                    String muscle = exercise.has("muscle") ? exercise.get("muscle").asText() : "";
+                    String equipment = exercise.has("equipment") ? exercise.get("equipment").asText() : "";
+                    String difficulty = exercise.has("difficulty") ? exercise.get("difficulty").asText() : "";
+                    String instructions = exercise.has("instructions") ? exercise.get("instructions").asText() : "";
+
+                    // Create a new CardView for each exercise
+                    CardView cardView = createCardView(name, type, muscle, equipment, difficulty, instructions);
+
+                    // Add the CardView to the LinearLayout
+                    cardLinearLayout.addView(cardView);
+                }
+
+            }
+            else {
+                Log.e("createExerciseCards", "Expected an array in root JSON node");
+            }
+    }
+
+    private CardView createCardView(String name, String type, String muscle, String equipment, String difficulty, String instructions) throws JSONException {
+        // Inflate the CardView layout
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        CardView cardView = (CardView) inflater.inflate(R.layout.card_exercise_select, cardLinearLayout, false);
+
+        // Set values to the views in the CardView
+        TextView tvName = cardView.findViewById(R.id.exercise_select_card_exercise_name_tv);
+        ImageButton btnSeeMoreInfo = cardView.findViewById(R.id.exercise_select_card_more_info_btn);
+        ImageButton btnSelectExercise = cardView.findViewById(R.id.exercise_select_card_select_exercise_btn);
+
+
+        tvName.setText(name);
+
+        btnSeeMoreInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Handle More info
+            }
+        });
+
+        btnSelectExercise.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                //Handle exercise selection (reuse code from custom exercise fragment)
+            }
+        });
+
+        return cardView;
+    }
+
 
     private void updateFilter(String newFilter, Button filterButton) {
         selectedFilterButton.setBackground(getResources().getDrawable(R.drawable.button_background));
