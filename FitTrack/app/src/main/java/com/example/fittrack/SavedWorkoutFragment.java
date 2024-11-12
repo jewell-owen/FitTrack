@@ -53,7 +53,8 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
 
     private EditText savedWorkoutNameEditText;
     private ImageButton savedWorkoutBackButton;
-    private ImageButton savedWorkoutAddExerciseButton;
+    private ImageButton savedWorkoutAddExistingExerciseButton;
+    private ImageButton savedWorkoutAddCustomExerciseButton;
     private Button savedWorkoutSaveButton;
     private RecyclerView myWorkoutExercisesRecyclerView;
 
@@ -117,7 +118,8 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
 
         savedWorkoutNameEditText = view.findViewById(R.id.saved_workout_name_et);
         savedWorkoutBackButton = view.findViewById(R.id.saved_workout_back_btn);
-        savedWorkoutAddExerciseButton = view.findViewById(R.id.saved_workout_add_exercise_btn);
+        savedWorkoutAddExistingExerciseButton = view.findViewById(R.id.saved_workout_add_existing_exercise_btn);
+        savedWorkoutAddCustomExerciseButton = view.findViewById(R.id.saved_workout_add_custom_exercise_btn);
         savedWorkoutSaveButton = view.findViewById(R.id.workout_my_workout_save_btn);
         myWorkoutExercisesRecyclerView = view.findViewById(R.id.workout_saved_workout_exercises_recycler);
 
@@ -149,16 +151,24 @@ public class SavedWorkoutFragment extends Fragment implements View.OnClickListen
 
         });
 
-        savedWorkoutAddExerciseButton.setOnClickListener(new View.OnClickListener() {
+        savedWorkoutAddExistingExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
-//                getActivity().getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.flFragment, exerciseSelect)
-//                        .addToBackStack(null)
-//                    .commit();
+                ExerciseSelectFragment exerciseSelect = new ExerciseSelectFragment();
+                Bundle args = new Bundle();
+                args.putString("id", id);
+                exerciseSelect.setArguments(args);
+                getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, exerciseSelect)
+                        .addToBackStack(null)
+                    .commit();
+            }
+        });
 
+        savedWorkoutAddCustomExerciseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 CustomExerciseFragment customExercise = new CustomExerciseFragment();
                 Bundle args = new Bundle();
                 args.putString("id", id);
