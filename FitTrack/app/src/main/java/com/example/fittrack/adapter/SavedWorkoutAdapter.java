@@ -21,6 +21,7 @@ public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.Vi
 
         void onWorkoutSelected(DocumentSnapshot restaurant);
 
+        void onWorkoutDeleted(DocumentSnapshot snapshot);
     }
 
     private OnWorkoutSelectedListener mListener;
@@ -45,13 +46,13 @@ public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.Vi
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameView;
-        ImageButton goToButton;
+        ImageButton deleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             nameView = itemView.findViewById(R.id.planned_workout_card_workout_name_tv);
-            goToButton = itemView.findViewById(R.id.planned_workout_card_select_workout_btn);
+            deleteButton = itemView.findViewById(R.id.planned_workout_card_select_workout_btn);
 
         }
 
@@ -70,6 +71,15 @@ public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.Vi
                 public void onClick(View view) {
                     if (listener != null) {
                         listener.onWorkoutSelected(snapshot);
+                    }
+                }
+            });
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        listener.onWorkoutDeleted(snapshot);
                     }
                 }
             });

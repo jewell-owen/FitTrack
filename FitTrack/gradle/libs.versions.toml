@@ -11,6 +11,7 @@ constraintlayout = "2.1.4"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
 firebaseFirestore = "25.1.0"
+playServices = "17.0.0"
 
 [libraries]
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jacksonDatabind" }
@@ -23,6 +24,7 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+play-services = { module = "com.google.android.gms:play-services", version.ref = "playServices" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

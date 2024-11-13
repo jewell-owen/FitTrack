@@ -158,7 +158,6 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 newWorkoutCreated = true;
-                                Log.d("SUCCESS", "New workout ID: " + documentReference.getId());
                                 newWorkoutID[0] = documentReference.getId();
                                 Query queryNewWorkout = null;
                                 queryNewWorkout = db.collection("users").document(user.getUid()).collection("workouts").document(newWorkoutID[0]).collection("exercises");

@@ -2,6 +2,7 @@ package com.example.fittrack.workout;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,8 +23,11 @@ import android.widget.TextView;
 import com.example.fittrack.R;
 import com.example.fittrack.adapter.SavedWorkoutAdapter;
 import com.example.fittrack.viewmodel.WorkoutViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -200,6 +204,28 @@ public class ListSavedWorkoutsFragment extends Fragment implements View.OnClickL
                 .replace(R.id.flFragment, savedWorkout)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void onWorkoutDeleted(DocumentSnapshot workout) {
+        DocumentReference workoutRef = db.collection("users")
+                .document(user.getUid())
+                .collection("workouts")
+                .document(workout.getId());
+
+        // Delete the workout document
+        workoutRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
 }
