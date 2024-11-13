@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,6 +60,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
 
     private String workout = "";
     private String id = "";
+    private boolean newWorkoutCreated = false;
 
     public ViewSavedWorkoutFragment() {
         // Required empty public constructor
@@ -95,6 +97,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         if (mAdapterExercises != null) {
             mAdapterExercises.startListening();
         }
+
     }
 
     @Override
@@ -125,22 +128,52 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
 
-
-
-        Query query = null;
-        mViewModel = new ViewModelProvider(this).get(SavedWorkoutViewModel.class);
-
         if (getArguments() != null){
             workout = getArguments().getString("workout");
             id = getArguments().getString("id");
 
+            Query query = null;
+            mViewModel = new ViewModelProvider(this).get(SavedWorkoutViewModel.class);
+
             savedWorkoutNameEditText.setText(workout);
             query = db.collection("users").document(user.getUid()).collection("workouts").document(id).collection("exercises");
+
+            mQueryExercises = query;
+            initSavedWorkoutExercisesRecyclerView();
         }
+        else {
+            CollectionReference workoutRef = db.collection("users")
+                    .document(user.getUid())
+                    .collection("workouts");
+            if (!newWorkoutCreated){
+                Map<String, Object> newWorkout = new HashMap<>();
+                String newWorkoutName = "Unnamed";
+                newWorkout.put("name", newWorkoutName);
+                savedWorkoutNameEditText.setText(newWorkoutName);
 
-
-        mQueryExercises = query;
-        initSavedWorkoutExercisesRecyclerView();
+                final String[] newWorkoutID = {""};
+                db.collection("users").document(user.getUid()).collection("workouts")
+                        .add(newWorkout)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                newWorkoutCreated = true;
+                                Log.d("SUCCESS", "New workout ID: " + documentReference.getId());
+                                newWorkoutID[0] = documentReference.getId();
+                                Query queryNewWorkout = null;
+                                queryNewWorkout = db.collection("users").document(user.getUid()).collection("workouts").document(newWorkoutID[0]).collection("exercises");
+                                mQueryExercises = queryNewWorkout;
+                                id = newWorkoutID[0];
+                                initSavedWorkoutExercisesRecyclerView();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                            }
+                        });
+            }
+        }
 
         savedWorkoutBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,26 +303,5 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
                 });
 
     }
-
-//    private void addNewSavedWorkout(){
-//        Map<String, Object> workout = new HashMap<>();
-//        workout.put("name", workoutNameEditText.getText().toString());
-//
-//        db.collection("users").document(user.getUid()).collection("workouts")
-//                .add(workout)
-//                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                    @Override
-//                    public void onSuccess(DocumentReference documentReference) {
-//                        workoutNameEditText.setText(""); // Clear input field
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                    }
-//                });
-//    }
-//
-
 
 }

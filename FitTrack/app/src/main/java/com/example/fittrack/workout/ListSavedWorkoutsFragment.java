@@ -149,7 +149,12 @@ public class ListSavedWorkoutsFragment extends Fragment implements View.OnClickL
         addNewSavedWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                ViewSavedWorkoutFragment savedWorkout = new ViewSavedWorkoutFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, savedWorkout)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
