@@ -108,6 +108,7 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
 
         exerciseSelectSearchButton.setOnClickListener(view1 -> executor.execute(() -> {
             search = exerciseSelectEditText.getText().toString();
+            search = replaceSpaces(search);
             try {
                 Log.d("Filter", filter);
                 Log.d("Search", search);
@@ -223,5 +224,12 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
     @Override
     public void onClick(View view) {
         int id = view.getId();
+    }
+
+    public String replaceSpaces(String input) {
+        if (input == null) {
+            return null; // Handle null input
+        }
+        return input.replace(" ", "_");
     }
 }
