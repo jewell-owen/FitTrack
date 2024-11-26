@@ -190,6 +190,21 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
             @Override
             public void onClick(View v) {
                 //Handle More info
+                Bundle bundle = new Bundle();
+                bundle.putString("name", name);
+                bundle.putString("type", type);
+                bundle.putString("muscle", muscle);
+                bundle.putString("equipment", equipment);
+                bundle.putString("difficulty", difficulty);
+                bundle.putString("instructions", instructions);
+                ViewExerciseFragment viewExerciseFragment = new ViewExerciseFragment();
+                viewExerciseFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, viewExerciseFragment)
+                        .addToBackStack(null)
+                        .commit();
+
             }
         });
 

@@ -19,8 +19,8 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
 
     public interface OnExerciseSelectedListener {
 
-        void onExerciseSelected(DocumentSnapshot restaurant);
-
+        void onExerciseDeleted(DocumentSnapshot exercise);
+        void onExerciseMoreInfo(DocumentSnapshot exercise);
     }
 
     private OnExerciseSelectedListener mListener;
@@ -50,9 +50,9 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
         TextView equipmentView;
         TextView typeView;
         TextView difficultyView;
-        TextView instructionsView;
 
         ImageButton deleteExerciseButton;
+        ImageButton moreInfoExerciseButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -63,7 +63,8 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
             typeView = itemView.findViewById(R.id.exercise_card_exercise_type_tv);
             difficultyView = itemView.findViewById(R.id.exercise_card_exercise_difficulty_tv);
             deleteExerciseButton = itemView.findViewById(R.id.exercise_card_delete_exercise_btn);
-            instructionsView = itemView.findViewById(R.id.exercise_card_exercise_instructions_tv);
+            moreInfoExerciseButton = itemView.findViewById(R.id.exercise_card_more_info_btn);
+
 
         }
 
@@ -77,22 +78,28 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
             String equipment = "Equipment: " + exercise.getEquipment();
             String type = "Type: " + exercise.getType();
             String difficulty = "Difficulty: " + exercise.getDifficulty();
-            String instructions = "Instructions: " + exercise.getInstructions();
-
 
             nameView.setText(exercise.getName());
             muscleView.setText(muscle);
             equipmentView.setText(equipment);
             typeView.setText(type);
             difficultyView.setText(difficulty);
-            instructionsView.setText(instructions);
 
             // Click listener
             deleteExerciseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {
-                        listener.onExerciseSelected(snapshot);
+                        listener.onExerciseDeleted(snapshot);
+                    }
+                }
+            });
+
+            moreInfoExerciseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        listener.onExerciseMoreInfo(snapshot);
                     }
                 }
             });

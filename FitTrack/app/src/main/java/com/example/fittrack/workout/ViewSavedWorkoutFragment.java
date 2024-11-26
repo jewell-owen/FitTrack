@@ -276,7 +276,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
     }
 
     @Override
-    public void onExerciseSelected(DocumentSnapshot exercise) {
+    public void onExerciseDeleted(DocumentSnapshot exercise) {
         //In this case this method is called when delete button is clicked not the exercise itself
         // Reference to the workout document in Firestore
         DocumentReference workoutRef = db.collection("users")
@@ -300,6 +300,24 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
 
                     }
                 });
+
+    }
+
+    public void onExerciseMoreInfo(DocumentSnapshot exercise) {
+        Bundle bundle = new Bundle();
+        bundle.putString("name", exercise.getString("name"));
+        bundle.putString("type", exercise.getString("type"));
+        bundle.putString("muscle", exercise.getString("muscle"));
+        bundle.putString("equipment", exercise.getString("equipment"));
+        bundle.putString("difficulty", exercise.getString("difficulty"));
+        bundle.putString("instructions", exercise.getString("instructions"));
+        ViewExerciseFragment viewExerciseFragment = new ViewExerciseFragment();
+        viewExerciseFragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flFragment, viewExerciseFragment)
+                .addToBackStack(null)
+                .commit();
 
     }
 

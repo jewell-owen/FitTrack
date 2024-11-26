@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="380dp"
+    android:layout_height="540dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/card_background"
+    android:backgroundTint="@color/top_background"
+    app:cardCornerRadius="30dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/full_exercise_card_exercise_muscle_tv"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Exercise Muscle"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </TextView>
+
+        <TextView
+            android:id="@+id/full_exercise_card_exercise_equipment_tv"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Exercise Equipment"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            android:layout_marginTop="-16dp"
+            app:layout_constraintTop_toBottomOf="@+id/full_exercise_card_exercise_muscle_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </TextView>
+
+        <TextView
+            android:id="@+id/full_exercise_card_exercise_type_tv"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Exercise Type"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            android:layout_marginTop="-16dp"
+            app:layout_constraintTop_toBottomOf="@+id/full_exercise_card_exercise_equipment_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </TextView>
+
+        <TextView
+            android:id="@+id/full_exercise_card_exercise_difficulty_tv"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:text="Exercise Difficulty"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:textColor="@color/primary"
+            android:textSize="20sp"
+            android:layout_marginTop="-16dp"
+            app:layout_constraintTop_toBottomOf="@+id/full_exercise_card_exercise_type_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+        </TextView>
+
+        <ScrollView
+            android:id="@+id/full_exercise_card_exercise_instructions_sv"
+            android:layout_width="300dp"
+            android:layout_height="340dp"
+            app:layout_constraintTop_toBottomOf="@+id/full_exercise_card_exercise_difficulty_tv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:id="@+id/full_exercise_card_exercise_instructions_tv"
+                android:layout_width="300dp"
+                android:layout_height="180dp"
+                android:text="Exercise Instructions"
+                android:textAlignment="gravity"
+                android:gravity="center"
+                android:textColor="@color/primary"
+                android:textSize="20sp">
+            </TextView>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
