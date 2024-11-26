@@ -11,10 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.fittrack.LoginActivity;
 import com.example.fittrack.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,16 +45,21 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
 
     private String workoutId = "";
 
+    private String muscle = "";
+    private String equipment = "";
+    private String type = "";
+    private String difficulty = "";
 
-    private static final String[] muscles = {"none", "abdominals", "abductors","adductors", "biceps", "calves", "chest",
-            "forearms", "glutes", "hamstrings", "lats", "lower_back", "middle_back", "neck", "quadriceps", "traps", "triceps"};
 
-    private static final String[] equipment = {"dumbbell", "barbell", "kettlebell", "medicine_ball", "cable", "smith_machine",};
+    private static final String[] muscles = {"select muscle","abdominals", "abductors","adductors", "biceps", "calves", "chest",
+            "forearms", "glutes", "hamstrings", "lats", "lower back", "middle back", "neck", "quadriceps","shoulders", "traps", "triceps"};
 
-    private static final String[] types = {"cardio", "olympic_weightlifting", "plyometrics", "powerlifting", "strength",
+    private static final String[] equipments = {"select equipment","dumbbell", "barbell", "kettlebell", "medicine ball", "cable", "smith machine", "exercise ball", "exercise band", "other"};
+
+    private static final String[] types = {"select type","cardio", "olympic weightlifting", "plyometrics", "powerlifting", "strength",
             "stretching", "strongman"};
 
-    private static final String[] difficulties = {"beginner", "intermediate","expert"};
+    private static final String[] difficulties = {"select difficulty","beginner", "intermediate","expert"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,7 +80,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         customExerciseSaveBtn = view.findViewById(R.id.workout_my_workout_save_btn);
 
         ArrayAdapter<String> muscleAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, muscles);
-        ArrayAdapter<String> equipmentAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, equipment);
+        ArrayAdapter<String> equipmentAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, equipments);
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, types);
         ArrayAdapter<String> difficultyAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, difficulties);
 
@@ -82,7 +89,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         customExerciseMuscleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-
+                muscle = adapterView.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -97,7 +104,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         customExerciseEquipmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-
+                equipment = adapterView.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -112,7 +119,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         customExerciseTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-
+                type = adapterView.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -127,7 +134,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         customExerciseDifficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-
+                difficulty = adapterView.getItemAtPosition(position).toString();
             }
 
             @Override
@@ -148,11 +155,12 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
             @Override
             public void onClick(View view) {
                 String name = customExerciseNameEt.getText().toString();
-                String muscle = "";
-                String equipment = "";
-                String type = "";
-                String difficulty = "";
                 String instructions = customExerciseInstructionsEt.getText().toString();
+
+                if (name.isEmpty() || instructions.isEmpty() || muscle.contains("select") || equipment.contains("select") || type.contains("select") || difficulty.contains("select")){
+                    Toast.makeText(getContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 Map<String, Object> exercise = new HashMap<>();
                 exercise.put("name", name);

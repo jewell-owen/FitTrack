@@ -47,7 +47,7 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
     private ImageButton exerciseSelectSearchButton;
     private Button exerciseSelectNameFilterButton;
     private Button exerciseSelectMuscleFilterButton;
-    private Button exerciseSelectEquipmentFilterButton;
+    private Button exerciseSelectTypeFilterButton;
     private Button exerciseSelectDifficultyFilterButton;
     private EditText exerciseSelectEditText;
     private LinearLayout cardLinearLayout;
@@ -67,7 +67,15 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
 
     private final Executor executor = Executors.newSingleThreadExecutor();
 
+    private static final String[] muscles = {"select muscle","abdominals", "abductors","adductors", "biceps", "calves", "chest",
+            "forearms", "glutes", "hamstrings", "lats", "lower back", "middle back", "neck", "quadriceps","shoulders", "traps", "triceps"};
 
+    private static final String[] equipments = {"select equipment","dumbbell", "barbell", "kettlebell", "medicine ball", "cable", "smith machine", "exercise ball", "exercise band", "other"};
+
+    private static final String[] types = {"select type","cardio", "olympic weightlifting", "plyometrics", "powerlifting", "strength",
+            "stretching", "strongman"};
+
+    private static final String[] difficulties = {"select difficulty","beginner", "intermediate","expert"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,7 +86,7 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
         exerciseSelectSearchButton = view.findViewById(R.id.exercise_select_search_btn);
         exerciseSelectNameFilterButton = view.findViewById(R.id.exercise_select_name_filter_btn);
         exerciseSelectMuscleFilterButton = view.findViewById(R.id.exercise_select_muscle_filter_btn);
-        exerciseSelectEquipmentFilterButton = view.findViewById(R.id.exercise_select_equipment_filter_btn);
+        exerciseSelectTypeFilterButton = view.findViewById(R.id.exercise_select_type_filter_btn);
         exerciseSelectDifficultyFilterButton = view.findViewById(R.id.exercise_select_difficulty_filter_btn);
         exerciseSelectEditText = view.findViewById(R.id.exercise_select_et);
         exerciseSelectScrollView = view.findViewById(R.id.exercise_select_scroll_view);
@@ -103,7 +111,7 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
 
         exerciseSelectNameFilterButton.setOnClickListener(view1 -> updateFilter("name", exerciseSelectNameFilterButton));
         exerciseSelectMuscleFilterButton.setOnClickListener(view1 -> updateFilter("muscle", exerciseSelectMuscleFilterButton));
-        exerciseSelectEquipmentFilterButton.setOnClickListener(view1 -> updateFilter("equipment", exerciseSelectEquipmentFilterButton));
+        exerciseSelectTypeFilterButton.setOnClickListener(view1 -> updateFilter("type", exerciseSelectTypeFilterButton));
         exerciseSelectDifficultyFilterButton.setOnClickListener(view1 -> updateFilter("difficulty", exerciseSelectDifficultyFilterButton));
 
         exerciseSelectSearchButton.setOnClickListener(view1 -> executor.execute(() -> {
