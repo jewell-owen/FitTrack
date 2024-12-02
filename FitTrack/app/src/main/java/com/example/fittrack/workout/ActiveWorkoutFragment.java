@@ -77,7 +77,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         if (getArguments() != null) {
         }
 
-        View view = inflater.inflate(R.layout.fragment_workout, container, false);
+        View view = inflater.inflate(R.layout.fragment_active_workout, container, false);
 
         //Workout home screen UI items initialization
         titleTextView = view.findViewById(R.id.active_workout_name_et);
@@ -85,8 +85,6 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         //Current workout UI items initialization
         finishWorkoutButton = view.findViewById(R.id.active_workout_finish_btn);
         cancelWorkoutButton = view.findViewById(R.id.active_workout_cancel_btn);
-        exerciseScrollView = view.findViewById(R.id.workout_scroll_view);
-        cardLayout = view.findViewById(R.id.workout_card_ll);
         restTimerLayout = view.findViewById(R.id.active_workout_rest_timer_cl);
         resetButton = view.findViewById(R.id.btnReset);
         timerTextView = view.findViewById(R.id.active_workout_timer_tv);
