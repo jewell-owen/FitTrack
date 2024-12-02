@@ -8,7 +8,7 @@ android:background="@color/background"
 tools:context=".workout.WorkoutFragment">
 
     <TextView
-        android:id="@+id/exercises_title_tv"
+        android:id="@+id/active_workout_name_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/accent"
@@ -30,9 +30,9 @@ tools:context=".workout.WorkoutFragment">
         android:background="@drawable/button_background"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintTop_toTopOf="@id/exercises_title_tv"
-        app:layout_constraintBottom_toBottomOf="@id/exercises_title_tv"
-        app:layout_constraintEnd_toEndOf="@id/exercises_title_tv">
+        app:layout_constraintTop_toTopOf="@id/active_workout_name_et"
+        app:layout_constraintBottom_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintEnd_toEndOf="@id/active_workout_name_et">
     </ImageButton>
 
     <Button
@@ -45,7 +45,7 @@ tools:context=".workout.WorkoutFragment">
         android:layout_marginEnd="20dp"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exercises_title_tv">
+        app:layout_constraintTop_toBottomOf="@id/active_workout_name_et">
     </Button>
 
     <Button
@@ -58,39 +58,39 @@ tools:context=".workout.WorkoutFragment">
         android:layout_marginStart="20dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exercises_title_tv">
+        app:layout_constraintTop_toBottomOf="@id/active_workout_name_et">
     </Button>
 
     <ImageButton
-        android:id="@+id/workout_finish_workout_btn"
+        android:id="@+id/active_workout_finish_btn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/baseline_check_24"
         android:background="@drawable/button_background"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintTop_toTopOf="@id/exercises_title_tv"
-        app:layout_constraintBottom_toBottomOf="@id/exercises_title_tv"
-        app:layout_constraintEnd_toEndOf="@id/exercises_title_tv"
+        app:layout_constraintTop_toTopOf="@id/active_workout_name_et"
+        app:layout_constraintBottom_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintEnd_toEndOf="@id/active_workout_name_et"
         android:visibility="gone">
     </ImageButton>
 
     <ImageButton
-        android:id="@+id/workout_cancel_workout_btn"
+        android:id="@+id/active_workout_cancel_btn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/baseline_delete_24"
         android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintTop_toTopOf="@id/exercises_title_tv"
-        app:layout_constraintBottom_toBottomOf="@id/exercises_title_tv"
-        app:layout_constraintStart_toStartOf="@id/exercises_title_tv"
+        app:layout_constraintTop_toTopOf="@id/active_workout_name_et"
+        app:layout_constraintBottom_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintStart_toStartOf="@id/active_workout_name_et"
         android:visibility="gone">
     </ImageButton>
 
     <TextView
-        android:id="@+id/workout_timer_tv"
+        android:id="@+id/active_workout_timer_tv"
         android:layout_width="160dp"
         android:layout_height="60dp"
         android:text="00:00:00"
@@ -100,7 +100,7 @@ tools:context=".workout.WorkoutFragment">
         android:textColor="@color/light_text"
         android:background="@drawable/button_background"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/exercises_title_tv"
+        app:layout_constraintTop_toBottomOf="@id/active_workout_name_et"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone">
@@ -111,7 +111,7 @@ tools:context=".workout.WorkoutFragment">
         android:layout_width="360dp"
         android:layout_height="400dp"
         android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/workout_timer_tv"
+        app:layout_constraintTop_toBottomOf="@id/active_workout_timer_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone">
@@ -125,7 +125,7 @@ tools:context=".workout.WorkoutFragment">
     </HorizontalScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/workout_rest_timer_cl"
+        android:id="@+id/active_workout_rest_timer_cl"
         android:layout_width="400dp"
         android:layout_height="100dp"
         android:layout_marginTop="20dp"
@@ -188,9 +188,9 @@ tools:context=".workout.WorkoutFragment">
         android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintTop_toTopOf="@id/exercises_title_tv"
-        app:layout_constraintBottom_toBottomOf="@id/exercises_title_tv"
-        app:layout_constraintStart_toStartOf="@id/exercises_title_tv"
+        app:layout_constraintTop_toTopOf="@id/active_workout_name_et"
+        app:layout_constraintBottom_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintStart_toStartOf="@id/active_workout_name_et"
         android:visibility="gone">
     </ImageButton>
 
@@ -199,7 +199,7 @@ tools:context=".workout.WorkoutFragment">
         android:layout_width="360dp"
         android:layout_height="400dp"
         android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/workout_timer_tv"
+        app:layout_constraintTop_toBottomOf="@id/active_workout_timer_tv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone">

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".workout.ActiveWorkoutFragment">
+
+    <EditText
+        android:id="@+id/active_workout_name_et"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:hint="@string/workout_name"
+        android:textSize="36dp"
+        android:textColor="@color/primary"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </EditText>
+
+    <ImageButton
+        android:id="@+id/active_workout_finish_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/baseline_check_24"
+        android:background="@drawable/button_background"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toTopOf="@id/active_workout_name_et"
+        app:layout_constraintBottom_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintEnd_toEndOf="parent">
+    </ImageButton>
+
+    <ImageButton
+        android:id="@+id/active_workout_cancel_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/baseline_delete_24"
+        android:background="@drawable/button_background"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toTopOf="@id/active_workout_name_et"
+        app:layout_constraintBottom_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintStart_toStartOf="parent">
+    </ImageButton>
+
+    <TextView
+        android:id="@+id/active_workout_timer_tv"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:text="00:00:00"
+        android:textSize="36dp"
+        android:textAlignment="gravity"
+        android:gravity="center"
+        android:textColor="@color/light_text"
+        android:background="@drawable/button_background"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </TextView>
+
+    <Button
+        android:id="@+id/active_workout_add_existing_exercise_btn"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Add From Library"
+        android:textColor="@color/light_text"
+        android:background="@drawable/button_background"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/active_workout_name_et"
+        app:layout_constraintStart_toStartOf="parent">
+    </Button>
+
+    <Button
+        android:id="@+id/active_workout_add_custom_exercise_btn"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Add Custom"
+        android:textColor="@color/light_text"
+        android:background="@drawable/button_background"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="@id/active_workout_add_existing_exercise_btn"
+        app:layout_constraintEnd_toEndOf="parent">
+    </Button>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/active_workout_exercises_recycler"
+        android:background="@color/background"
+        android:layout_width="360dp"
+        android:layout_height="490dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintTop_toBottomOf="@id/active_workout_add_existing_exercise_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/card_active_exercise" >
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/active_workout_rest_timer_cl"
+        android:layout_width="400dp"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/active_workout_exercises_recycler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btnReset"
+            android:text="@string/reset"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:background="@drawable/button_background"
+            android:backgroundTint="@color/resetButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+        </Button>
+
+        <TextView
+            android:id="@+id/workout_rest_timer_tv"
+            android:text="2:00"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:textSize="36dp"
+            android:textColor="@color/light_text"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:background="@drawable/button_background"
+            app:layout_constraintStart_toEndOf="@id/btnReset"
+            app:layout_constraintEnd_toStartOf="@id/btnStartStop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+        </TextView>
+
+        <Button
+            android:id="@+id/btnStartStop"
+            android:text="@string/start"
+            android:layout_width="120dp"
+            android:layout_height="70dp"
+            android:background="@drawable/button_background"
+            android:backgroundTint="@color/greenButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+        </Button>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,13 +57,13 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
         public ViewHolder(View itemView) {
             super(itemView);
 
-            nameView = itemView.findViewById(R.id.exercise_card_exercise_name_tv);
+            nameView = itemView.findViewById(R.id.active_exercise_card_exercise_name_tv);
             muscleView = itemView.findViewById(R.id.exercise_card_exercise_muscle_tv);
             equipmentView = itemView.findViewById(R.id.exercise_card_exercise_equipment_tv);
             typeView = itemView.findViewById(R.id.exercise_card_exercise_type_tv);
             difficultyView = itemView.findViewById(R.id.exercise_card_exercise_difficulty_tv);
-            deleteExerciseButton = itemView.findViewById(R.id.exercise_card_delete_exercise_btn);
-            moreInfoExerciseButton = itemView.findViewById(R.id.exercise_card_more_info_btn);
+            deleteExerciseButton = itemView.findViewById(R.id.active_exercise_card_delete_exercise_btn);
+            moreInfoExerciseButton = itemView.findViewById(R.id.active_exercise_card_more_info_btn);
 
 
         }
