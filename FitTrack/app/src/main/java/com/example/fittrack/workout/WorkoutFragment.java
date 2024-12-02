@@ -4,11 +4,7 @@ import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +16,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.fittrack.R;
-import com.example.fittrack.adapter.SavedWorkoutAdapter;
-import com.example.fittrack.viewmodel.WorkoutViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -121,19 +112,19 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_workout, container, false);
 
         //Workout home screen UI items initialization
-        titleTextView = view.findViewById(R.id.exercises_title_tv);
+        titleTextView = view.findViewById(R.id.active_workout_name_et);
         startWorkoutButton = view.findViewById(R.id.workout_start_workout_btn);
         plannedWorkoutButton = view.findViewById(R.id.workout_add_plan_btn);
         myWorkoutsButton = view.findViewById(R.id.workout_my_workouts_btn);
 
         //Current workout UI items initialization
-        finishWorkoutButton = view.findViewById(R.id.workout_finish_workout_btn);
-        cancelWorkoutButton = view.findViewById(R.id.workout_cancel_workout_btn);
+        finishWorkoutButton = view.findViewById(R.id.active_workout_finish_btn);
+        cancelWorkoutButton = view.findViewById(R.id.active_workout_cancel_btn);
         exerciseScrollView = view.findViewById(R.id.workout_scroll_view);
         cardLayout = view.findViewById(R.id.workout_card_ll);
-        restTimerLayout = view.findViewById(R.id.workout_rest_timer_cl);
+        restTimerLayout = view.findViewById(R.id.active_workout_rest_timer_cl);
         resetButton = view.findViewById(R.id.btnReset);
-        timerTextView = view.findViewById(R.id.workout_timer_tv);
+        timerTextView = view.findViewById(R.id.active_workout_timer_tv);
         startStopButton = view.findViewById(R.id.btnStartStop);
 
         //Select planned workout UI items initialization
