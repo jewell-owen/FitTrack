@@ -134,7 +134,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
         //Current workout UI items initialization
         finishWorkoutButton = view.findViewById(R.id.active_workout_finish_btn);
-        cancelWorkoutButton = view.findViewById(R.id.workout_history_cancel_btn);
+        cancelWorkoutButton = view.findViewById(R.id.active_workout_cancel_btn);
         addCustomExerciseButton = view.findViewById(R.id.active_workout_add_custom_exercise_btn);
         addLibraryExerciseButton = view.findViewById(R.id.active_workout_add_existing_exercise_btn);
         myWorkoutExercisesRecyclerView = view.findViewById(R.id.active_workout_exercises_recycler);
