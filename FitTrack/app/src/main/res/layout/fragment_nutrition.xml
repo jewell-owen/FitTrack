@@ -34,16 +34,16 @@
         android:background="@drawable/button_background"
         android:layout_marginStart="20dp"
         android:layout_marginTop="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/today_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/date_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/today_btn" />
+        app:layout_constraintTop_toTopOf="@+id/date_btn" />
 
     <!-- "Today" Button -->
     <Button
-        android:id="@+id/today_btn"
+        android:id="@+id/date_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/total_calories"
+        android:text="@string/select_date"
         android:textColor="@color/primary"
         android:padding="10dp"
         app:layout_constraintTop_toBottomOf="@id/nutrition_title"
@@ -64,9 +64,9 @@
         android:padding="5dp"
         android:scaleType="centerInside"
         android:src="@drawable/baseline_forward_24"
-        app:layout_constraintBottom_toBottomOf="@+id/today_btn"
+        app:layout_constraintBottom_toBottomOf="@+id/date_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/today_btn" />
+        app:layout_constraintTop_toTopOf="@+id/date_btn" />
 
     <!-- Total Calories -->
     <TextView
@@ -77,7 +77,7 @@
         android:text="Total Calories: 0"
         android:textSize="20sp"
         android:gravity="start"
-        app:layout_constraintTop_toBottomOf="@id/today_btn"
+        app:layout_constraintTop_toBottomOf="@id/date_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.66"
@@ -97,6 +97,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.66"
         android:layout_marginTop="10dp" />
+
+    <!-- Container to hold DateFragment -->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/daily_goal_tv"
+        android:layout_marginTop="20dp" />
 
 <!--    <EditText-->
 <!--        android:id="@+id/food_select_et"-->

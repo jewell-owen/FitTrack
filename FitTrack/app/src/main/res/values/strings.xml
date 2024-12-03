@@ -9,4 +9,5 @@
     <string name="nutrition">Nutrition</string>
     <string name="search_button_desc">Select filter, enter search key</string>
     <string name="total_calories">Total Calories: </string>
+    <string name="select_date">Today</string>
 </resources>
