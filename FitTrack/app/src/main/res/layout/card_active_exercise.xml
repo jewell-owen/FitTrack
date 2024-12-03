@@ -143,7 +143,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/active_exercise_card_set1"
                     app:layout_constraintStart_toStartOf="parent"
                     android:id="@+id/active_exercise_card_set2"
-                    android:visibility="gone">
+                    android:visibility="invisible">
 
                     <TextView
                         android:id="@+id/active_exercise_card_set2_tv"
@@ -188,7 +188,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/active_exercise_card_set2"
                     app:layout_constraintStart_toStartOf="parent"
                     android:id="@+id/active_exercise_card_set3"
-                    android:visibility="gone">
+                    android:visibility="invisible">
 
                     <TextView
                         android:id="@+id/active_exercise_card_set3_tv"
@@ -233,7 +233,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/active_exercise_card_set3"
                     app:layout_constraintStart_toStartOf="parent"
                     android:id="@+id/active_exercise_card_set4"
-                    android:visibility="gone">
+                    android:visibility="invisible">
 
                     <TextView
                         android:id="@+id/active_exercise_card_set4_tv"
@@ -278,7 +278,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/active_exercise_card_set4"
                     app:layout_constraintStart_toStartOf="parent"
                     android:id="@+id/active_exercise_card_set5"
-                    android:visibility="gone">
+                    android:visibility="invisible">
 
                     <TextView
                         android:id="@+id/active_exercise_card_set5_tv"
@@ -323,7 +323,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/active_exercise_card_set5"
                     app:layout_constraintStart_toStartOf="parent"
                     android:id="@+id/active_exercise_card_set6"
-                    android:visibility="gone">
+                    android:visibility="invisible">
 
                     <TextView
                         android:id="@+id/active_exercise_card_set6_tv"

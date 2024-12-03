@@ -229,6 +229,7 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
                     workoutRef = db.collection("users").document(user.getUid()).collection("workouts").document(workoutId).collection("exercises");
                 }
                 else if (workoutType.equals("loggedWorkout")) {
+                    exercise.put("sets", 1);
                     workoutRef = db.collection("users").document(user.getUid()).collection("loggedWorkouts").document(workoutId).collection("exercises");
                 }
                 if (workoutRef != null) {

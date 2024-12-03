@@ -330,39 +330,102 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     }
 
     @Override
-    public void onSetAdded(DocumentSnapshot snapshot) {
-
-    }
-
-    @Override
-    public void onSetDeleted(DocumentSnapshot snapshot) {
-
-    }
-
-    @Override
-    public void onWeightChanged(DocumentSnapshot snapshot, String set, String weight) {
-        // Reference to the workout document in Firestore
-        String setNumber = "set" + set;
+    public void onSetAdded(DocumentSnapshot snapshot, int sets) {
         DocumentReference exerciseRef = db.collection("users")
                 .document(user.getUid())
                 .collection("loggedWorkouts")
                 .document(id)
                 .collection("exercises")
-                .document(snapshot.getId())
-                .collection(setNumber)
-                .document("weight");
-
-        // Create a map with the updated name
+                .document(snapshot.getId());
         Map<String, Object> updates = new HashMap<>();
-        updates.put("weight", weight);
+        updates.put("sets",  sets);
 
         // Update the "name" field in Firestore
         exerciseRef.update(updates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        // Close the fragment/activity upon successful update
-                        getActivity().getSupportFragmentManager().popBackStack();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Log or handle the failure
+                    }
+                });
+    }
+
+    @Override
+    public void onSetDeleted(DocumentSnapshot snapshot, int sets) {
+        DocumentReference exerciseRef = db.collection("users")
+                .document(user.getUid())
+                .collection("loggedWorkouts")
+                .document(id)
+                .collection("exercises")
+                .document(snapshot.getId());
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("sets",  sets);
+
+        String oldSet = Integer.toString(sets+1);
+        String oldSetString = "";
+        if (oldSet.equals("6")){
+            oldSetString = "six";
+        }
+        else if (oldSet.equals("5")){
+            oldSetString = "five";
+        }
+        else if (oldSet.equals("4")){
+            oldSetString = "four";
+        }
+        else if (oldSet.equals("3")){
+            oldSetString = "three";
+        }
+        else if (oldSet.equals("2")) {
+            oldSetString = "two";
+        }
+        String fieldWeight = oldSetString + "Weight";
+        String fieldReps = oldSetString + "Reps";
+        updates.put(fieldWeight, "");
+        updates.put(fieldReps, "");
+
+        // Update the "name" field in Firestore
+        exerciseRef.update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // Log or handle the failure
+                    }
+                });
+    }
+
+    @Override
+    public void onWeightChanged(DocumentSnapshot snapshot, String set, String weight) {
+        // Reference to the workout document in Firestore
+        DocumentReference exerciseRef = db.collection("users")
+                .document(user.getUid())
+                .collection("loggedWorkouts")
+                .document(id)
+                .collection("exercises")
+                .document(snapshot.getId());
+
+        // Create a map with the updated name
+        Map<String, Object> updates = new HashMap<>();
+        String field = set + "Weight";
+        updates.put(field, weight);
+
+        // Update the "name" field in Firestore
+        exerciseRef.update(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -376,19 +439,17 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     @Override
     public void onRepsChanged(DocumentSnapshot snapshot, String set, String reps) {
         // Reference to the workout document in Firestore
-        String setNumber = "set" + set;
         DocumentReference exerciseRef = db.collection("users")
                 .document(user.getUid())
                 .collection("loggedWorkouts")
                 .document(id)
                 .collection("exercises")
-                .document(snapshot.getId())
-                .collection(setNumber)
-                .document("reps");
+                .document(snapshot.getId());
 
         // Create a map with the updated name
         Map<String, Object> updates = new HashMap<>();
-        updates.put("reps", reps);
+        String field = set + "Reps";
+        updates.put(field, reps);
 
         // Update the "name" field in Firestore
         exerciseRef.update(updates)
@@ -396,7 +457,6 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                     @Override
                     public void onSuccess(Void aVoid) {
                         // Close the fragment/activity upon successful update
-                        getActivity().getSupportFragmentManager().popBackStack();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

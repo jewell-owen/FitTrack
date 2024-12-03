@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +30,9 @@ public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHo
 
         void onExerciseDeleted(DocumentSnapshot snapshot);
 
-        void onSetAdded(DocumentSnapshot snapshot);
+        void onSetAdded(DocumentSnapshot snapshot, int sets);
 
-        void onSetDeleted(DocumentSnapshot snapshot);
+        void onSetDeleted(DocumentSnapshot snapshot, int sets);
 
         void onWeightChanged(DocumentSnapshot snapshot, String set, String weight);
 
@@ -127,6 +128,62 @@ public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHo
 
 
             nameView.setText(logWorkout.getName());
+            weightEt1.setText(logWorkout.getOneWeight());
+            weightEt2.setText(logWorkout.getTwoWeight());
+            weightEt3.setText(logWorkout.getThreeWeight());
+            weightEt4.setText(logWorkout.getFourWeight());
+            weightEt5.setText(logWorkout.getFiveWeight());
+            weightEt6.setText(logWorkout.getSixWeight());
+            repsEt1.setText(logWorkout.getOneReps());
+            repsEt2.setText(logWorkout.getTwoReps());
+            repsEt3.setText(logWorkout.getThreeReps());
+            repsEt4.setText(logWorkout.getFourReps());
+            repsEt5.setText(logWorkout.getFiveReps());
+            repsEt6.setText(logWorkout.getSixReps());
+
+            String sets = Integer.toString(logWorkout.getSets());
+            int intSets = logWorkout.getSets();
+
+            if (sets.equals("1")){
+                set1Layout.setVisibility(View.VISIBLE);
+                set2Layout.setVisibility(View.INVISIBLE);
+                set3Layout.setVisibility(View.INVISIBLE);
+                set4Layout.setVisibility(View.INVISIBLE);
+                set5Layout.setVisibility(View.INVISIBLE);
+                set6Layout.setVisibility(View.INVISIBLE);
+            }
+            else if (sets.equals("2")){
+                set1Layout.setVisibility(View.VISIBLE);
+                set2Layout.setVisibility(View.VISIBLE);
+                set3Layout.setVisibility(View.INVISIBLE);
+                set4Layout.setVisibility(View.INVISIBLE);
+                set5Layout.setVisibility(View.INVISIBLE);
+                set6Layout.setVisibility(View.INVISIBLE);
+            }
+            else if (sets.equals("3")){
+                set1Layout.setVisibility(View.VISIBLE);
+                set2Layout.setVisibility(View.VISIBLE);
+                set3Layout.setVisibility(View.VISIBLE);
+                set4Layout.setVisibility(View.INVISIBLE);
+                set5Layout.setVisibility(View.INVISIBLE);
+                set6Layout.setVisibility(View.INVISIBLE);
+            }
+            else if (sets.equals("4")){
+                set1Layout.setVisibility(View.VISIBLE);
+                set2Layout.setVisibility(View.VISIBLE);
+                set3Layout.setVisibility(View.VISIBLE);
+                set4Layout.setVisibility(View.VISIBLE);
+                set5Layout.setVisibility(View.INVISIBLE);
+                set6Layout.setVisibility(View.INVISIBLE);
+            }
+            else if (sets.equals("5")){
+                set1Layout.setVisibility(View.VISIBLE);
+                set2Layout.setVisibility(View.VISIBLE);
+                set3Layout.setVisibility(View.VISIBLE);
+                set4Layout.setVisibility(View.VISIBLE);
+                set5Layout.setVisibility(View.VISIBLE);
+                set6Layout.setVisibility(View.INVISIBLE);
+            }
 
             // Click listener
             deleteExerciseButton.setOnClickListener(new View.OnClickListener() {
@@ -148,230 +205,247 @@ public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHo
             });
 
             addSetButton.setOnClickListener(new View.OnClickListener() {
+                int classSets = logWorkout.getSets();
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {
-                        listener.onSetAdded(snapshot);
+                        if (intSets < 6){
+                            classSets++;
+                            if ((classSets) == 1){
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.INVISIBLE);
+                                set3Layout.setVisibility(View.INVISIBLE);
+                                set4Layout.setVisibility(View.INVISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ((classSets) == 2){
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.INVISIBLE);
+                                set4Layout.setVisibility(View.INVISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ((classSets) == 3){
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.INVISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ((classSets) == 4){
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.VISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ((classSets) == 5){
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.VISIBLE);
+                                set5Layout.setVisibility(View.VISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            }
+                            else if ((classSets ) == 6){
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.VISIBLE);
+                                set5Layout.setVisibility(View.VISIBLE);
+                                set6Layout.setVisibility(View.VISIBLE);
+                            }
+                            listener.onSetAdded(snapshot, classSets);
+                            Log.d("TAG", "sets: " + classSets);
+
+                        }
+
                     }
-                    if (set2Layout.getVisibility() == View.GONE){
-                        set2Layout.setVisibility(View.VISIBLE);
-                    }
-                    else if (set3Layout.getVisibility() == View.GONE){
-                        set3Layout.setVisibility(View.VISIBLE);
-                    }
-                    else if (set4Layout.getVisibility() == View.GONE){
-                        set4Layout.setVisibility(View.VISIBLE);
-                    }
-                    else if (set5Layout.getVisibility() == View.GONE){
-                        set5Layout.setVisibility(View.VISIBLE);
-                    }
-                    else if (set6Layout.getVisibility() == View.GONE){
-                        set6Layout.setVisibility(View.VISIBLE);
-                    }
+
                 }
             });
 
             deleteSetButton.setOnClickListener(new View.OnClickListener() {
+                int classSets = logWorkout.getSets();
                 @Override
                 public void onClick(View view) {
                     if (listener != null) {
-                        listener.onSetDeleted(snapshot);
+                        if (intSets > 1) {
+                            classSets--;
+                            if ((classSets) == 1) {
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.INVISIBLE);
+                                set3Layout.setVisibility(View.INVISIBLE);
+                                set4Layout.setVisibility(View.INVISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            } else if ((classSets) == 2) {
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.INVISIBLE);
+                                set4Layout.setVisibility(View.INVISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            } else if ((classSets) == 3) {
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.INVISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            } else if ((classSets) == 4) {
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.VISIBLE);
+                                set5Layout.setVisibility(View.INVISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            } else if ((classSets) == 5) {
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.VISIBLE);
+                                set5Layout.setVisibility(View.VISIBLE);
+                                set6Layout.setVisibility(View.INVISIBLE);
+                            } else if ((classSets) == 6) {
+                                set1Layout.setVisibility(View.VISIBLE);
+                                set2Layout.setVisibility(View.VISIBLE);
+                                set3Layout.setVisibility(View.VISIBLE);
+                                set4Layout.setVisibility(View.VISIBLE);
+                                set5Layout.setVisibility(View.VISIBLE);
+                                set6Layout.setVisibility(View.VISIBLE);
+                            }
+                            listener.onSetDeleted(snapshot, classSets);
+                            Log.d("TAG", "sets: " + classSets);
+
+                        }
+
                     }
-                    if (set6Layout.getVisibility() == View.VISIBLE){
-                        set6Layout.setVisibility(View.GONE);
+
+                }
+                });
+
+            weightEt1.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                    if (listener != null) {
+                        listener.onWeightChanged(snapshot, "one", weightEt1.getText().toString());
                     }
-                    else if (set5Layout.getVisibility() == View.VISIBLE){
-                        set5Layout.setVisibility(View.GONE);
-                    }
-                    else if (set4Layout.getVisibility() == View.VISIBLE){
-                        set4Layout.setVisibility(View.GONE);
-                    }
-                    else if (set3Layout.getVisibility() == View.VISIBLE){
-                        set3Layout.setVisibility(View.GONE);
-                    }
-                    else if (set2Layout.getVisibility() == View.VISIBLE){
-                        set2Layout.setVisibility(View.GONE);
-                    }
+                    return false;
                 }
             });
 
-            weightEt1.addTextChangedListener(new TextWatcher() {
+            weightEt2.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onWeightChanged(snapshot,"1",editable.toString());
+                        listener.onWeightChanged(snapshot, "two", weightEt2.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            weightEt2.addTextChangedListener(new TextWatcher() {
+            weightEt3.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onWeightChanged(snapshot,"2",editable.toString());
+                        listener.onWeightChanged(snapshot, "three", weightEt3.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            weightEt3.addTextChangedListener(new TextWatcher() {
+            weightEt4.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onWeightChanged(snapshot,"3",editable.toString());
+                        listener.onWeightChanged(snapshot, "four", weightEt4.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            weightEt4.addTextChangedListener(new TextWatcher() {
+            weightEt5.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onWeightChanged(snapshot,"4",editable.toString());
+                        listener.onWeightChanged(snapshot, "five", weightEt5.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            weightEt5.addTextChangedListener(new TextWatcher() {
+            weightEt6.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onWeightChanged(snapshot,"5",editable.toString());
+                        listener.onWeightChanged(snapshot, "six", weightEt6.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            weightEt6.addTextChangedListener(new TextWatcher() {
+            repsEt1.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onWeightChanged(snapshot,"6",editable.toString());
+                        listener.onRepsChanged(snapshot, "one", repsEt1.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            repsEt1.addTextChangedListener(new TextWatcher() {
+            repsEt2.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onRepsChanged(snapshot,"1",editable.toString());
+                        listener.onRepsChanged(snapshot, "two", repsEt2.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            repsEt2.addTextChangedListener(new TextWatcher() {
+            repsEt3.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onRepsChanged(snapshot,"2",editable.toString());
+                        listener.onRepsChanged(snapshot, "three", repsEt3.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            repsEt3.addTextChangedListener(new TextWatcher() {
+            repsEt4.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onRepsChanged(snapshot,"3",editable.toString());
+                        listener.onRepsChanged(snapshot, "four", repsEt4.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            repsEt4.addTextChangedListener(new TextWatcher() {
+            repsEt5.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onRepsChanged(snapshot,"4",editable.toString());
+                        listener.onRepsChanged(snapshot, "five", repsEt5.getText().toString());
                     }
+                    return false;
                 }
             });
 
-            repsEt5.addTextChangedListener(new TextWatcher() {
+            repsEt6.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
+                public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                     if (listener != null) {
-                        listener.onRepsChanged(snapshot,"5",editable.toString());
+                        listener.onRepsChanged(snapshot, "six", repsEt6.getText().toString());
                     }
-                }
-            });
-
-            repsEt6.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (listener != null) {
-                        listener.onRepsChanged(snapshot,"6",editable.toString());
-                    }
+                    return false;
                 }
             });
 

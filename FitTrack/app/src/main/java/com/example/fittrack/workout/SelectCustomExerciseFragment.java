@@ -180,6 +180,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
                     workoutRef = db.collection("users").document(user.getUid()).collection("workouts").document(workoutId).collection("exercises");
                 }
                 else if (workoutType.equals("loggedWorkout")) {
+                    exercise.put("sets", 1);
                     workoutRef = db.collection("users").document(user.getUid()).collection("loggedWorkouts").document(workoutId).collection("exercises");
                 }
                 if (workoutRef != null) {
