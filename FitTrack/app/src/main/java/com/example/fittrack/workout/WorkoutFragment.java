@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,12 +135,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
 
 
 
-
-
-
-
-
-
+        // Where the timer implementation goes
         startWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,6 +147,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
                         .commit();
             }
         });
+
 
         plannedWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +171,8 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
 
         return view;
     }
+
+
 
 
 
@@ -203,6 +202,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+
     }
 
     private void backNewWorkout(){

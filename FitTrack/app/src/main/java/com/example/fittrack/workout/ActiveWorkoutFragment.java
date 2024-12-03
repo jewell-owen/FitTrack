@@ -37,6 +37,8 @@ import com.google.firebase.firestore.Query;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.os.Handler;
+
 public class ActiveWorkoutFragment extends Fragment implements View.OnClickListener, LogWorkoutAdapter.OnExerciseSelectedListener {
 
 
@@ -62,6 +64,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     private Button resetButton;
     private TextView timerTextView;
     private Button startStopButton;
+    private TextView restTimerTextView;
 
     private String plannedWorkout = null;
     private boolean newWorkoutCreated = false;
@@ -72,6 +75,11 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     //id of workout from workout collection to populate exercises with
     private String plannedWorrkoutID = "";
 
+    // These are used for the timer
+    private Handler handler = new Handler();
+    private int seconds = 0;
+    private boolean running = false;
+    private boolean wasRunning = false;
 
 
     public ActiveWorkoutFragment() {
@@ -141,6 +149,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         resetButton = view.findViewById(R.id.btnReset);
         timerTextView = view.findViewById(R.id.active_workout_timer_tv);
         startStopButton = view.findViewById(R.id.btnStartStop);
+        restTimerTextView = view.findViewById(R.id.workout_rest_timer_tv);
 
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
@@ -175,6 +184,46 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                             }
                         });
             }
+
+            // Starts the timer when pressing the "Start" button
+            startStopButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // If timer isn't already running, this is to start it
+                    if (!running){
+                        startStopButton.setText(R.string.stop);
+                        running = true;
+                        wasRunning = false;
+                    }
+                    else{
+                        startStopButton.setText(R.string.start);
+                        running = false;
+                    }
+                    timerRunning();
+                }
+            });
+
+            // Resets the timer when pressing the "Reset" button
+            resetButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    running = false;
+                    wasRunning = true;
+                    seconds = 0;
+                    startStopButton.setText(R.string.start);
+                    timerRunning();
+                }
+            });
+
+            // Starts a countdown based on the time in the rest timer
+            restTimerTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+
         }
 
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -251,8 +300,6 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
             }
         });
-
-
 
 
         return view;
@@ -406,4 +453,33 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                     }
                 });
     }
+
+
+// Function that controls the timer
+    public void timerRunning() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                int hours = seconds /3600000 ;
+                int minutes = (seconds % 3600000) / 60000;
+                int secs = (seconds % 60000) / 1000;
+                int millis = seconds % 1000;
+                String time = String.format("%02d:%02d:%02d", hours, minutes, secs);
+
+                timerTextView.setText(time);
+
+                if (running) {
+                    handler.postDelayed(this, 100);
+                    seconds += 100;
+                }
+
+                if (wasRunning){
+                    seconds = 0;
+                }
+            }
+
+        });
+    }
+
+
 }
