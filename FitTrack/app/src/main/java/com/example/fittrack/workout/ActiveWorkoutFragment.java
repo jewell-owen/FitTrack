@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,15 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fittrack.R;
-import com.example.fittrack.adapter.ExerciseAdapter;
 import com.example.fittrack.adapter.LogWorkoutAdapter;
-import com.example.fittrack.adapter.SavedWorkoutAdapter;
-import com.example.fittrack.viewmodel.SavedWorkoutViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -140,7 +134,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
         //Current workout UI items initialization
         finishWorkoutButton = view.findViewById(R.id.active_workout_finish_btn);
-        cancelWorkoutButton = view.findViewById(R.id.active_workout_cancel_btn);
+        cancelWorkoutButton = view.findViewById(R.id.workout_history_cancel_btn);
         addCustomExerciseButton = view.findViewById(R.id.active_workout_add_custom_exercise_btn);
         addLibraryExerciseButton = view.findViewById(R.id.active_workout_add_existing_exercise_btn);
         myWorkoutExercisesRecyclerView = view.findViewById(R.id.active_workout_exercises_recycler);
