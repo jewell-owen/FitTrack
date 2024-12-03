@@ -87,8 +87,7 @@
         app:layout_constraintTop_toTopOf="@id/active_workout_add_existing_exercise_btn"
         app:layout_constraintEnd_toEndOf="parent">
     </Button>
-
-
+    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/active_workout_exercises_recycler"
         android:background="@color/background"
