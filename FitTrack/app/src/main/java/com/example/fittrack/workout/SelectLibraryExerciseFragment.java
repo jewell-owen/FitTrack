@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -65,6 +66,10 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
     private String filter = "";
     private Button selectedFilterButton;
 
+    //Possible values: "savedWorkout", "loggedWorkout"
+    //Variable needed to select which collection to add exercise to
+    private String workoutType = "";
+
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     private static final String[] muscles = {"select muscle","abdominals", "abductors","adductors", "biceps", "calves", "chest",
@@ -94,6 +99,7 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
 
         if (getArguments() != null) {
             workoutId = getArguments().getString("id");
+            workoutType = getArguments().getString("workoutType");
         }
 
         filter = "name";
@@ -218,18 +224,28 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
                 exercise.put("difficulty", difficulty);
                 exercise.put("instructions", instructions);
                 Log.d("TAG", "workoutId: " + workoutId);
-                db.collection("users").document(user.getUid()).collection("workouts").document(workoutId).collection("exercises").add(exercise)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                getActivity().getSupportFragmentManager().popBackStack();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                            }
-                        });
+                CollectionReference workoutRef = null;
+                if (workoutType.equals("savedWorkout")) {
+                    workoutRef = db.collection("users").document(user.getUid()).collection("workouts").document(workoutId).collection("exercises");
+                }
+                else if (workoutType.equals("loggedWorkout")) {
+                    workoutRef = db.collection("users").document(user.getUid()).collection("loggedWorkouts").document(workoutId).collection("exercises");
+                }
+                if (workoutRef != null) {
+                    workoutRef.add(exercise)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    getActivity().getSupportFragmentManager().popBackStack();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                }
+                            });
+
+                }
             }
         });
 
