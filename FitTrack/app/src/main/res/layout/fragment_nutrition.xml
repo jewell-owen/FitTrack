@@ -52,7 +52,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/top_background"
-        android:background="@android:drawable/"/>
+        android:background="@drawable/rounded_button_background"/>
 
     <!-- Next Day Arrow -->
     <ImageButton
