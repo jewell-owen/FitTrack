@@ -27,10 +27,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import android.os.Handler;
 
@@ -61,14 +63,15 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     private Button startStopButton;
     private TextView restTimerTextView;
 
-    private String plannedWorkout = null;
+
     private boolean newWorkoutCreated = false;
 
     //id of this logged workout in loggedWorkouts collection
     private String id = "";
 
     //id of workout from workout collection to populate exercises with
-    private String plannedWorrkoutID = "";
+    private String plannedWorkoutID = "";
+    private String plannedWorkoutName = null;
 
     // These are used for the timer
     private Handler handler = new Handler();
@@ -153,15 +156,17 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
 
-        if (getArguments() != null) {
-            id = getArguments().getString("plannedWorkoutID");
-        }
-        else {
-            plannedWorkout = "Freestyle";
+        plannedWorkoutID = getArguments().getString("workoutId");
+        plannedWorkoutName = getArguments().getString("workoutName");
+
+        Log.d("TAG", "Workout ID: " + plannedWorkoutID);
+        Log.d("TAG", "Name: " + plannedWorkoutName);
+
+        if (!Objects.equals(plannedWorkoutName, "None")) {
             if (!newWorkoutCreated){
                 Map<String, Object> newWorkout = new HashMap<>();
-                newWorkout.put("name", plannedWorkout);
-                titleEditText.setText(plannedWorkout);
+                newWorkout.put("name", plannedWorkoutName);
+                titleEditText.setText(plannedWorkoutName);
                 final String[] newWorkoutID = {""};
                 db.collection("users").document(user.getUid()).collection("loggedWorkouts")
                         .add(newWorkout)
@@ -175,6 +180,84 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                                 mQueryExercises = queryNewWorkout;
                                 id = newWorkoutID[0];
                                 initSavedWorkoutExercisesRecyclerView();
+
+                                //Add exercise card for each exercise in "users", user id, "workout", plannedWorkoutID
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                            }
+                        });
+            }
+        }
+        else {
+            plannedWorkoutName = "Freestyle";
+            if (!newWorkoutCreated){
+                Map<String, Object> newWorkout = new HashMap<>();
+                newWorkout.put("name", plannedWorkoutName);
+                titleEditText.setText(plannedWorkoutName);
+                final String[] newWorkoutID = {""};
+                db.collection("users").document(user.getUid()).collection("loggedWorkouts")
+                        .add(newWorkout)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                newWorkoutCreated = true;
+                                newWorkoutID[0] = documentReference.getId();
+                                Query queryNewWorkout = null;
+                                queryNewWorkout = db.collection("users").document(user.getUid()).collection("loggedWorkouts").document(newWorkoutID[0]).collection("exercises");
+                                mQueryExercises = queryNewWorkout;
+                                id = newWorkoutID[0];
+                                initSavedWorkoutExercisesRecyclerView();
+
+                                db.collection("users")
+                                        .document(user.getUid())
+                                        .collection("workouts")
+                                        .document(plannedWorkoutID)
+                                        .collection("exercises")
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                for (DocumentSnapshot document : queryDocumentSnapshots) {
+                                                    // Extract exercise data
+                                                    Map<String, Object> exerciseData = document.getData();
+
+                                                    // Add each exercise to the logged workout
+                                                    db.collection("users")
+                                                            .document(user.getUid())
+                                                            .collection("loggedWorkouts")
+                                                            .document(newWorkoutID[0])
+                                                            .collection("exercises")
+                                                            .add(exerciseData)
+                                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentReference documentReference) {
+                                                                    Log.d("TAG", "Exercise added: " + documentReference.getId());
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.w("TAG", "Error adding exercise", e);
+                                                                }
+                                                            });
+                                                }
+
+                                                // Notify RecyclerView adapter about the new data
+                                                if (mAdapterExercises != null) {
+                                                    mAdapterExercises.notifyDataSetChanged();
+                                                }
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("TAG", "Error fetching exercises", e);
+                                            }
+                                        });
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -184,98 +267,99 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                         });
             }
 
-            // Starts the timer when pressing the "Start" button
-            startStopButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Makes sure the timer resets if the user presses start while the timer is counting down
-                    if (countdown){
-                        seconds = 0;
-                    }
-                    // If timer isn't already running, this is to start it
-                    if (!running){
-                        startStopButton.setText(R.string.stop);
-                        running = true;
-                        wasRunning = false;
-                        countdown = false;
-                    }
-                    else{
-                        startStopButton.setText(R.string.start);
-                        running = false;
-                        countdown = false;
-                    }
-                    timerRunning();
-                }
-            });
+        }
 
-            // Resets the timer when pressing the "Reset" button
-            resetButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    running = false;
-                    wasRunning = true;
-                    countdown = false;
+        // Starts the timer when pressing the "Start" button
+        startStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Makes sure the timer resets if the user presses start while the timer is counting down
+                if (countdown){
                     seconds = 0;
-                    startStopButton.setText(R.string.start);
-                    timerRunning();
                 }
-            });
-
-            // Starts a countdown based on the time in the rest timer
-            restTimerTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    running = false;
+                // If timer isn't already running, this is to start it
+                if (!running){
+                    startStopButton.setText(R.string.stop);
+                    running = true;
                     wasRunning = false;
+                    countdown = false;
+                }
+                else{
+                    startStopButton.setText(R.string.start);
+                    running = false;
+                    countdown = false;
+                }
+                timerRunning();
+            }
+        });
 
-                    // get the time as a string
-                    String rest_time = restTimerTextView.getText().toString();
-                    rest_time = rest_time.substring(0, 4);
-                    subRest_time = rest_time.replaceAll(":", "");
-                    //Log.d("TAGoh", "TIME: " + subRest_time);
+        // Resets the timer when pressing the "Reset" button
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                running = false;
+                wasRunning = true;
+                countdown = false;
+                seconds = 0;
+                startStopButton.setText(R.string.start);
+                timerRunning();
+            }
+        });
 
-                    // Convert that to an int
-                    int myNum = Integer.parseInt(subRest_time);
+        // Starts a countdown based on the time in the rest timer
+        restTimerTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                running = false;
+                wasRunning = false;
+
+                // get the time as a string
+                String rest_time = restTimerTextView.getText().toString();
+                rest_time = rest_time.substring(0, 4);
+                subRest_time = rest_time.replaceAll(":", "");
+                //Log.d("TAGoh", "TIME: " + subRest_time);
+
+                // Convert that to an int
+                int myNum = Integer.parseInt(subRest_time);
 //                    // Add another second so the timer looks neater
 //                    myNum += 1;
 
-                    seconds = myNum % 100;
+                seconds = myNum % 100;
 
-                    // Converting to seconds
-                    if (String.valueOf(myNum).length() >= 3) {
-                        position = 3;
+                // Converting to seconds
+                if (String.valueOf(myNum).length() >= 3) {
+                    position = 3;
+                    totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
+                    timerMin += totalSec;
+                    //Log.d("tagMineTwo", "" + timerMin);
+                    if (String.valueOf(myNum).length() >= 4) {
+                        position = 4;
                         totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                        timerMin += totalSec;
-                        //Log.d("tagMineTwo", "" + timerMin);
-                        if (String.valueOf(myNum).length() >= 4) {
-                            position = 4;
+                        timerMin += totalSec * 10;
+                        //Log.d("tagMinOne", "" + timerMin);
+                        if (String.valueOf(myNum).length() >= 5) {
+                            position = 5;
                             totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                            timerMin += totalSec * 10;
-                            //Log.d("tagMinOne", "" + timerMin);
-                            if (String.valueOf(myNum).length() >= 5) {
-                                position = 5;
+                            timerHour += totalSec;
+                            if (String.valueOf(myNum).length() >= 6) {
+                                position = 6;
                                 totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                                timerHour += totalSec;
-                                if (String.valueOf(myNum).length() >= 6) {
-                                    position = 6;
-                                    totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                                    timerHour += totalSec * 10;
-                                }
+                                timerHour += totalSec * 10;
                             }
                         }
                     }
-                    timerMin *= 60;
-                    timerHour *= 3600;
-                    seconds += timerMin;
-                    seconds += timerHour;
-                    Log.d("tagSeconds", "sec: " + seconds);
-                    seconds *= 1000;
-                    // This boolean will make the timer count backwards
-                    countdown = true;
-                    timerRunning();
                 }
-            });
-        }
+                timerMin *= 60;
+                timerHour *= 3600;
+                seconds += timerMin;
+                seconds += timerHour;
+                Log.d("tagSeconds", "sec: " + seconds);
+                seconds *= 1000;
+                // This boolean will make the timer count backwards
+                countdown = true;
+                timerRunning();
+            }
+        });
 
 
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
