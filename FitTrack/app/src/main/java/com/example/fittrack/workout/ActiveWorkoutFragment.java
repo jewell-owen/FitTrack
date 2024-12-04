@@ -29,8 +29,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -386,10 +388,8 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("name", newWorkoutName);
                 Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                date = day + "/" + (month + 1) + "/" + year;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // Match the format used in Firestore
+                date = sdf.format(calendar.getTime());
                 updates.put("date", date);
 
                 // Update the "name" field in Firestore
