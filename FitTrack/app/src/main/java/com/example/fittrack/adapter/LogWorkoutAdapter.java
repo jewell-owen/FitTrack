@@ -184,6 +184,14 @@ public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHo
                 set5Layout.setVisibility(View.VISIBLE);
                 set6Layout.setVisibility(View.INVISIBLE);
             }
+            else if (sets.equals("6")) {
+                set1Layout.setVisibility(View.VISIBLE);
+                set2Layout.setVisibility(View.VISIBLE);
+                set3Layout.setVisibility(View.VISIBLE);
+                set4Layout.setVisibility(View.VISIBLE);
+                set5Layout.setVisibility(View.VISIBLE);
+                set6Layout.setVisibility(View.VISIBLE);
+            }
 
             // Click listener
             deleteExerciseButton.setOnClickListener(new View.OnClickListener() {

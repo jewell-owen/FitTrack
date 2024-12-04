@@ -39,10 +39,11 @@ tools:context=".workout.WorkoutFragment">
 
     <Button
         android:id="@+id/workout_add_plan_btn"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="70dp"
         android:text="Plan Workouts"
         android:textColor="@color/light_text"
+        android:textSize="20sp"
         android:background="@drawable/button_background"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,14 +51,14 @@ tools:context=".workout.WorkoutFragment">
         app:layout_constraintTop_toBottomOf="@id/workout_my_workouts_btn">
     </Button>
 
-
     <Button
         android:id="@+id/workout_my_workouts_btn"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_width="240dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="80dp"
         android:background="@drawable/button_background"
         android:text="My Workouts"
+        android:textSize="20sp"
         android:textColor="@color/light_text"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,10 +68,11 @@ tools:context=".workout.WorkoutFragment">
 
     <Button
         android:id="@+id/workout_logged_workouts_btn"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
+        android:layout_width="240dp"
+        android:layout_height="70dp"
         android:text="Workout History"
         android:textColor="@color/light_text"
+        android:textSize="20sp"
         android:background="@drawable/button_background"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
