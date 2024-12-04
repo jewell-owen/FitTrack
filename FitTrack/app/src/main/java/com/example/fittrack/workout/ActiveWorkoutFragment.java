@@ -261,12 +261,9 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                                     totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
                                     timerHour += totalSec * 10;
                                 }
-
                             }
                         }
-
                     }
-
                     timerMin *= 60;
                     timerHour *= 3600;
                     seconds += timerMin;
@@ -361,7 +358,6 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
             }
         });
-
 
         return view;
     }
