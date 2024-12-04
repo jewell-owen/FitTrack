@@ -75,6 +75,9 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     private int seconds = 0;
     private boolean running = false;
     private boolean wasRunning = false;
+    private boolean countdown = false;
+    String subRest_time = "";
+    int position, totalSec, timerMin, timerHour;
 
     private String date = "";
 
@@ -185,15 +188,21 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
             startStopButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    // Makes sure the timer resets if the user presses start while the timer is counting down
+                    if (countdown){
+                        seconds = 0;
+                    }
                     // If timer isn't already running, this is to start it
                     if (!running){
                         startStopButton.setText(R.string.stop);
                         running = true;
                         wasRunning = false;
+                        countdown = false;
                     }
                     else{
                         startStopButton.setText(R.string.start);
                         running = false;
+                        countdown = false;
                     }
                     timerRunning();
                 }
@@ -205,6 +214,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 public void onClick(View view) {
                     running = false;
                     wasRunning = true;
+                    countdown = false;
                     seconds = 0;
                     startStopButton.setText(R.string.start);
                     timerRunning();
@@ -215,12 +225,61 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
             restTimerTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    running = false;
+                    wasRunning = false;
 
+                    // get the time as a string
+                    String rest_time = restTimerTextView.getText().toString();
+                    rest_time = rest_time.substring(0, 4);
+                    subRest_time = rest_time.replaceAll(":", "");
+                    //Log.d("TAGoh", "TIME: " + subRest_time);
+
+                    // Convert that to an int
+                    int myNum = Integer.parseInt(subRest_time);
+//                    // Add another second so the timer looks neater
+//                    myNum += 1;
+
+                    seconds = myNum % 100;
+
+                    // Converting to seconds
+                    if (String.valueOf(myNum).length() >= 3) {
+                        position = 3;
+                        totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
+                        timerMin += totalSec;
+                        //Log.d("tagMineTwo", "" + timerMin);
+                        if (String.valueOf(myNum).length() >= 4) {
+                            position = 4;
+                            totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
+                            timerMin += totalSec * 10;
+                            //Log.d("tagMinOne", "" + timerMin);
+                            if (String.valueOf(myNum).length() >= 5) {
+                                position = 5;
+                                totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
+                                timerHour += totalSec;
+                                if (String.valueOf(myNum).length() >= 6) {
+                                    position = 6;
+                                    totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
+                                    timerHour += totalSec * 10;
+                                }
+
+                            }
+                        }
+
+                    }
+
+                    timerMin *= 60;
+                    timerHour *= 3600;
+                    seconds += timerMin;
+                    seconds += timerHour;
+                    Log.d("tagSeconds", "sec: " + seconds);
+                    seconds *= 1000;
+                    // This boolean will make the timer count backwards
+                    countdown = true;
+                    timerRunning();
                 }
             });
-
-
         }
+
 
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -537,6 +596,15 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
                 if (wasRunning){
                     seconds = 0;
+                }
+
+                // For counting down from the rest time
+                if (countdown){
+                    handler.postDelayed(this, 100);
+                    seconds -= 100;
+                    if (timerTextView.getText().equals("00:00:00")){
+                        countdown = false;
+                    }
                 }
             }
 
