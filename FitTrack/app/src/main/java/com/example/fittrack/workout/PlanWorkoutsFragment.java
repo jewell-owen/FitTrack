@@ -18,8 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.fittrack.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -34,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class PlanWorkoutsFragment extends Fragment implements View.OnClickListener{
+public class PlanWorkoutsFragment extends Fragment implements View.OnClickListener {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -46,13 +44,14 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
     private ImageButton planWorkoutsNextDayBtn;
     private Spinner planWorkoutsSpinner;
 
-    // Change these fields from arrays to mutable lists
     private List<String> workouts = new ArrayList<>();
     private List<String> workoutIds = new ArrayList<>();
     private String workoutName = "";
     private String workoutId = "";
 
     private Calendar selectedDate;
+
+    private boolean isUserSelection = false;
 
     @Override
     public void onClick(View view) {
@@ -75,23 +74,52 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         workoutAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         planWorkoutsSpinner.setAdapter(workoutAdapter);
 
-        // Set the listener for the spinner
+        // Track if the spinner selection is user-initiated
+        planWorkoutsSpinner.setOnTouchListener((v, event) -> {
+            isUserSelection = true;
+            return false;
+        });
+
         planWorkoutsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                if (!isUserSelection) {
+                    return; // Ignore programmatic selections
+                }
+                isUserSelection = false; // Reset the flag
+
                 workoutName = adapterView.getItemAtPosition(position).toString();
-                //workoutId = workoutIds[position];
+                workoutId = workoutIds.get(position);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                String formattedDate = sdf.format(selectedDate.getTime());
+
+                DocumentReference workoutRef = db.collection("users")
+                        .document(user.getUid())
+                        .collection("plans")
+                        .document(formattedDate);
+
+                Map<String, Object> workoutData = new HashMap<>();
+                workoutData.put("date", formattedDate);
+                workoutData.put("workoutId", workoutId);
+                workoutData.put("workoutName", workoutName);
+
+                workoutRef.set(workoutData)
+                        .addOnSuccessListener(aVoid -> Toast.makeText(getContext(), "Workout for " + formattedDate + " set to " + workoutName, Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> {
+                            Log.e("Firestore", "Error saving workout", e);
+                            Toast.makeText(getContext(), "Failed to save workout.", Toast.LENGTH_SHORT).show();
+                        });
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+                // No action needed
             }
         });
 
-        // Fetch workouts from Firestore
         fetchWorkouts(workoutAdapter);
 
-        // Initialize the selected date with today's date
         selectedDate = Calendar.getInstance();
 
         planWorkoutsDateBtn.setOnClickListener(v -> openDatePicker());
@@ -109,22 +137,23 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
 
         workoutsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (!queryDocumentSnapshots.isEmpty()) {
-                workouts.clear(); // Clear existing data
-                workoutIds.clear(); // Clear existing data
+                workouts.clear();
+                workoutIds.clear();
 
-                workouts.add("None"); // Assuming "name" is the field for workout name
+                workouts.add("None");
                 workoutIds.add("None");
-                workouts.add("Rest"); // Assuming "name" is the field for workout name
+                workouts.add("Rest");
                 workoutIds.add("Rest");
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     queryDocumentSnapshots.forEach(document -> {
-                        workouts.add(document.getString("name")); // Assuming "name" is the field for workout name
+                        workouts.add(document.getString("name"));
                         workoutIds.add(document.getId());
                     });
                 }
 
-                // Update the adapter
                 workoutAdapter.notifyDataSetChanged();
+                fetchPlanForSelectedDate(); // Fetch the current plan after loading workouts
             } else {
                 Toast.makeText(getContext(), "No workouts found.", Toast.LENGTH_SHORT).show();
             }
@@ -134,7 +163,36 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         });
     }
 
-    // Method to open the DatePickerDialog
+    private void fetchPlanForSelectedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String formattedDate = sdf.format(selectedDate.getTime());
+
+        DocumentReference planRef = db.collection("users")
+                .document(user.getUid())
+                .collection("plans")
+                .document(formattedDate);
+
+        planRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String plannedWorkoutName = documentSnapshot.getString("workoutName");
+
+                if (plannedWorkoutName != null) {
+                    int index = workouts.indexOf(plannedWorkoutName);
+                    if (index != -1) {
+                        planWorkoutsSpinner.setSelection(index);
+                    } else {
+                        planWorkoutsSpinner.setSelection(workouts.indexOf("None"));
+                    }
+                }
+            } else {
+                planWorkoutsSpinner.setSelection(workouts.indexOf("None"));
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Error fetching plan for date: " + formattedDate, e);
+            planWorkoutsSpinner.setSelection(workouts.indexOf("None"));
+        });
+    }
+
     private void openDatePicker() {
         int year = selectedDate.get(Calendar.YEAR);
         int month = selectedDate.get(Calendar.MONTH);
@@ -151,18 +209,15 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         datePickerDialog.show();
     }
 
-    // Method to change the date by a given number of days (positive for next day, negative for previous day)
     private void changeDate(int dayOffset) {
         selectedDate.add(Calendar.DAY_OF_MONTH, dayOffset);
         updateDateButton();
     }
 
-    // Method to update the date displayed on the button
     private void updateDateButton() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
         String formattedDate = sdf.format(selectedDate.getTime());
 
-        // If the selected date is today, show "Today" instead of the date
         Calendar today = Calendar.getInstance();
         if (selectedDate.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                 selectedDate.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
@@ -171,6 +226,7 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         } else {
             planWorkoutsDateBtn.setText(formattedDate);
         }
-    }
 
+        fetchPlanForSelectedDate();
+    }
 }
