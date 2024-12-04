@@ -39,8 +39,8 @@
 
     <ImageButton
         android:id="@+id/plan_workouts_previous_day_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:paddingStart="10dp"
         android:src="@drawable/baseline_back_24"
         android:background="@drawable/button_background"
@@ -52,8 +52,8 @@
 
     <Button
         android:id="@+id/plan_workouts_date_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
         android:text="@string/select_date"
         android:textColor="@color/primary"
         android:padding="10dp"
@@ -67,8 +67,8 @@
 
     <ImageButton
         android:id="@+id/plan_workouts_next_day_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/button_background"
         android:padding="5dp"
@@ -80,13 +80,12 @@
 
     <Spinner
         android:id="@+id/plan_workouts_spinner"
-        android:layout_width="300dp"
-        android:layout_height="60dp"
+        android:layout_width="340dp"
+        android:layout_height="80dp"
         android:layout_marginTop="50dp"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:textAlignment="gravity"
+        android:textAlignment="center"
         android:spinnerMode="dropdown"
+        android:textSize="34sp"
         app:layout_constraintTop_toBottomOf="@id/plan_workouts_date_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

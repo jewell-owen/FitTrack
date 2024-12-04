@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="380dp"
-    android:layout_height="540dp"
+    android:layout_height="510dp"
     android:layout_margin="8dp"
     android:background="@drawable/card_background"
     android:backgroundTint="@color/top_background"
@@ -76,7 +76,7 @@
         <ScrollView
             android:id="@+id/full_exercise_card_exercise_instructions_sv"
             android:layout_width="300dp"
-            android:layout_height="340dp"
+            android:layout_height="310dp"
             app:layout_constraintTop_toBottomOf="@+id/full_exercise_card_exercise_difficulty_tv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">

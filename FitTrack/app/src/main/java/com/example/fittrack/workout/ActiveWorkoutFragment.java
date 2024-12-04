@@ -184,6 +184,50 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                                 initSavedWorkoutExercisesRecyclerView();
 
                                 //Add exercise card for each exercise in "users", user id, "workout", plannedWorkoutID
+                                db.collection("users")
+                                        .document(user.getUid())
+                                        .collection("workouts")
+                                        .document(plannedWorkoutID)
+                                        .collection("exercises")
+                                        .get()
+                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                for (DocumentSnapshot document : queryDocumentSnapshots) {
+                                                    Map<String, Object> exerciseData = document.getData();
+
+                                                    db.collection("users")
+                                                            .document(user.getUid())
+                                                            .collection("loggedWorkouts")
+                                                            .document(newWorkoutID[0])
+                                                            .collection("exercises")
+                                                            .add(exerciseData)
+                                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentReference documentReference) {
+                                                                    Log.d("TAG", "Exercise added: " + documentReference.getId());
+
+                                                                    // Force RecyclerView update here
+                                                                    if (mAdapterExercises != null) {
+                                                                        mAdapterExercises.notifyDataSetChanged();
+                                                                    }
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.w("TAG", "Error adding exercise", e);
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w("TAG", "Error fetching exercises", e);
+                                            }
+                                        });
 
                             }
                         })
@@ -213,53 +257,6 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                                 mQueryExercises = queryNewWorkout;
                                 id = newWorkoutID[0];
                                 initSavedWorkoutExercisesRecyclerView();
-
-                                db.collection("users")
-                                        .document(user.getUid())
-                                        .collection("workouts")
-                                        .document(plannedWorkoutID)
-                                        .collection("exercises")
-                                        .get()
-                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                for (DocumentSnapshot document : queryDocumentSnapshots) {
-                                                    // Extract exercise data
-                                                    Map<String, Object> exerciseData = document.getData();
-
-                                                    // Add each exercise to the logged workout
-                                                    db.collection("users")
-                                                            .document(user.getUid())
-                                                            .collection("loggedWorkouts")
-                                                            .document(newWorkoutID[0])
-                                                            .collection("exercises")
-                                                            .add(exerciseData)
-                                                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                                @Override
-                                                                public void onSuccess(DocumentReference documentReference) {
-                                                                    Log.d("TAG", "Exercise added: " + documentReference.getId());
-                                                                }
-                                                            })
-                                                            .addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Log.w("TAG", "Error adding exercise", e);
-                                                                }
-                                                            });
-                                                }
-
-                                                // Notify RecyclerView adapter about the new data
-                                                if (mAdapterExercises != null) {
-                                                    mAdapterExercises.notifyDataSetChanged();
-                                                }
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w("TAG", "Error fetching exercises", e);
-                                            }
-                                        });
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -449,26 +446,27 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     private void initSavedWorkoutExercisesRecyclerView() {
         if (mQueryExercises == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
+            return;
         }
 
         mAdapterExercises = new LogWorkoutAdapter(mQueryExercises, this) {
-
             @Override
             protected void onDataChanged() {
-                // Show/hide content if the query returns empty.
-                if (myWorkoutExercisesRecyclerView.getVisibility() == View.VISIBLE){
-                    //Handle update
+                if (mAdapterExercises.getItemCount() == 0) {
+                    Log.d("TAG", "No exercises found.");
+                } else {
+                    Log.d("TAG", "Exercises loaded.");
                 }
-
             }
 
             @Override
             protected void onError(FirebaseFirestoreException e) {
+                Log.e("TAG", "Error loading exercises", e);
             }
         };
 
-        //myWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
+        mAdapterExercises.startListening(); // Ensure the adapter starts listening for changes.
     }
 
 
