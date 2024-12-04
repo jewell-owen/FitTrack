@@ -121,7 +121,12 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
         plannedWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                PlanWorkoutsFragment planWorkouts = new PlanWorkoutsFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, planWorkouts)
+                        .addToBackStack(null)
+                        .commit();
             }
 
         });

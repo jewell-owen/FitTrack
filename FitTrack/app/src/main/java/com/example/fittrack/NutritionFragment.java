@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import java.text.SimpleDateFormat;
@@ -78,9 +77,9 @@ public class NutritionFragment extends Fragment {
         selectedDate = Calendar.getInstance();
 
         // Get the buttons
-        dateBtn = rootView.findViewById(R.id.date_btn);
-        previousDayBtn = rootView.findViewById(R.id.previous_day_btn);
-        nextDayBtn = rootView.findViewById(R.id.next_day_btn);
+        dateBtn = rootView.findViewById(R.id.plan_workouts_date_btn);
+        previousDayBtn = rootView.findViewById(R.id.plan_workouts_previous_day_btn);
+        nextDayBtn = rootView.findViewById(R.id.plan_workouts_next_day_btn);
 
         // Set the click listener for the date button
         dateBtn.setOnClickListener(v -> openDatePicker());

@@ -37,6 +37,38 @@ tools:context=".workout.WorkoutFragment">
         app:layout_constraintTop_toTopOf="@id/workout_name_tv">
     </ImageButton>
 
+    <TextView
+        android:id="@+id/workout_today_plan_tv"
+        android:layout_width="300dp"
+        android:layout_height="140dp"
+        android:background="@drawable/card_background"
+        android:text="Today's Plan:"
+        android:paddingBottom="60dp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/accent"
+        android:textSize="26sp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintTop_toBottomOf="@+id/workout_name_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </TextView>
+
+    <TextView
+        android:id="@+id/workout_today_plan_workout_tv"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:background="@drawable/card_background"
+        android:text="none"
+        android:gravity="center_horizontal"
+        android:textColor="@color/accent"
+        android:textSize="24sp"
+        android:layout_marginTop="-80dp"
+        app:layout_constraintTop_toBottomOf="@+id/workout_today_plan_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    </TextView>
+
     <Button
         android:id="@+id/workout_add_plan_btn"
         android:layout_width="240dp"
@@ -55,7 +87,7 @@ tools:context=".workout.WorkoutFragment">
         android:id="@+id/workout_my_workouts_btn"
         android:layout_width="240dp"
         android:layout_height="70dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/button_background"
         android:text="My Workouts"
         android:textSize="20sp"
@@ -63,7 +95,7 @@ tools:context=".workout.WorkoutFragment">
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/workout_name_tv">
+        app:layout_constraintTop_toBottomOf="@id/workout_today_plan_tv">
     </Button>
 
     <Button
