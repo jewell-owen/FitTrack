@@ -42,6 +42,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
     private ImageButton startWorkoutButton;
     private Button myWorkoutsButton;
     private Button plannedWorkoutButton;
+    private Button workoutHistoryButton;
 
     // Place holder for selectedWorkout
     private String plannedWorkout = null;
@@ -100,6 +101,8 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
         startWorkoutButton = view.findViewById(R.id.workout_start_workout_btn);
         plannedWorkoutButton = view.findViewById(R.id.workout_add_plan_btn);
         myWorkoutsButton = view.findViewById(R.id.workout_my_workouts_btn);
+        workoutHistoryButton = view.findViewById(R.id.workout_logged_workouts_btn);
+
 
         // Where the timer implementation goes
         startWorkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +133,18 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, listSavedWorkouts)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        workoutHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ListLoggedWorkoutsFragment listLoggedWorkouts = new ListLoggedWorkoutsFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, listLoggedWorkouts)
                         .addToBackStack(null)
                         .commit();
             }

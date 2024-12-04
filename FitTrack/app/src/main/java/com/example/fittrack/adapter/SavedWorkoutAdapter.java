@@ -51,7 +51,7 @@ public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
 
-            nameView = itemView.findViewById(R.id.planned_workout_card_workout_name_tv);
+            nameView = itemView.findViewById(R.id.logged_workout_card_workout_name_tv);
             deleteButton = itemView.findViewById(R.id.planned_workout_card_select_workout_btn);
 
         }

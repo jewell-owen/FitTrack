@@ -1,4 +1,7 @@
 package com.example.fittrack.workout;
 
-public class WorkoutHistoryFragment {
+import androidx.fragment.app.Fragment;
+
+public class WorkoutHistoryFragment extends Fragment {
+
 }

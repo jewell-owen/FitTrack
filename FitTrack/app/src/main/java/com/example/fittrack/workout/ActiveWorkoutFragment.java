@@ -28,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +76,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     private boolean running = false;
     private boolean wasRunning = false;
 
+    private String date = "";
 
     public ActiveWorkoutFragment() {
         // Required empty public constructor
@@ -243,6 +245,12 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 // Create a map with the updated name
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("name", newWorkoutName);
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                date = day + "/" + (month + 1) + "/" + year;
+                updates.put("date", date);
 
                 // Update the "name" field in Firestore
                 workoutRef.update(updates)

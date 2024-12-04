@@ -3,7 +3,6 @@ package com.example.fittrack.workout;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,12 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.example.fittrack.R;
 import com.example.fittrack.adapter.SavedWorkoutAdapter;
@@ -128,8 +122,8 @@ public class ListSavedWorkoutsFragment extends Fragment implements View.OnClickL
 
         //My workouts list UI items initialization
         addNewSavedWorkoutButton = view.findViewById(R.id.list_saved_workouts_new_workout_btn);
-        savedWorkoutsBackButton = view.findViewById(R.id.list_saved_workouts_back_btn);
-        savedWorkoutsRecyclerView = view.findViewById(R.id.list_saved_workouts_recycler);
+        savedWorkoutsBackButton = view.findViewById(R.id.list_logged_workouts_back_btn);
+        savedWorkoutsRecyclerView = view.findViewById(R.id.list_logged_workouts_recycler);
 
         savedWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         savedWorkoutsRecyclerView.setAdapter(mAdapterWorkouts);

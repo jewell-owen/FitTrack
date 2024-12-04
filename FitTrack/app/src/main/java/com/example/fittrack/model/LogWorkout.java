@@ -26,6 +26,7 @@ public class LogWorkout {
     public static final String FIELD_FIVE_REPS = "fiveReps";
     public static final String FIELD_SIX_REPS = "sixReps";
     public static final String FIELD_SETS = "sets";
+    public static final String FIELD_DATE = "date";
 
 
     private String name;
@@ -47,12 +48,13 @@ public class LogWorkout {
     private String fiveReps;
     private String sixReps;
     private int sets = 1;
+    private String date;
 
 
 
     public LogWorkout() {}
 
-    public LogWorkout(String name, String type, String muscle, String equipment, String difficulty, String instructions, String oneWeight, String twoWeight, String threeWeight, String fourWeight, String fiveWeight, String sixWeight, String oneReps, String twoReps, String threeReps, String fourReps, String fiveReps, String sixReps, int sets) {
+    public LogWorkout(String name, String type, String muscle, String equipment, String difficulty, String instructions, String oneWeight, String twoWeight, String threeWeight, String fourWeight, String fiveWeight, String sixWeight, String oneReps, String twoReps, String threeReps, String fourReps, String fiveReps, String sixReps, int sets, String date) {
         this.name = name;
         this.type = type;
         this.muscle = muscle;
@@ -72,6 +74,7 @@ public class LogWorkout {
         this.fiveReps = fiveReps;
         this.sixReps = sixReps;
         this.sets = sets;
+        this.date = date;
     }
 
     public String getName() {
@@ -153,5 +156,9 @@ public class LogWorkout {
     public int getSets () { return sets; }
 
     public void setSets (int sets) { this.sets = sets; }
+
+    public String getDate () { return date; }
+
+    public void setDate (String date) { this.date = date; }
 
 }
