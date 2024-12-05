@@ -178,24 +178,58 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
                 CollectionReference workoutRef = null;
                 if (workoutType.equals("savedWorkout")) {
                     workoutRef = db.collection("users").document(user.getUid()).collection("workouts").document(workoutId).collection("exercises");
+                    if (workoutRef != null) {
+                        workoutRef.add(exercise)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        getActivity().getSupportFragmentManager().popBackStack();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+
+                    }
                 }
                 else if (workoutType.equals("loggedWorkout")) {
                     exercise.put("sets", 1);
                     workoutRef = db.collection("users").document(user.getUid()).collection("loggedWorkouts").document(workoutId).collection("exercises");
+                    if (workoutRef != null) {
+                        workoutRef.add(exercise)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        getActivity().getSupportFragmentManager().popBackStack();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+
+                    }
                 }
-                if (workoutRef != null) {
-                    workoutRef.add(exercise)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            getActivity().getSupportFragmentManager().popBackStack();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                        }
-                    });
+                else if (workoutType.equals("favoriteExercise")) {
+                    DocumentReference favoriteRef = null;
+                    Log.d("TAG", "workoutId: " + workoutId);
+                    favoriteRef = db.collection("users").document(user.getUid()).collection("favorite").document(workoutId);
+                    favoriteRef.update(exercise)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    getActivity().getSupportFragmentManager().popBackStack();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Log or handle the failure
+                                }
+                            });
                 }
             }
         });
