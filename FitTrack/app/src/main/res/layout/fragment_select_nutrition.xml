@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <TextView
+        android:id="@+id/nutrition_select_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_background"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/nutrition"
+        android:textAlignment="center"
+        android:textColor="@color/accent"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </TextView>
+
+    <ImageButton
+        android:id="@+id/nutrition_select_back_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/button_background"
+        android:paddingStart="10dp"
+        android:src="@drawable/baseline_back_24"
+        app:layout_constraintBottom_toBottomOf="@+id/nutrition_select_title_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nutrition_select_title_tv">
+
+    </ImageButton>
+
+    <EditText
+        android:id="@+id/nutrition_select_et"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/card_background"
+        android:drawableLeft="@drawable/baseline_search_24"
+        android:gravity="center"
+        android:hint="@string/search_button_desc"
+        android:paddingStart="10dp"
+        android:textAlignment="gravity"
+        android:textColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nutrition_select_title_tv" />
+
+
+    <Button
+        android:id="@+id/exercise_select_name_filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/button_background"
+        android:text="Name"
+        android:textColor="@color/light_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nutrition_select_et" />
+
+    <Button
+        android:id="@+id/exercise_select_muscle_filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="13dp"
+        android:background="@drawable/button_background"
+        android:text="Muscle"
+        android:textColor="@color/light_text"
+        app:layout_constraintStart_toEndOf="@id/exercise_select_name_filter_btn"
+        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn" />
+
+    <Button
+        android:id="@+id/exercise_select_type_filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="13dp"
+        android:background="@drawable/button_background"
+        android:text="Type"
+        android:textColor="@color/light_text"
+        app:layout_constraintEnd_toStartOf="@id/exercise_select_difficulty_filter_btn"
+        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn" />
+
+    <Button
+        android:id="@+id/exercise_select_difficulty_filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/button_background"
+        android:text="Difficulty"
+        android:textColor="@color/light_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn" />
+
+    <ImageButton
+        android:id="@+id/nutrition_select_search_btn"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/button_background"
+        android:padding="10dp"
+        android:src="@drawable/baseline_forward_24"
+        app:layout_constraintBottom_toBottomOf="@+id/nutrition_select_et"
+        app:layout_constraintStart_toEndOf="@+id/nutrition_select_et"
+        app:layout_constraintTop_toTopOf="@+id/nutrition_select_et">
+
+    </ImageButton>
+
+    <ScrollView
+        android:id="@+id/nutrition_select_scroll_view"
+        android:layout_width="390dp"
+        android:layout_height="480dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/exercise_select_name_filter_btn">
+
+        <LinearLayout
+            android:id="@+id/nutrition_select_card_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
