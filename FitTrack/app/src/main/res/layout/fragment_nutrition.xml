@@ -119,7 +119,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
         android:layout_width="190dp"
-        android:layout_height="200dp"
+        android:layout_height="220dp"
         android:layout_margin="10dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="224dp"
@@ -350,7 +350,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="190dp"
-        android:layout_height="200dp"
+        android:layout_height="220dp"
         android:layout_margin="10dp"
         android:background="@drawable/card_background"
         android:backgroundTint="@color/top_background"
