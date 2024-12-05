@@ -264,8 +264,8 @@ public class SelectLibraryExerciseFragment extends Fragment implements View.OnCl
                 }
                 else if (workoutType.equals("favoriteExercise")) {
                     DocumentReference favoriteRef = null;
+                    Log.d("TAG", "workoutId: " + workoutId);
                     favoriteRef = db.collection("users").document(user.getUid()).collection("favorite").document(workoutId);
-                    Map<String, Object> updates = new HashMap<>();
                     favoriteRef.update(exercise)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override

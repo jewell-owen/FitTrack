@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.fittrack.adapter.ExerciseAdapter;
 import com.example.fittrack.adapter.FavoriteExerciseAdapter;
 import com.example.fittrack.workout.SelectCustomExerciseFragment;
 import com.example.fittrack.workout.SelectLibraryExerciseFragment;
@@ -33,17 +32,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ProfileFragment extends Fragment implements View.OnClickListener, FavoriteExerciseAdapter.OnExerciseSelectedListener {
 
     private static final String ARG_PARAM1 = "param1";
@@ -66,8 +57,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, F
     private TextView profileGoalTv;
     private EditText profileGoalEt;
 
-    private TextView favoriteExerciseTextView;
-
     private Button favoriteCustomExerciseBtn;
     private Button favoriteLibraryExerciseBtn;
 
@@ -82,14 +71,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, F
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
     public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
@@ -121,176 +102,120 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, F
         profileGoalEt = view.findViewById(R.id.profile_goal_et);
         editGoalBtn = view.findViewById(R.id.profile_edit_btn);
         saveGoalBtn = view.findViewById(R.id.profile_save_btn);
-        favoriteExerciseTextView = view.findViewById(R.id.profile_favorite_exercise_tv);
-        favoriteCustomExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_library_btn);
-        favoriteLibraryExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_custom_btn);
+        favoriteLibraryExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_library_btn);
+        favoriteCustomExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_custom_btn);
         myFavoriteExerciseRecyclerView = view.findViewById(R.id.profile_favorite_exercises_recycler);
-
 
         MainActivity mainActivity = (MainActivity) getActivity();
 
-       db.collection("users").document(user.getUid()).get()
-               .addOnSuccessListener(documentSnapshot -> {
-                   if (documentSnapshot.exists()) {
-                       // If the document exists, get the workout name and assign it to the TextView
-                       String goal = documentSnapshot.getString("goal");
-                       if (goal != null) {
-                           profileGoalTv.setText(goal);
+        myFavoriteExerciseRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-                       } else {
-                           profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
-                       }
-                   } else {
-                       // If the document does not exist, set the TextView to "None"
-                       profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
-                   }
-               })
-               .addOnFailureListener(e -> {
-                   Log.e("Firestore", "Error fetching planned workout", e);
-                   // Handle failure by setting a fallback value
-                   profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
-               });
 
+        // Check if the favorite exercise query is set
         db.collection("users").document(user.getUid()).collection("favorite")
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            // Assuming we take the first favorite exercise
-                            DocumentSnapshot firstFavorite = queryDocumentSnapshots.getDocuments().get(0);
-                            String exerciseName = firstFavorite.getString("name"); // Adjust the key based on Firestore structure
-                            if (exerciseName != null) {
-                                favoriteExerciseTextView.setVisibility(View.INVISIBLE);
-                                myFavoriteExerciseRecyclerView.setVisibility(View.VISIBLE);
-                                favoriteId = firstFavorite.getId();
-                            } else {
-                                favoriteExerciseTextView.setText("Select A Favorite Exercise");
-                                favoriteExerciseTextView.setVisibility(View.VISIBLE);
-                                myFavoriteExerciseRecyclerView.setVisibility(View.INVISIBLE);
-                            }
-                        } else {
-                            favoriteExerciseTextView.setText("Select A Favorite Exercise");
-                            favoriteExerciseTextView.setVisibility(View.VISIBLE);
-                            myFavoriteExerciseRecyclerView.setVisibility(View.INVISIBLE);
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        // Log the retrieved favorite exercises
+                        for (DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                            Log.d("Firestore", "Favorite Exercise: " + doc.getData());
+                            favoriteId = doc.getId();
+                            break;
+
                         }
+                        // Set the query to get all favorite exercises
+                        mQueryExercises = db.collection("users").document(user.getUid()).collection("favorite");
+                        initSavedWorkoutExercisesRecyclerView();
+                        myFavoriteExerciseRecyclerView.setAdapter(mAdapterExercises);
+                    } else {
+                        Map<String, Object> newWorkout = new HashMap<>();
+                        newWorkout.put("name", "Select a favorite exercise");
+                        final String[] newWorkoutID = {""};
+                        db.collection("users").document(user.getUid()).collection("loggedWorkouts")
+                                .add(newWorkout)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        newWorkoutID[0] = documentReference.getId();
+                                        mQueryExercises = db.collection("users").document(user.getUid()).collection("favorite");
+                                        favoriteId = newWorkoutID[0];
+                                        initSavedWorkoutExercisesRecyclerView();
+                                        myFavoriteExerciseRecyclerView.setAdapter(mAdapterExercises);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Firestore", "Error fetching favorite exercises", e);
-                        favoriteExerciseTextView.setText("Select A Favorite Exercise!");
-                        favoriteExerciseTextView.setVisibility(View.VISIBLE);
-                        myFavoriteExerciseRecyclerView.setVisibility(View.INVISIBLE);
-                    }
-                });
-
-
-
-        myFavoriteExerciseRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        myFavoriteExerciseRecyclerView.setAdapter(mAdapterExercises);
+                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching favorite exercises", e));
 
         profileUserEmailTv.setText(user.getEmail());
         profileFriendIdTv.setText(user.getUid());
 
-        mQueryExercises =  db.collection("users").document(user.getUid()).collection("favorite");
-        initSavedWorkoutExercisesRecyclerView();
-
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainActivity.auth.signOut();
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-                mainActivity.finish();
-
-            }
+        logoutButton.setOnClickListener(view1 -> {
+            mainActivity.auth.signOut();
+            Intent intent = new Intent(getContext(), LoginActivity.class);
+            startActivity(intent);
+            mainActivity.finish();
         });
 
-
-        editGoalBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveGoalBtn.setVisibility(View.VISIBLE);
-                editGoalBtn.setVisibility(View.GONE);
-                profileGoalEt.setVisibility(View.VISIBLE);
-                profileGoalTv.setVisibility(View.INVISIBLE);
-
-            }
+        editGoalBtn.setOnClickListener(view1 -> {
+            saveGoalBtn.setVisibility(View.VISIBLE);
+            editGoalBtn.setVisibility(View.GONE);
+            profileGoalEt.setVisibility(View.VISIBLE);
+            profileGoalTv.setVisibility(View.INVISIBLE);
         });
 
-        saveGoalBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editGoalBtn.setVisibility(View.VISIBLE);
-                saveGoalBtn.setVisibility(View.GONE);
-                profileGoalTv.setText(profileGoalEt.getText().toString());
-                String newGoal = profileGoalEt.getText().toString();
-                // Reference to the workout document in Firestore
-                DocumentReference workoutRef = db.collection("users")
-                        .document(user.getUid());
+        saveGoalBtn.setOnClickListener(view1 -> {
+            editGoalBtn.setVisibility(View.VISIBLE);
+            saveGoalBtn.setVisibility(View.GONE);
+            profileGoalTv.setText(profileGoalEt.getText().toString());
+            String newGoal = profileGoalEt.getText().toString();
+            // Reference to the workout document in Firestore
+            DocumentReference workoutRef = db.collection("users").document(user.getUid());
 
-                // Create a map with the updated name
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("goal", newGoal);
+            // Create a map with the updated name
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("goal", newGoal);
 
-                // Update the "goal" field in Firestore
-                workoutRef.update(updates)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Close the fragment/activity upon successful update
-                                profileGoalTv.setVisibility(View.VISIBLE);
-                                profileGoalEt.setVisibility(View.INVISIBLE);
-                                profileGoalEt.setText("");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Log or handle the failure
-                            }
-                        });
-            }
+            // Update the "goal" field in Firestore
+            workoutRef.update(updates)
+                    .addOnSuccessListener(aVoid -> {
+                        profileGoalTv.setVisibility(View.VISIBLE);
+                        profileGoalEt.setVisibility(View.INVISIBLE);
+                        profileGoalEt.setText("");
+                    })
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating goal", e));
         });
 
-
-        favoriteLibraryExerciseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SelectLibraryExerciseFragment exerciseSelect = new SelectLibraryExerciseFragment();
-                Bundle args = new Bundle();
-                args.putString("id", favoriteId);
-                args.putString("workoutType", "favoriteExercise");
-                exerciseSelect.setArguments(args);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.flFragment, exerciseSelect)
-                        .addToBackStack(null)
-                        .commit();
-            }
+        favoriteLibraryExerciseBtn.setOnClickListener(view1 -> {
+            SelectLibraryExerciseFragment exerciseSelect = new SelectLibraryExerciseFragment();
+            Bundle args = new Bundle();
+            args.putString("id", favoriteId);
+            args.putString("workoutType", "favoriteExercise");
+            exerciseSelect.setArguments(args);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, exerciseSelect)
+                    .addToBackStack(null)
+                    .commit();
         });
 
-        favoriteCustomExerciseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SelectCustomExerciseFragment customExercise = new SelectCustomExerciseFragment();
-                Bundle args = new Bundle();
-                args.putString("id", favoriteId);
-                args.putString("workoutType", "favoriteExercise");
-                customExercise.setArguments(args);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.flFragment, customExercise)
-                        .addToBackStack(null)
-                        .commit();
-            }
+        favoriteCustomExerciseBtn.setOnClickListener(view1 -> {
+            SelectCustomExerciseFragment customExercise = new SelectCustomExerciseFragment();
+            Bundle args = new Bundle();
+            args.putString("id", favoriteId);
+            args.putString("workoutType", "favoriteExercise");
+            customExercise.setArguments(args);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.flFragment, customExercise)
+                    .addToBackStack(null)
+                    .commit();
         });
-
-
-
 
         return view;
     }
@@ -298,28 +223,32 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, F
     private void initSavedWorkoutExercisesRecyclerView() {
         if (mQueryExercises == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
+            return;
         }
 
         mAdapterExercises = new FavoriteExerciseAdapter(mQueryExercises, this) {
-
             @Override
             protected void onDataChanged() {
-                // Show/hide content if the query returns empty.
-                if (myFavoriteExerciseRecyclerView.getVisibility() == View.VISIBLE){
-                    //Handle update
+                Log.d("RecyclerView", "Adapter item count: " + getItemCount());
+                if (getItemCount() == 0) {
+                    myFavoriteExerciseRecyclerView.setVisibility(View.GONE);
+                    Log.d("RecyclerView", "No items to display");
+                } else {
+                    myFavoriteExerciseRecyclerView.setVisibility(View.VISIBLE);
+                    Log.d("RecyclerView", "Data loaded successfully");
                 }
-
             }
 
             @Override
             protected void onError(FirebaseFirestoreException e) {
+                Log.e("RecyclerView", "Error loading data", e);
             }
         };
 
-        //myWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         myFavoriteExerciseRecyclerView.setAdapter(mAdapterExercises);
     }
 
+    @Override
     public void onExerciseMoreInfo(DocumentSnapshot exercise) {
         Bundle bundle = new Bundle();
         bundle.putString("name", exercise.getString("name"));
@@ -335,7 +264,5 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, F
                 .replace(R.id.flFragment, viewExerciseFragment)
                 .addToBackStack(null)
                 .commit();
-
     }
-
 }
