@@ -29,6 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+
 public class StatsFragment extends Fragment implements View.OnClickListener, LogWorkoutNameAdapter.OnLoggedWorkoutSelectedListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,11 +47,17 @@ public class StatsFragment extends Fragment implements View.OnClickListener, Log
     //My workouts list UI items
     private RecyclerView numWorkoutsRecyclerView;
     private TextView numWorkoutsTextView;
+    private TextView numSetsTextView;
+    private TextView weightTextView;
 
     private String mParam1;
     private String mParam2;
 
     private int numWorkouts;
+    private int numSets;
+    private int weight;
+
+    ArrayList<Integer> weightArray = new ArrayList<Integer>();
 
 
 
@@ -120,6 +128,8 @@ public class StatsFragment extends Fragment implements View.OnClickListener, Log
         //My workouts list UI items initialization
         numWorkoutsRecyclerView = view.findViewById(R.id.stats_num_workouts_recycler);
         numWorkoutsTextView = view.findViewById(R.id.stats_num_workouts_tv);
+        numSetsTextView = view.findViewById(R.id.stats_num_sets_tv);
+        weightTextView = view.findViewById(R.id.stats_weight_lifted_tv);
 
 
         numWorkoutsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -132,15 +142,106 @@ public class StatsFragment extends Fragment implements View.OnClickListener, Log
                         QuerySnapshot querySnapshot = task.getResult();
                         if (querySnapshot != null) {
                             int documentCount = querySnapshot.size();
-                            System.out.println("Number of documents: " + documentCount);
                             numWorkouts = documentCount;
                             numWorkoutsTextView.setText(String.valueOf(numWorkouts));
-                        } else {
-                            System.out.println("No documents found.");
-                        }
 
+                            // Initialize numSets
+                            numSets = 0;
+                            weight = 0;
+                            for (DocumentSnapshot document : querySnapshot) {
+                                db.collection("users").document(user.getUid()).collection("loggedWorkouts")
+                                        .document(document.getId()).collection("exercises").get()
+                                        .addOnCompleteListener(task2 -> {
+                                            if (task2.isSuccessful()) {
+                                                QuerySnapshot querySnapshot2 = task2.getResult();
+                                                if (querySnapshot2 != null) {
+                                                    for (DocumentSnapshot document2 : querySnapshot2) {
+                                                        if (document2.get("sets") != null) {
+                                                            int tempSets = Math.toIntExact((long) document2.get("sets"));
+                                                            numSets += tempSets;
+                                                            int tempWeight = 0;
+                                                            for (int i = 1; i <= tempSets; i++) {
+                                                                switch (i) {
+                                                                    case 1:
+                                                                        if (document2.get("oneWeight") != null) {
+                                                                            if (document2.get("oneReps") != null){
+                                                                                tempWeight = Integer.parseInt(document2.get("oneWeight").toString()) * Integer.parseInt(document2.get("oneReps").toString());
+                                                                                Log.d("Weight", String.valueOf(tempWeight));
+                                                                                weightArray.add(tempWeight);
+                                                                                weight += tempWeight;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    case 2:
+                                                                        if (document2.get("twoWeight") != null) {
+                                                                            if (document2.get("twoReps") != null){
+                                                                                tempWeight = Integer.parseInt(document2.get("twoWeight").toString()) * Integer.parseInt(document2.get("twoReps").toString());
+                                                                                Log.d("Weight", String.valueOf(tempWeight));
+                                                                                weightArray.add(tempWeight);
+                                                                                weight += tempWeight;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    case 3:
+                                                                        if (document2.get("threeWeight") != null) {
+                                                                            if (document2.get("threeReps") != null){
+                                                                                tempWeight = Integer.parseInt(document2.get("threeWeight").toString()) * Integer.parseInt(document2.get("threeReps").toString());
+                                                                                Log.d("Weight", String.valueOf(tempWeight));
+                                                                                weightArray.add(tempWeight);
+                                                                                weight += tempWeight;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    case 4:
+                                                                        if (document2.get("fourWeight") != null) {
+                                                                            if (document2.get("fourReps") != null){
+                                                                                tempWeight = Integer.parseInt(document2.get("fourWeight").toString()) * Integer.parseInt(document2.get("fourReps").toString());
+                                                                                Log.d("Weight", String.valueOf(tempWeight));
+                                                                                weightArray.add(tempWeight);
+                                                                                weight += tempWeight;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    case 5:
+                                                                        if (document2.get("fiveWeight") != null) {
+                                                                            if (document2.get("fiveReps") != null){
+                                                                                tempWeight = Integer.parseInt(document2.get("fiveWeight").toString()) * Integer.parseInt(document2.get("fiveReps").toString());
+                                                                                Log.d("Weight", String.valueOf(tempWeight));
+                                                                                weightArray.add(tempWeight);
+                                                                                weight += tempWeight;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                    case 6:
+                                                                        if (document2.get("sixWeight") != null) {
+                                                                            if (document2.get("sixReps") != null){
+                                                                                tempWeight = Integer.parseInt(document2.get("sixWeight").toString()) * Integer.parseInt(document2.get("sixReps").toString());
+                                                                                Log.d("Weight", String.valueOf(tempWeight));
+                                                                                weightArray.add(tempWeight);
+                                                                                weight += tempWeight;
+                                                                            }
+                                                                        }
+                                                                        break;
+                                                                }
+
+                                                            }
+                                                        }
+                                                    }
+                                                    // Update the TextView after each sub-collection query
+                                                    numSetsTextView.setText(String.valueOf(numSets));
+
+                                                }
+                                                weightTextView.setText(String.valueOf(weight));
+                                            } else {
+                                                Log.e("Firestore", "Error fetching exercises", task2.getException());
+                                            }
+                                        });
+                            }
+                        } else {
+                            Log.w("Firestore", "No logged workouts found.");
+                        }
                     } else {
-                        System.err.println("Error getting documents: " + task.getException());
+                        Log.e("Firestore", "Error fetching logged workouts", task.getException());
                     }
                 });
 
@@ -158,6 +259,12 @@ public class StatsFragment extends Fragment implements View.OnClickListener, Log
         if (mQueryWorkouts == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
         }
+        int tempArrayWeight = 0;
+        for (int i = 0; i < weightArray.size(); i++) {
+            tempArrayWeight += weightArray.get(i);
+        }
+        String setWeight = String.valueOf(tempArrayWeight);
+        weightTextView.setText(setWeight);
 
         mAdapterWorkouts = new LogWorkoutNameAdapter(mQueryWorkouts, this) {
 

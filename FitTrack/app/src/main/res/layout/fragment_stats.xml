@@ -82,12 +82,12 @@
         </TextView>
 
         <TextView
-            android:id="@+id/profile_num_sets_tv"
+            android:id="@+id/stats_num_sets_tv"
             android:layout_width="80dp"
             android:layout_height="60dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/stats_num_workouts_recycler"
-            app:layout_constraintEnd_toStartOf="@+id/profile_weight_lifted_tv"
+            app:layout_constraintEnd_toStartOf="@+id/stats_weight_lifted_tv"
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_button_background"
             android:text="XX"
@@ -103,9 +103,9 @@
             android:layout_width="80dp"
             android:layout_height="20dp"
             android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@+id/profile_num_sets_tv"
-            app:layout_constraintStart_toStartOf="@+id/profile_num_sets_tv"
-            app:layout_constraintEnd_toEndOf="@+id/profile_num_sets_tv"
+            app:layout_constraintTop_toBottomOf="@+id/stats_num_sets_tv"
+            app:layout_constraintStart_toStartOf="@+id/stats_num_sets_tv"
+            app:layout_constraintEnd_toEndOf="@+id/stats_num_sets_tv"
             android:background="@drawable/button_background"
             android:text="# Sets"
             android:textColor="@color/light_text"
@@ -115,7 +115,7 @@
         </TextView>
 
         <TextView
-            android:id="@+id/profile_weight_lifted_tv"
+            android:id="@+id/stats_weight_lifted_tv"
             android:layout_width="80dp"
             android:layout_height="60dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -125,9 +125,8 @@
             android:background="@drawable/rounded_button_background"
             android:text="XX"
             android:textColor="@color/primary"
-            android:textStyle="bold"
             android:gravity="center"
-            android:textSize="30sp"
+            android:textSize="18sp"
             android:textAlignment="gravity">
         </TextView>
 
@@ -136,9 +135,9 @@
             android:layout_width="84dp"
             android:layout_height="20dp"
             android:layout_marginTop="4dp"
-            app:layout_constraintTop_toBottomOf="@+id/profile_weight_lifted_tv"
-            app:layout_constraintStart_toStartOf="@+id/profile_weight_lifted_tv"
-            app:layout_constraintEnd_toEndOf="@+id/profile_weight_lifted_tv"
+            app:layout_constraintTop_toBottomOf="@+id/stats_weight_lifted_tv"
+            app:layout_constraintStart_toStartOf="@+id/stats_weight_lifted_tv"
+            app:layout_constraintEnd_toEndOf="@+id/stats_weight_lifted_tv"
             android:background="@drawable/button_background"
             android:text="Weight Lifted"
             android:textColor="@color/light_text"
