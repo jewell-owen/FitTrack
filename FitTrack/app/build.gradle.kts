@@ -62,13 +62,19 @@ android {
 }
 
 dependencies {
+
+    implementation("com.jjoe64.graphview:4.2.2") {
+        exclude(group = "com.example", module = "common-utils")
+    }
+
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-    implementation (libs.jackson.databind)
+    implementation(libs.jackson.databind)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
