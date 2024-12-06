@@ -21,6 +21,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link WorkoutFragment#newInstance} factory method to
@@ -43,12 +47,16 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
     private Button myWorkoutsButton;
     private Button plannedWorkoutButton;
     private Button workoutHistoryButton;
+    private TextView plannedWorkoutTextView;
 
     // Place holder for selectedWorkout
-    private String plannedWorkout = null;
+    private String plannedWorkoutName = "None";
+    private String plannedWorkoutID = "None";
 
     private String mParam1;
     private String mParam2;
+
+    private String date = "";
 
 
     public WorkoutFragment() {
@@ -102,6 +110,46 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
         plannedWorkoutButton = view.findViewById(R.id.workout_add_plan_btn);
         myWorkoutsButton = view.findViewById(R.id.workout_my_workouts_btn);
         workoutHistoryButton = view.findViewById(R.id.workout_logged_workouts_btn);
+        plannedWorkoutTextView = view.findViewById(R.id.workout_today_plan_workout_tv);
+
+        // Inside onCreateView or other initialization code
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()); // Match the format used in Firestore
+        date = sdf.format(calendar.getTime());
+
+        // Fetch the planned workout
+        db.collection("users")
+                .document(user.getUid())
+                .collection("plans")
+                .document(date) // Using the formatted date as the document ID
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // If the document exists, get the workout name and assign it to the TextView
+                        String workoutName = documentSnapshot.getString("workoutName");
+                        if (workoutName != null) {
+                            plannedWorkoutTextView.setText(workoutName);
+                            plannedWorkoutName = workoutName;
+                            plannedWorkoutID = documentSnapshot.getString("workoutId");
+                        } else {
+                            plannedWorkoutTextView.setText("None");
+                            plannedWorkoutName = "None";
+                            plannedWorkoutID  = "None";
+                        }
+                    } else {
+                        // If the document does not exist, set the TextView to "None"
+                        plannedWorkoutTextView.setText("None");
+                        plannedWorkoutName = "None";
+                        plannedWorkoutID  = "None";
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error fetching planned workout", e);
+                    // Handle failure by setting a fallback value
+                    plannedWorkoutTextView.setText("None");
+                    plannedWorkoutName = "None";
+                    plannedWorkoutID  = "None";
+                });
 
 
         // Where the timer implementation goes
@@ -109,6 +157,10 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 ActiveWorkoutFragment activeWorkout = new ActiveWorkoutFragment();
+                Bundle args = new Bundle();
+                args.putString("workoutId", plannedWorkoutID);
+                args.putString("workoutName", plannedWorkoutName);
+                activeWorkout.setArguments(args);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, activeWorkout)
@@ -121,7 +173,12 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
         plannedWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                PlanWorkoutsFragment planWorkouts = new PlanWorkoutsFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, planWorkouts)
+                        .addToBackStack(null)
+                        .commit();
             }
 
         });
