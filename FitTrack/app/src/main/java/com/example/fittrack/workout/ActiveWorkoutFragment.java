@@ -135,7 +135,31 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        viewModel = new ViewModelProvider(this).get(TimerModel.class);
+
+        // Observe remaining time
+        viewModel.getRemainingTime().observe(this, time -> {
+            if (time != null) {
+                restTimerTextView.setText(formatTime(time));
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (clockRunning) {
+            viewModel.start(); // Resume timer if it was running
+            updateStartStopButton(true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (clockRunning) {
+            viewModel.stop(); // Pause timer when fragment goes inactive
+            updateStartStopButton(false);
         }
     }
 
@@ -162,6 +186,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         restTimerTextView = view.findViewById(R.id.workout_rest_timer_tv);
 
         viewModel = new ViewModelProvider(this).get(TimerModel.class);
+
 
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
@@ -277,33 +302,19 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
         }
 
-        // Starts the timer when pressing the "Start" button
-        startStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!clockRunning){
-                    viewModel.start(restTimerTextView);
-                    clockRunning = true;
-                    startStopButton.setBackgroundColor(getResources().getColor(R.color.redButton));
-                    startStopButton.setText(getString(R.string.stop));
-                }
-                else {
-                    viewModel.stop();
-                    clockRunning = false;
-                    startStopButton.setBackgroundColor(getResources().getColor(R.color.greenButton));
-                    startStopButton.setText(getString(R.string.start));
-                }
 
-            }
-        });
 
         // Resets the timer when pressing the "Reset" button
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                seconds = 120;
-                viewModel.reset(restTimerTextView);
+        resetButton.setOnClickListener(v -> viewModel.reset());
+        startStopButton.setOnClickListener(v -> {
+            if (!clockRunning) {
+                viewModel.start();
+                clockRunning = true;
+            } else {
+                viewModel.stop();
+                clockRunning = false;
             }
+            updateStartStopButton(clockRunning);
         });
 
 
@@ -407,6 +418,22 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         });
 
         return view;
+    }
+
+    private void updateStartStopButton(boolean isRunning) {
+        if (isRunning) {
+            startStopButton.setBackgroundColor(getResources().getColor(R.color.redButton));
+            startStopButton.setText(getString(R.string.stop));
+        } else {
+            startStopButton.setBackgroundColor(getResources().getColor(R.color.greenButton));
+            startStopButton.setText(getString(R.string.start));
+        }
+    }
+
+    private String formatTime(long millis) {
+        long minutes = (millis / 60000);
+        long seconds = (millis % 60000) / 1000;
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 
     private void initSavedWorkoutExercisesRecyclerView() {

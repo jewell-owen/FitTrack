@@ -1,69 +1,59 @@
 package com.example.fittrack.model;
 
 import android.os.Handler;
-import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.Locale;
-
 public class TimerModel extends ViewModel {
-    private long remainingTime = 120000L; // Start with 2 minutes in milliseconds
+    private MutableLiveData<Long> remainingTimeLiveData = new MutableLiveData<>(120000L); // Default 2 minutes
     private long endTime = 0L;
     private boolean clockRunning = false;
 
-    public void start(TextView tv) {
+    public LiveData<Long> getRemainingTime() {
+        return remainingTimeLiveData;
+    }
+
+    public void start() {
         if (!clockRunning) {
             clockRunning = true;
-            endTime = System.currentTimeMillis() + remainingTime; // Set the end time
-            runTimer(tv);
+            endTime = System.currentTimeMillis() + getRemainingTimeInMillis();
+            updateTime();
         }
     }
 
     public void stop() {
         if (clockRunning) {
             clockRunning = false;
-            remainingTime = endTime - System.currentTimeMillis(); // Save remaining time
+            remainingTimeLiveData.setValue(endTime - System.currentTimeMillis());
         }
     }
 
-    public void reset(TextView tv) {
+    public void reset() {
         clockRunning = false;
-        remainingTime = 120000L; // Reset to 2 minutes
-        tv.setText("02:00");
+        remainingTimeLiveData.setValue(120000L); // Reset to 2 minutes
     }
 
-    private void runTimer(TextView tvStopwatchTime) {
-        final Handler handler = new Handler();
+    private void updateTime() {
+        if (clockRunning) {
+            long currentTime = System.currentTimeMillis();
+            long remainingTime = endTime - currentTime;
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (clockRunning) {
-                    long currentTime = System.currentTimeMillis();
-                    remainingTime = endTime - currentTime;
-
-                    if (remainingTime <= 0) {
-                        clockRunning = false;
-                        remainingTime = 0; // Ensure timer doesn't go negative
-                    }
-
-                    long minutes = (remainingTime / 60000);
-                    long seconds = (remainingTime % 60000) / 1000;
-
-                    String time = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-
-                    tvStopwatchTime.setText(time);
-
-                    if (clockRunning) {
-                        handler.postDelayed(this, 100); // Update every 100 milliseconds
-                    }
-                }
+            if (remainingTime <= 0) {
+                clockRunning = false;
+                remainingTime = 0; // Ensure no negative values
             }
-        });
+
+            remainingTimeLiveData.postValue(remainingTime);
+
+            if (clockRunning) {
+                new Handler().postDelayed(this::updateTime, 1000); // Update every second
+            }
+        }
     }
 
-    public long getRemainingTime() {
-        return remainingTime;
+    private long getRemainingTimeInMillis() {
+        return remainingTimeLiveData.getValue() != null ? remainingTimeLiveData.getValue() : 120000L;
     }
 }
