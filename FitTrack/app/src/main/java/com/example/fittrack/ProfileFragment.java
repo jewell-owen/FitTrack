@@ -18,6 +18,8 @@ import com.example.fittrack.adapter.FavoriteExerciseAdapter;
 import com.example.fittrack.workout.SelectCustomExerciseFragment;
 import com.example.fittrack.workout.SelectLibraryExerciseFragment;
 import com.example.fittrack.workout.ViewExerciseFragment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -40,6 +42,7 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private TextView profileUserEmailTv, profileFriendIdTv, profileGoalTv;
     private EditText profileGoalEt;
     private ImageButton editGoalBtn, saveGoalBtn;
+    private ImageButton deleteProfileBtn;
     private Button favoriteCustomExerciseBtn, favoriteLibraryExerciseBtn;
     private RecyclerView myFavoriteExerciseRecyclerView;
 
@@ -73,12 +76,15 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         favoriteLibraryExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_library_btn);
         favoriteCustomExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_custom_btn);
         myFavoriteExerciseRecyclerView = view.findViewById(R.id.profile_favorite_exercises_recycler);
+        deleteProfileBtn = view.findViewById(R.id.profile_delete_btn);
 
         logoutButton.setOnClickListener(v -> handleLogout());
         editGoalBtn.setOnClickListener(v -> enableGoalEditing());
         saveGoalBtn.setOnClickListener(v -> saveGoalToFirestore());
         favoriteLibraryExerciseBtn.setOnClickListener(v -> openLibraryExerciseSelector());
         favoriteCustomExerciseBtn.setOnClickListener(v -> openCustomExerciseSelector());
+
+        deleteProfileBtn.setOnClickListener(v -> deleteProfile());
 
         db.collection("users").document(user.getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -193,6 +199,55 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         if (getActivity() != null) {
             getActivity().finish();
         }
+    }
+
+    private void deleteProfile() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Log.e(TAG, "No authenticated user found.");
+            return;
+        }
+
+        // Reference to the Firestore user document
+        DocumentReference userRef = db.collection("users")
+                .document(currentUser.getUid());
+
+        // Delete the Firestore document
+        userRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "User document successfully deleted from Firestore.");
+
+                        // Delete the user account from Firebase Authentication
+                        currentUser.delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "User account successfully deleted.");
+
+                                        // Redirect to LoginActivity
+                                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                                        startActivity(intent);
+                                        if (getActivity() != null) {
+                                            getActivity().finish();
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "Error deleting user account", e);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error deleting user document from Firestore", e);
+                    }
+                });
     }
 
     private void openLibraryExerciseSelector() {

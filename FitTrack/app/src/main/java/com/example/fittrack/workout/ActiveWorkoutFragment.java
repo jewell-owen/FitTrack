@@ -365,8 +365,27 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //@To-Do implement logic to delete logic from firebase
-                getActivity().getSupportFragmentManager().popBackStack();
+                DocumentReference workoutRef = db.collection("users")
+                        .document(user.getUid())
+                        .collection("loggedWorkouts")
+                        .document(id);
+
+                // Delete the document from Firestore
+                workoutRef.delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Close the fragment/activity upon successful deletion
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Log or handle the failure
+                                Log.e("FirestoreDelete", "Error deleting document", e);
+                            }
+                        });
             }
         });
 
