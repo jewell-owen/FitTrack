@@ -1,4 +1,4 @@
-package com.example.fittrack;
+package com.example.fittrack.nutrition;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+
+import com.example.fittrack.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

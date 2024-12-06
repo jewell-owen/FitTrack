@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.fittrack.nutrition.NutritionFragment;
 import com.example.fittrack.viewmodel.MainActivityViewModel;
 import com.example.fittrack.workout.WorkoutFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
