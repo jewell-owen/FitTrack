@@ -63,9 +63,7 @@ android {
 
 dependencies {
 
-    implementation("com.jjoe64.graphview:4.2.2") {
-        exclude(group = "com.example", module = "common-utils")
-    }
+    implementation("com.jjoe64:graphview:4.2.2")
 
 
     implementation(libs.appcompat)

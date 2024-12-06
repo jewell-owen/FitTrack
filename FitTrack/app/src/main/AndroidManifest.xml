@@ -35,6 +35,14 @@
             android:name=".StepCounter"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".StepGraph"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".WeightGraph"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>

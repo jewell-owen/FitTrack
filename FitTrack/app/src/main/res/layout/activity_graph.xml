@@ -17,6 +17,23 @@
             android:layout_width="379dp"
             android:layout_height="335dp" />
 
+        <EditText
+            android:id="@+id/steps"
+            android:layout_width="301dp"
+            android:layout_height="73dp"
+            android:autofillHints="Weight"
+            android:ems="10"
+            android:hint="Steps"
+            android:inputType="numberDecimal"
+            android:textSize="34sp" />
+
+        <Button
+            android:id="@+id/b_addSteps"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:onClick="onButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Steps" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
