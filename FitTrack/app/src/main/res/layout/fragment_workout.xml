@@ -112,34 +112,6 @@ tools:context=".workout.WorkoutFragment">
         app:layout_constraintTop_toBottomOf="@id/workout_add_plan_btn">
     </Button>
 
-    <ImageButton
-        android:id="@+id/active_workout_finish_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/button_background"
-        android:src="@drawable/baseline_check_24"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/workout_name_tv"
-        app:layout_constraintEnd_toEndOf="@id/workout_name_tv"
-        app:layout_constraintTop_toTopOf="@id/workout_name_tv">
-    </ImageButton>
-
-    <ImageButton
-        android:id="@+id/active_workout_cancel_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"
-        android:background="@drawable/button_background"
-        android:src="@drawable/baseline_delete_24"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/workout_name_tv"
-        app:layout_constraintStart_toStartOf="@id/workout_name_tv"
-        app:layout_constraintTop_toTopOf="@id/workout_name_tv">
-    </ImageButton>
-
 
 
 

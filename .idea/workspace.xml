@@ -5,7 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a81d9232-db89-4b9c-b0c7-164115d0ae5b" name="Changes" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/FitTrack/app/src/main/java/com/example/fittrack/workout/ActiveWorkoutFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/app/src/main/java/com/example/fittrack/workout/ActiveWorkoutFragment.java" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FitTrack/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FitTrack/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FitTrack/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FitTrack/app/src/main/java/com/example/fittrack/StepCounter.java" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/app/src/main/java/com/example/fittrack/StepCounter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FitTrack/app/src/main/res/drawable/circular_progress_bar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/app/src/main/res/drawable/circular_progress_bar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FitTrack/app/src/main/res/drawable/circular_shape.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/app/src/main/res/drawable/circular_shape.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FitTrack/app/src/main/res/layout/step_counter.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FitTrack/app/src/main/res/layout/step_counter.xml" afterDir="false" />
+>>>>>>> 61cfc1ea2548a5056053f05d0fcd306d926436ef
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +59,11 @@
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
+<<<<<<< HEAD
     "last_opened_file_path": "C:/Users/Banks/CPRE388/new_Fittrack/FitTrack",
+=======
+    "last_opened_file_path": "C:/Users/Brock/FitTrack/FitTrack",
+>>>>>>> 61cfc1ea2548a5056053f05d0fcd306d926436ef
     "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>

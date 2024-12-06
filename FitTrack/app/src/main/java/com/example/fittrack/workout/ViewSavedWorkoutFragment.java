@@ -204,6 +204,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
                 SelectCustomExerciseFragment customExercise = new SelectCustomExerciseFragment();
                 Bundle args = new Bundle();
                 args.putString("id", id);
+                args.putString("workoutType", "savedWorkout");
                 customExercise.setArguments(args);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()

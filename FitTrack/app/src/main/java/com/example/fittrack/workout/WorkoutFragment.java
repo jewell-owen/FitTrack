@@ -50,8 +50,8 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
     private TextView plannedWorkoutTextView;
 
     // Place holder for selectedWorkout
-    private String plannedWorkoutName = "";
-    private String plannedWorkoutID = "";
+    private String plannedWorkoutName = "None";
+    private String plannedWorkoutID = "None";
 
     private String mParam1;
     private String mParam2;
@@ -157,6 +157,10 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 ActiveWorkoutFragment activeWorkout = new ActiveWorkoutFragment();
+                Bundle args = new Bundle();
+                args.putString("workoutId", plannedWorkoutID);
+                args.putString("workoutName", plannedWorkoutName);
+                activeWorkout.setArguments(args);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.flFragment, activeWorkout)
