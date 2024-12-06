@@ -195,6 +195,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                                 for (DocumentSnapshot document : queryDocumentSnapshots) {
                                                     Map<String, Object> exerciseData = document.getData();
+                                                    exerciseData.put("sets", 1);
 
                                                     db.collection("users")
                                                             .document(user.getUid())
