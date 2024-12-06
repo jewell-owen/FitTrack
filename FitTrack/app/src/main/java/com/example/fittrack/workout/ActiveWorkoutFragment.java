@@ -264,15 +264,19 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                             }
                         }
                     }
-                    timerMin *= 60;
-                    timerHour *= 3600;
-                    seconds += timerMin;
-                    seconds += timerHour;
-                    Log.d("tagSeconds", "sec: " + seconds);
-                    seconds *= 1000;
-                    // This boolean will make the timer count backwards
-                    countdown = true;
-                    timerRunning();
+                    if (!countdown) {
+
+
+                        timerMin *= 60;
+                        timerHour *= 3600;
+                        seconds += timerMin;
+                        seconds += timerHour;
+                        Log.d("tagSeconds", "sec: " + seconds);
+                        seconds *= 1000;
+                        // This boolean will make the timer count backwards
+                        countdown = true;
+                        timerRunning();
+                    }
                 }
             });
         }
