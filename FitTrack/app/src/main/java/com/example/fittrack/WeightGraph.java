@@ -32,13 +32,6 @@ public class WeightGraph extends AppCompatActivity {
         graph.setTitle("Weight Graph");
 
 
-//        for (int i = 1; i < 9; i++) {
-//            PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(new DataPoint[]{
-//                    new DataPoint(i, random.nextInt(2) + 135),
-//            });
-//            graph.addSeries(series);
-//        }
-//        graph.addSeries(series);
     }
 
     public void onButton(View view) {
@@ -57,7 +50,4 @@ public class WeightGraph extends AppCompatActivity {
         graph.addSeries(series);
         count ++;
     }
-
-
-
 }

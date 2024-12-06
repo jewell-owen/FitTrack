@@ -22,7 +22,7 @@ public class StepCounter extends AppCompatActivity {
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
-    private int stepCount = 0;
+    private int stepCount = 6000;
     private boolean isStepCounting = false;
     private TextView stepCountTextView;
     private ProgressBar progressBar;
@@ -52,14 +52,21 @@ public class StepCounter extends AppCompatActivity {
 
         sensorManager.registerListener(sensorListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
+        progressText.setText(Integer.toString(stepCount));
+        progressBar.setProgress(stepCount/100);
     }
 
     private final SensorEventListener sensorListener = new SensorEventListener() {
 
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
+            Handler handler = new Handler();
 
-
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    // yourMethod();
+//                }
+//            }, 1000);   //1 seconds
             float[] values = sensorEvent.values;
             float x = values[0];
             float y = values[1];
@@ -67,12 +74,12 @@ public class StepCounter extends AppCompatActivity {
             double acceleration = Math.sqrt(x * x + y * y + z * z);
 
 
-            if (sensorEvent.values[0] >= 1 ) {
+            if (sensorEvent.values[0] > 1 ) {
                 isStepCounting = true;
                 stepCount++;
                 stepCountTextView.setText("Step Count: " + stepCount);
 
-                progressText.setText("" + i);
+                progressText.setText(Integer.toString(i));
                 progressBar.setProgress(i);
                 i++;
             }
