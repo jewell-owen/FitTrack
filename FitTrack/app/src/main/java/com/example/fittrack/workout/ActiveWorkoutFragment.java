@@ -13,11 +13,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fittrack.R;
 import com.example.fittrack.adapter.LogWorkoutAdapter;
+import com.example.fittrack.model.TimerModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,6 +87,10 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     int position, totalSec, timerMin, timerHour;
 
     private String date = "";
+
+    private TimerModel viewModel;
+    private boolean clockRunning = false;
+    private int secondsReal;
 
     public ActiveWorkoutFragment() {
         // Required empty public constructor
@@ -154,6 +160,8 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         timerTextView = view.findViewById(R.id.active_workout_timer_tv);
         startStopButton = view.findViewById(R.id.btnStartStop);
         restTimerTextView = view.findViewById(R.id.workout_rest_timer_tv);
+
+        viewModel = new ViewModelProvider(this).get(TimerModel.class);
 
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
@@ -273,23 +281,19 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         startStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Makes sure the timer resets if the user presses start while the timer is counting down
-                if (countdown){
-                    seconds = 0;
+                if (!clockRunning){
+                    viewModel.start(restTimerTextView);
+                    clockRunning = true;
+                    startStopButton.setBackgroundColor(getResources().getColor(R.color.redButton));
+                    startStopButton.setText(getString(R.string.stop));
                 }
-                // If timer isn't already running, this is to start it
-                if (!running){
-                    startStopButton.setText(R.string.stop);
-                    running = true;
-                    wasRunning = false;
-                    countdown = false;
+                else {
+                    viewModel.stop();
+                    clockRunning = false;
+                    startStopButton.setBackgroundColor(getResources().getColor(R.color.greenButton));
+                    startStopButton.setText(getString(R.string.start));
                 }
-                else{
-                    startStopButton.setText(R.string.start);
-                    running = false;
-                    countdown = false;
-                }
-                timerRunning();
+
             }
         });
 
@@ -297,69 +301,11 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                running = false;
-                wasRunning = true;
-                countdown = false;
-                seconds = 0;
-                startStopButton.setText(R.string.start);
-                timerRunning();
+                seconds = 120;
+                viewModel.reset(restTimerTextView);
             }
         });
 
-        // Starts a countdown based on the time in the rest timer
-        restTimerTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                running = false;
-                wasRunning = false;
-
-                // get the time as a string
-                String rest_time = restTimerTextView.getText().toString();
-                rest_time = rest_time.substring(0, 4);
-                subRest_time = rest_time.replaceAll(":", "");
-                //Log.d("TAGoh", "TIME: " + subRest_time);
-
-                // Convert that to an int
-                int myNum = Integer.parseInt(subRest_time);
-//                    // Add another second so the timer looks neater
-//                    myNum += 1;
-
-                seconds = myNum % 100;
-
-                // Converting to seconds
-                if (String.valueOf(myNum).length() >= 3) {
-                    position = 3;
-                    totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                    timerMin += totalSec;
-                    //Log.d("tagMineTwo", "" + timerMin);
-                    if (String.valueOf(myNum).length() >= 4) {
-                        position = 4;
-                        totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                        timerMin += totalSec * 10;
-                        //Log.d("tagMinOne", "" + timerMin);
-                        if (String.valueOf(myNum).length() >= 5) {
-                            position = 5;
-                            totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                            timerHour += totalSec;
-                            if (String.valueOf(myNum).length() >= 6) {
-                                position = 6;
-                                totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                                timerHour += totalSec * 10;
-                            }
-                        }
-                    }
-                }
-                timerMin *= 60;
-                timerHour *= 3600;
-                seconds += timerMin;
-                seconds += timerHour;
-                Log.d("tagSeconds", "sec: " + seconds);
-                seconds *= 1000;
-                // This boolean will make the timer count backwards
-                countdown = true;
-                timerRunning();
-            }
-        });
 
 
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
