@@ -42,9 +42,12 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private TextView profileUserEmailTv, profileFriendIdTv, profileGoalTv;
     private EditText profileGoalEt;
     private ImageButton editGoalBtn, saveGoalBtn;
+    private ImageButton editWeightBtn, saveWeightBtn;
     private ImageButton deleteProfileBtn;
     private Button favoriteCustomExerciseBtn, favoriteLibraryExerciseBtn;
     private RecyclerView myFavoriteExerciseRecyclerView;
+    private TextView profileWeightTv;
+    private EditText profileWeightEt;
 
     private Query mQueryExercises;
     private FavoriteExerciseAdapter mAdapterExercises;
@@ -77,12 +80,18 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         favoriteCustomExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_custom_btn);
         myFavoriteExerciseRecyclerView = view.findViewById(R.id.profile_favorite_exercises_recycler);
         deleteProfileBtn = view.findViewById(R.id.profile_delete_btn);
+        editWeightBtn = view.findViewById(R.id.profile_weight_edit_btn);
+        saveWeightBtn = view.findViewById(R.id.profile_weight_save_btn);
+        profileWeightTv = view.findViewById(R.id.profile_weight_tv);
+        profileWeightEt = view.findViewById(R.id.profile_weight_et);
 
         logoutButton.setOnClickListener(v -> handleLogout());
         editGoalBtn.setOnClickListener(v -> enableGoalEditing());
         saveGoalBtn.setOnClickListener(v -> saveGoalToFirestore());
         favoriteLibraryExerciseBtn.setOnClickListener(v -> openLibraryExerciseSelector());
         favoriteCustomExerciseBtn.setOnClickListener(v -> openCustomExerciseSelector());
+        editWeightBtn.setOnClickListener(v -> enableWeightEditing());
+        saveWeightBtn.setOnClickListener(v -> saveWeightToFirestore());
 
         deleteProfileBtn.setOnClickListener(v -> deleteProfile());
 
@@ -91,21 +100,30 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                     if (documentSnapshot.exists()) {
                         // If the document exists, get the workout name and assign it to the TextView
                         String goal = documentSnapshot.getString("goal");
+                        String weight = documentSnapshot.getString("weight");
                         if (goal != null) {
                             profileGoalTv.setText(goal);
 
-                        } else {
+                        }
+                        else {
                             profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
+                        }
+                        if (weight != null) {
+                            profileWeightTv.setText(weight);
+                        } else {
+                            profileWeightTv.setText("Weight");
                         }
                     } else {
                         // If the document does not exist, set the TextView to "None"
                         profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
+                        profileWeightTv.setText("Weight");
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error fetching planned workout", e);
                     // Handle failure by setting a fallback value
                     profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
+                    profileWeightTv.setText("Weight");
                 });
 
 
@@ -191,6 +209,30 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                     .addOnFailureListener(e -> Log.e(TAG, "Error updating goal", e));
         }
     }
+
+    private void enableWeightEditing() {
+        saveWeightBtn.setVisibility(View.VISIBLE);
+        editWeightBtn.setVisibility(View.GONE);
+        profileWeightEt.setVisibility(View.VISIBLE);
+        profileWeightTv.setVisibility(View.INVISIBLE);
+    }
+
+    private void saveWeightToFirestore() {
+        String newWeight = profileWeightEt.getText().toString();
+        if (user != null) {
+            DocumentReference userRef = db.collection("users").document(user.getUid());
+            userRef.update("weight", newWeight)
+                    .addOnSuccessListener(aVoid -> {
+                        profileWeightTv.setText(newWeight);
+                        profileWeightTv.setVisibility(View.VISIBLE);
+                        profileWeightEt.setVisibility(View.INVISIBLE);
+                        editWeightBtn.setVisibility(View.VISIBLE);
+                        saveWeightBtn.setVisibility(View.GONE);
+                    })
+                    .addOnFailureListener(e -> Log.e(TAG, "Error updating weight", e));
+        }
+    }
+
 
     private void handleLogout() {
         FirebaseAuth.getInstance().signOut();
