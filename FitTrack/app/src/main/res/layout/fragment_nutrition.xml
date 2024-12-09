@@ -152,7 +152,7 @@
         app:layout_constraintTop_toTopOf="@+id/fragment_container">
 
                 <TextView
-                    android:id="@+id/Breakfast_card_title"
+                    android:id="@+id/breakfast_card_title"
                     android:layout_width="100dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="20dp"
@@ -182,11 +182,11 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.956"
-                    app:layout_constraintStart_toEndOf="@+id/Breakfast_card_title"
+                    app:layout_constraintStart_toEndOf="@+id/breakfast_card_title"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/Breakfast_card_add_btn"
+                    android:id="@+id/breakfast_card_add_btn"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -204,13 +204,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Breakfast_card_title">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Apple\nBagel\nCream cheese\n">
-            </TextView>
+            app:layout_constraintTop_toBottomOf="@+id/breakfast_card_title">
 
             <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
             <!--                android:layout_width="match_parent"-->
@@ -442,11 +436,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/lunch_card_title">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bread\nCheese\nLettuce\nMato\nTurkey\nPears\nChips">
-        </TextView>
+
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -518,11 +508,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dinner_card_title">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Shrimp Lo Mein\nSichuan Sauce\nSpring Roll\nCarrots">
-            </TextView>
+
         </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -586,20 +572,20 @@
             app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ScrollView
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/workout_saved_workout_exercises_recycler"
             android:layout_width="150dp"
             android:layout_height="140dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/other_card_title">
+            app:layout_constraintTop_toBottomOf="@+id/other_card_title"
+            tools:listitem="@layout/card_nutrition_item_text">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Chipsn\nProtein Bar">
-            </TextView>
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

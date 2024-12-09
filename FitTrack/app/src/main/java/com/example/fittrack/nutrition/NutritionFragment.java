@@ -1,17 +1,25 @@
 package com.example.fittrack.nutrition;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import com.example.fittrack.R;
+import com.example.fittrack.workout.ListSavedWorkoutsFragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,9 +30,17 @@ public class NutritionFragment extends Fragment {
 
 
     private Button dateBtn;
-    private ImageButton previousDayBtn, nextDayBtn;
+    private ImageButton previousDayBtn, nextDayBtn, breakfastAddBtn, lunchAddBtn, dinnerAddBtn, otherAddBtn;
 
     private Calendar selectedDate;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user = mAuth.getCurrentUser();
+
+    String nutrition = "";
+    private Spinner nutritionSpinner;
+
 
     public NutritionFragment() {
         // Required empty public constructor
@@ -49,6 +65,12 @@ public class NutritionFragment extends Fragment {
         dateBtn = rootView.findViewById(R.id.date_btn);
         previousDayBtn = rootView.findViewById(R.id.previous_day_btn);
         nextDayBtn = rootView.findViewById(R.id.next_day_btn);
+        breakfastAddBtn = rootView.findViewById(R.id.breakfast_card_add_btn);
+        lunchAddBtn = rootView.findViewById(R.id.lunch_card_add_btn);
+        dinnerAddBtn = rootView.findViewById(R.id.dinner_card_add_btn);
+        otherAddBtn = rootView.findViewById(R.id.other_card_add_btn);
+
+
 
         // Set the click listener for the date button
         dateBtn.setOnClickListener(v -> openDatePicker());
@@ -61,6 +83,57 @@ public class NutritionFragment extends Fragment {
 
         // Update the date button with the current date
         updateDateButton();
+
+        SelectLibraryNutritionFragment libraryNutrition = new SelectLibraryNutritionFragment();
+
+        breakfastAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectLibraryNutritionFragment libraryNutrition = new SelectLibraryNutritionFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, libraryNutrition)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        lunchAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectLibraryNutritionFragment libraryNutrition = new SelectLibraryNutritionFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, libraryNutrition)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        dinnerAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectLibraryNutritionFragment libraryNutrition = new SelectLibraryNutritionFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, libraryNutrition)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        otherAddBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SelectLibraryNutritionFragment libraryNutrition = new SelectLibraryNutritionFragment();
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.flFragment, libraryNutrition)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
 
         return rootView;
     }
@@ -86,6 +159,7 @@ public class NutritionFragment extends Fragment {
     private void changeDate(int dayOffset) {
         selectedDate.add(Calendar.DAY_OF_MONTH, dayOffset);
         updateDateButton();
+        fetchNutritionForSelectedDate();
     }
 
     // Method to update the date displayed on the button
@@ -102,5 +176,23 @@ public class NutritionFragment extends Fragment {
         } else {
             dateBtn.setText(formattedDate);
         }
+        fetchNutritionForSelectedDate();
+    }
+
+    private void fetchNutritionForSelectedDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String formattedDate = sdf.format(selectedDate.getTime());
+
+        DocumentReference planRef = db.collection("users")
+                .document(user.getUid())
+                .collection("plans")
+                .document(formattedDate);
+
+        planRef.get().addOnSuccessListener(documentSnapshot -> {
+
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Error fetching plan for date: " + formattedDate, e);
+
+        });
     }
 }
