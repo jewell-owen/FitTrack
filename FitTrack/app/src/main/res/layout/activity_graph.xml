@@ -34,6 +34,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Add Steps" />
+
+        <Button
+            android:id="@+id/b_weight"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onWeight"
+            android:text="View Weight Graph" />
+
+        <Button
+            android:id="@+id/b_menu"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onMenu"
+            android:text="Back to Main Menu" />
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

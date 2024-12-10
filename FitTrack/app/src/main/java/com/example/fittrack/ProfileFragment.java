@@ -39,7 +39,7 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private ImageButton logoutButton;
     private TextView profileUserEmailTv, profileFriendIdTv, profileGoalTv;
     private EditText profileGoalEt;
-    private ImageButton editGoalBtn, saveGoalBtn;
+    private ImageButton editGoalBtn, saveGoalBtn, btn_graph;
     private Button favoriteCustomExerciseBtn, favoriteLibraryExerciseBtn;
     private RecyclerView myFavoriteExerciseRecyclerView;
 
@@ -63,6 +63,7 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     }
 
     private void initializeUI(View view) {
+        btn_graph = view.findViewById(R.id.profile_graph_btn);
         logoutButton = view.findViewById(R.id.profile_logout_btn);
         profileUserEmailTv = view.findViewById(R.id.profile_email_address_tv);
         profileFriendIdTv = view.findViewById(R.id.profile_friend_id_tv);
@@ -74,6 +75,7 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         favoriteCustomExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_custom_btn);
         myFavoriteExerciseRecyclerView = view.findViewById(R.id.profile_favorite_exercises_recycler);
 
+        btn_graph.setOnClickListener(v -> onGraph(view));
         logoutButton.setOnClickListener(v -> handleLogout());
         editGoalBtn.setOnClickListener(v -> enableGoalEditing());
         saveGoalBtn.setOnClickListener(v -> saveGoalToFirestore());
@@ -194,6 +196,10 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
             getActivity().finish();
         }
     }
+    private void onGraph(View view) {
+        Intent intent = new Intent(getContext(), WeightGraph.class);
+        startActivity(intent);
+    }
 
     private void openLibraryExerciseSelector() {
         SelectLibraryExerciseFragment fragment = new SelectLibraryExerciseFragment();
@@ -235,4 +241,6 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                 .addToBackStack(null)
                 .commit();
     }
+
+
 }

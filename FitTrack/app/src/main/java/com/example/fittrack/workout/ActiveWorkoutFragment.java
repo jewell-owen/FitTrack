@@ -348,7 +348,6 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                             }
                         }
                     }
-<<<<<<< HEAD
                     if (!countdown) {
 
 
@@ -362,8 +361,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                         countdown = true;
                         timerRunning();
                     }
-=======
->>>>>>> 61cfc1ea2548a5056053f05d0fcd306d926436ef
+
                 }
                 timerMin *= 60;
                 timerHour *= 3600;

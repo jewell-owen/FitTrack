@@ -38,6 +38,22 @@
             android:layout_height="wrap_content"
             android:text="Add Weight" />
 
+        <Button
+            android:id="@+id/b_step"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onStep"
+            android:text="View Step Graph" />
+
+        <Button
+            android:id="@+id/b_menu"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onMenu"
+            android:text="Back to Main Menu" />
+
 
     </LinearLayout>
 
