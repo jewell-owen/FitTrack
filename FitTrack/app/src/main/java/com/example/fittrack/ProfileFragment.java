@@ -41,13 +41,10 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private ImageButton logoutButton;
     private TextView profileUserEmailTv, profileFriendIdTv, profileGoalTv;
     private EditText profileGoalEt;
-<<<<<<< HEAD
     private ImageButton editGoalBtn, saveGoalBtn, btn_graph;
-=======
-    private ImageButton editGoalBtn, saveGoalBtn;
+//    private ImageButton editGoalBtn, saveGoalBtn;
     private ImageButton editWeightBtn, saveWeightBtn;
     private ImageButton deleteProfileBtn;
->>>>>>> 9f23ebad7651ee1b27d2f5bf6a5b450193568b2b
     private Button favoriteCustomExerciseBtn, favoriteLibraryExerciseBtn;
     private RecyclerView myFavoriteExerciseRecyclerView;
     private TextView profileWeightTv;

@@ -57,11 +57,18 @@ public class WeightGraph extends AppCompatActivity {
         b_menu = (Button) findViewById(R.id.b_menu);
         weight = (EditText) findViewById(R.id.weight);
         graph.setTitle("Weight Graph");
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(10);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(300);
+
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setXAxisBoundsManual(true);
+
         graph.getViewport().setScalable(true);  // activate horizontal zooming and scrolling
         graph.getViewport().setScrollable(true);  // activate horizontal scrolling
-        graph.getViewport().setScalableY(true);  // activate horizontal and vertical zooming and scrolling
-        graph.getViewport().setScrollableY(true);  // activate vertical scrolling
-
+//        graph.getViewport().setScalableY(true);  // activate horizontal and vertical zooming and scrolling
+//        graph.getViewport().setScrollableY(true);  // activate vertical scrolling
 
         db.collection("users").document(user.getUid()).collection("weight")
                 .get()
@@ -73,7 +80,7 @@ public class WeightGraph extends AppCompatActivity {
                         if (!querySnapshot.isEmpty()) {
                             int documentCount = querySnapshot.size();
                             size = documentCount;
-                            count = size;
+//                            count = size;
 
                             for (DocumentSnapshot document : querySnapshot) {
                                 //get weight from database
@@ -83,12 +90,8 @@ public class WeightGraph extends AppCompatActivity {
                                 temp = (String) document.get("weight").toString();
                                 Log.d("TEST", temp );
                                 point = Integer.parseInt(temp);
-//                                point = 13;
 
-                                if (count == 9) {
-                                    count = 0;
-                                    graph.removeAllSeries();
-                                }
+
                                 PointsGraphSeries<DataPoint> series = new PointsGraphSeries<>(new DataPoint[]{
                                         new DataPoint(count, point),
                                 });

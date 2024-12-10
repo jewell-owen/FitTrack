@@ -317,7 +317,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
             updateStartStopButton(clockRunning);
         });
 
-<<<<<<< HEAD
+
         // Starts a countdown based on the time in the rest timer
         restTimerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -386,8 +386,6 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 timerRunning();
             }
         });
-=======
->>>>>>> 9f23ebad7651ee1b27d2f5bf6a5b450193568b2b
 
 
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
