@@ -13,11 +13,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fittrack.R;
 import com.example.fittrack.adapter.LogWorkoutAdapter;
+import com.example.fittrack.model.TimerModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,6 +88,10 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
     private String date = "";
 
+    private TimerModel viewModel;
+    private boolean clockRunning = false;
+    private int secondsReal;
+
     public ActiveWorkoutFragment() {
         // Required empty public constructor
     }
@@ -129,7 +135,31 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        viewModel = new ViewModelProvider(this).get(TimerModel.class);
+
+        // Observe remaining time
+        viewModel.getRemainingTime().observe(this, time -> {
+            if (time != null) {
+                restTimerTextView.setText(formatTime(time));
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (clockRunning) {
+            viewModel.start(); // Resume timer if it was running
+            updateStartStopButton(true);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (clockRunning) {
+            viewModel.stop(); // Pause timer when fragment goes inactive
+            updateStartStopButton(false);
         }
     }
 
@@ -154,6 +184,9 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         timerTextView = view.findViewById(R.id.active_workout_timer_tv);
         startStopButton = view.findViewById(R.id.btnStartStop);
         restTimerTextView = view.findViewById(R.id.workout_rest_timer_tv);
+
+        viewModel = new ViewModelProvider(this).get(TimerModel.class);
+
 
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
@@ -269,43 +302,22 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
         }
 
-        // Starts the timer when pressing the "Start" button
-        startStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Makes sure the timer resets if the user presses start while the timer is counting down
-                if (countdown){
-                    seconds = 0;
-                }
-                // If timer isn't already running, this is to start it
-                if (!running){
-                    startStopButton.setText(R.string.stop);
-                    running = true;
-                    wasRunning = false;
-                    countdown = false;
-                }
-                else{
-                    startStopButton.setText(R.string.start);
-                    running = false;
-                    countdown = false;
-                }
-                timerRunning();
-            }
-        });
+
 
         // Resets the timer when pressing the "Reset" button
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                running = false;
-                wasRunning = true;
-                countdown = false;
-                seconds = 0;
-                startStopButton.setText(R.string.start);
-                timerRunning();
+        resetButton.setOnClickListener(v -> viewModel.reset());
+        startStopButton.setOnClickListener(v -> {
+            if (!clockRunning) {
+                viewModel.start();
+                clockRunning = true;
+            } else {
+                viewModel.stop();
+                clockRunning = false;
             }
+            updateStartStopButton(clockRunning);
         });
 
+<<<<<<< HEAD
         // Starts a countdown based on the time in the rest timer
         restTimerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,13 +386,34 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 timerRunning();
             }
         });
+=======
+>>>>>>> 9f23ebad7651ee1b27d2f5bf6a5b450193568b2b
 
 
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //@To-Do implement logic to delete logic from firebase
-                getActivity().getSupportFragmentManager().popBackStack();
+                DocumentReference workoutRef = db.collection("users")
+                        .document(user.getUid())
+                        .collection("loggedWorkouts")
+                        .document(id);
+
+                // Delete the document from Firestore
+                workoutRef.delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Close the fragment/activity upon successful deletion
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Log or handle the failure
+                                Log.e("FirestoreDelete", "Error deleting document", e);
+                            }
+                        });
             }
         });
 
@@ -456,6 +489,22 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         });
 
         return view;
+    }
+
+    private void updateStartStopButton(boolean isRunning) {
+        if (isRunning) {
+            startStopButton.setBackgroundColor(getResources().getColor(R.color.redButton));
+            startStopButton.setText(getString(R.string.stop));
+        } else {
+            startStopButton.setBackgroundColor(getResources().getColor(R.color.greenButton));
+            startStopButton.setText(getString(R.string.start));
+        }
+    }
+
+    private String formatTime(long millis) {
+        long minutes = (millis / 60000);
+        long seconds = (millis % 60000) / 1000;
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 
     private void initSavedWorkoutExercisesRecyclerView() {

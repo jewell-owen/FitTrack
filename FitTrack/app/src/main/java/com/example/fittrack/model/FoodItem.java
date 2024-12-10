@@ -4,7 +4,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 
 public class FoodItem {
     private String foodName;
-    private String brandName; // Optional if the API provides brand info.
+    private String brandName;
     private int calories;     // Example attribute, adjust based on the API response.
 
     public FoodItem(String foodName, String brandName, int calories) {

@@ -18,6 +18,8 @@ import com.example.fittrack.adapter.FavoriteExerciseAdapter;
 import com.example.fittrack.workout.SelectCustomExerciseFragment;
 import com.example.fittrack.workout.SelectLibraryExerciseFragment;
 import com.example.fittrack.workout.ViewExerciseFragment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -39,9 +41,17 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private ImageButton logoutButton;
     private TextView profileUserEmailTv, profileFriendIdTv, profileGoalTv;
     private EditText profileGoalEt;
+<<<<<<< HEAD
     private ImageButton editGoalBtn, saveGoalBtn, btn_graph;
+=======
+    private ImageButton editGoalBtn, saveGoalBtn;
+    private ImageButton editWeightBtn, saveWeightBtn;
+    private ImageButton deleteProfileBtn;
+>>>>>>> 9f23ebad7651ee1b27d2f5bf6a5b450193568b2b
     private Button favoriteCustomExerciseBtn, favoriteLibraryExerciseBtn;
     private RecyclerView myFavoriteExerciseRecyclerView;
+    private TextView profileWeightTv;
+    private EditText profileWeightEt;
 
     private Query mQueryExercises;
     private FavoriteExerciseAdapter mAdapterExercises;
@@ -74,6 +84,11 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         favoriteLibraryExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_library_btn);
         favoriteCustomExerciseBtn = view.findViewById(R.id.profile_favorite_exercise_custom_btn);
         myFavoriteExerciseRecyclerView = view.findViewById(R.id.profile_favorite_exercises_recycler);
+        deleteProfileBtn = view.findViewById(R.id.profile_delete_btn);
+        editWeightBtn = view.findViewById(R.id.profile_weight_edit_btn);
+        saveWeightBtn = view.findViewById(R.id.profile_weight_save_btn);
+        profileWeightTv = view.findViewById(R.id.profile_weight_tv);
+        profileWeightEt = view.findViewById(R.id.profile_weight_et);
 
         btn_graph.setOnClickListener(v -> onGraph(view));
         logoutButton.setOnClickListener(v -> handleLogout());
@@ -81,27 +96,40 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         saveGoalBtn.setOnClickListener(v -> saveGoalToFirestore());
         favoriteLibraryExerciseBtn.setOnClickListener(v -> openLibraryExerciseSelector());
         favoriteCustomExerciseBtn.setOnClickListener(v -> openCustomExerciseSelector());
+        editWeightBtn.setOnClickListener(v -> enableWeightEditing());
+        saveWeightBtn.setOnClickListener(v -> saveWeightToFirestore());
+
+        deleteProfileBtn.setOnClickListener(v -> deleteProfile());
 
         db.collection("users").document(user.getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         // If the document exists, get the workout name and assign it to the TextView
                         String goal = documentSnapshot.getString("goal");
+                        String weight = documentSnapshot.getString("weight");
                         if (goal != null) {
                             profileGoalTv.setText(goal);
 
-                        } else {
+                        }
+                        else {
                             profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
+                        }
+                        if (weight != null) {
+                            profileWeightTv.setText(weight);
+                        } else {
+                            profileWeightTv.setText("Weight");
                         }
                     } else {
                         // If the document does not exist, set the TextView to "None"
                         profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
+                        profileWeightTv.setText("Weight");
                     }
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Error fetching planned workout", e);
                     // Handle failure by setting a fallback value
                     profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
+                    profileWeightTv.setText("Weight");
                 });
 
 
@@ -188,6 +216,30 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         }
     }
 
+    private void enableWeightEditing() {
+        saveWeightBtn.setVisibility(View.VISIBLE);
+        editWeightBtn.setVisibility(View.GONE);
+        profileWeightEt.setVisibility(View.VISIBLE);
+        profileWeightTv.setVisibility(View.INVISIBLE);
+    }
+
+    private void saveWeightToFirestore() {
+        String newWeight = profileWeightEt.getText().toString();
+        if (user != null) {
+            DocumentReference userRef = db.collection("users").document(user.getUid());
+            userRef.update("weight", newWeight)
+                    .addOnSuccessListener(aVoid -> {
+                        profileWeightTv.setText(newWeight);
+                        profileWeightTv.setVisibility(View.VISIBLE);
+                        profileWeightEt.setVisibility(View.INVISIBLE);
+                        editWeightBtn.setVisibility(View.VISIBLE);
+                        saveWeightBtn.setVisibility(View.GONE);
+                    })
+                    .addOnFailureListener(e -> Log.e(TAG, "Error updating weight", e));
+        }
+    }
+
+
     private void handleLogout() {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getContext(), LoginActivity.class);
@@ -199,6 +251,55 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private void onGraph(View view) {
         Intent intent = new Intent(getContext(), WeightGraph.class);
         startActivity(intent);
+    }
+
+    private void deleteProfile() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Log.e(TAG, "No authenticated user found.");
+            return;
+        }
+
+        // Reference to the Firestore user document
+        DocumentReference userRef = db.collection("users")
+                .document(currentUser.getUid());
+
+        // Delete the Firestore document
+        userRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "User document successfully deleted from Firestore.");
+
+                        // Delete the user account from Firebase Authentication
+                        currentUser.delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "User account successfully deleted.");
+
+                                        // Redirect to LoginActivity
+                                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                                        startActivity(intent);
+                                        if (getActivity() != null) {
+                                            getActivity().finish();
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "Error deleting user account", e);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "Error deleting user document from Firestore", e);
+                    }
+                });
     }
 
     private void openLibraryExerciseSelector() {

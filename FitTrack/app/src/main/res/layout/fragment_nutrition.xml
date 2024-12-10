@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".NutritionFragment">
+    tools:context=".nutrition.NutritionFragment">
 
     <TextView
         android:id="@+id/nutrition_title"
@@ -93,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:gravity="start"
-        android:text="00"
+        android:text="2860"
         android:textColor="@color/primary"
         android:textSize="25sp"
         app:layout_constraintStart_toEndOf="@+id/total_calories_tv"
@@ -119,7 +119,7 @@
         android:layout_height="30dp"
         android:layout_marginTop="8dp"
         android:gravity="start"
-        android:text="0"
+        android:text="2800"
         android:textColor="@color/secondary"
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/daily_goal_tv"
@@ -152,7 +152,7 @@
         app:layout_constraintTop_toTopOf="@+id/fragment_container">
 
                 <TextView
-                    android:id="@+id/Breakfast_card_title"
+                    android:id="@+id/breakfast_card_title"
                     android:layout_width="100dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="20dp"
@@ -176,17 +176,17 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="center"
-                    android:text="4000"
+                    android:text="520"
                     android:textColor="@color/primary"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.956"
-                    app:layout_constraintStart_toEndOf="@+id/Breakfast_card_title"
+                    app:layout_constraintStart_toEndOf="@+id/breakfast_card_title"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/Breakfast_card_add_btn"
+                    android:id="@+id/breakfast_card_add_btn"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
@@ -204,7 +204,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Breakfast_card_title">
+            app:layout_constraintTop_toBottomOf="@+id/breakfast_card_title">
 
             <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
             <!--                android:layout_width="match_parent"-->
@@ -406,7 +406,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
             android:gravity="center"
-            android:text="4000"
+            android:text="860"
             android:textColor="@color/primary"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -427,6 +427,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ScrollView
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lunch_card_title">
+
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -467,7 +478,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
             android:gravity="center"
-            android:text="4000"
+            android:text="1130"
             android:textColor="@color/primary"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -488,6 +499,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ScrollView
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dinner_card_title">
+
+
+        </ScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -528,7 +550,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="16dp"
             android:gravity="center"
-            android:text="4000"
+            android:text="350"
             android:textColor="@color/primary"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -549,6 +571,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/workout_saved_workout_exercises_recycler"
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/other_card_title"
+            tools:listitem="@layout/card_nutrition_item_text">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

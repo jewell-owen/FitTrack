@@ -26,6 +26,7 @@ android {
         // Return empty key in case something goes wrong
         val apiKeyExercise = propertiesExercise.getProperty("API_KEY_EXERCISE") ?: ""
         val apiKeyNutrition = propertiesExercise.getProperty("API_KEY_NUTRITION") ?: ""
+        val apiIDNutrition = propertiesExercise.getProperty("API_ID_NUTRITION") ?: ""
 
         buildConfigField(
             type = "String",
@@ -38,6 +39,13 @@ android {
             name = "API_KEY_NUTRITION",
             value = apiKeyNutrition
         )
+
+        buildConfigField(
+            type = "String",
+            name = "API_ID_NUTRITION",
+            value = apiIDNutrition
+        )
+
 
     }
 
