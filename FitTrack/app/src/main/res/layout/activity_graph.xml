@@ -50,6 +50,13 @@
             android:layout_height="wrap_content"
             android:onClick="onMenu"
             android:text="Back to Main Menu" />
+        <Button
+            android:id="@+id/b_counter"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onStepCounter"
+            android:text="View Step Counter" />
 
 
     </LinearLayout>

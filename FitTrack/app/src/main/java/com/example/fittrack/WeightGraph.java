@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.model.ObjectValue;
 import com.jjoe64.graphview.GraphView;
@@ -43,6 +44,8 @@ public class WeightGraph extends AppCompatActivity {
     private int point;
     DocumentSnapshot snapshot;
 
+    private Query mQueryExercises;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +60,11 @@ public class WeightGraph extends AppCompatActivity {
         b_menu = (Button) findViewById(R.id.b_menu);
         weight = (EditText) findViewById(R.id.weight);
         graph.setTitle("Weight Graph");
+
         graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(10);
+        graph.getViewport().setMaxX(30);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(300);
-
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setXAxisBoundsManual(true);
 
@@ -69,6 +72,9 @@ public class WeightGraph extends AppCompatActivity {
         graph.getViewport().setScrollable(true);  // activate horizontal scrolling
 //        graph.getViewport().setScalableY(true);  // activate horizontal and vertical zooming and scrolling
 //        graph.getViewport().setScrollableY(true);  // activate vertical scrolling
+
+        Query query = db.collection("users").document(user.getUid()).collection("weight");
+
 
         db.collection("users").document(user.getUid()).collection("weight")
                 .get()
@@ -127,10 +133,6 @@ public class WeightGraph extends AppCompatActivity {
                 new DataPoint(count , t),
         });
 
-        DocumentReference exerciseRef = db.collection("users")
-                .document(user.getUid())
-                .collection("weight")
-                .document(snapshot.getId());
         Map<String, Object> updates = new HashMap<>();
         updates.put("weight",  t);
         db.collection("users").document(user.getUid()).collection("weight")

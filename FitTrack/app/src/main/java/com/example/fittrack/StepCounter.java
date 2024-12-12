@@ -2,6 +2,7 @@ package com.example.fittrack;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,7 +10,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +24,8 @@ import androidx.core.content.ContextCompat;
 public class StepCounter extends AppCompatActivity {
 
     private SensorManager sensorManager;
+
+    private Button b_stepGraph;
     private Sensor accelerometer;
     private int stepCount = 6000;
     private boolean isStepCounting = false;
@@ -37,7 +42,6 @@ public class StepCounter extends AppCompatActivity {
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        stepCountTextView = (TextView) findViewById(R.id.tv_steps);
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 1);        }
@@ -49,7 +53,7 @@ public class StepCounter extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progress_bar);
         progressText = findViewById(R.id.progress_text);
-
+        b_stepGraph = (Button) findViewById(R.id.b_steps);
         sensorManager.registerListener(sensorListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
         progressText.setText(Integer.toString(stepCount));
@@ -117,6 +121,12 @@ public class StepCounter extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public void onStepCounter(View view) {
+        Intent intent;
+        intent = new Intent(this, StepGraph.class);
+        startActivity(intent);
     }
 
 }

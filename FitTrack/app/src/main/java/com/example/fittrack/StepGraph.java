@@ -25,7 +25,7 @@ import java.util.Random;
 
 public class StepGraph extends AppCompatActivity {
     private EditText steps;
-    private Button b_addSteps, b_menu, b_weight;
+    private Button b_addSteps, b_menu, b_weight,b_counter;
     private GraphView graph;
     int count;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -47,13 +47,21 @@ public class StepGraph extends AppCompatActivity {
         b_addSteps = (Button) findViewById(R.id.b_addSteps);
         b_weight = (Button) findViewById(R.id.b_weight);
         b_menu = (Button) findViewById(R.id.b_menu);
+        b_counter = (Button) findViewById(R.id.b_counter);
         steps = (EditText) findViewById(R.id.steps);
 
         graph.setTitle("Step Graph");
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(30);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(15000);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setXAxisBoundsManual(true);
+
         graph.getViewport().setScalable(true);  // activate horizontal zooming and scrolling
         graph.getViewport().setScrollable(true);  // activate horizontal scrolling
-        graph.getViewport().setScalableY(true);  // activate horizontal and vertical zooming and scrolling
-        graph.getViewport().setScrollableY(true);  // activate vertical scrolling
+//        graph.getViewport().setScalableY(true);  // activate horizontal and vertical zooming and scrolling
+//        graph.getViewport().setScrollableY(true);  // activate vertical scrolling
 
 
         db.collection("users").document(user.getUid()).collection("steps")
@@ -114,10 +122,6 @@ public class StepGraph extends AppCompatActivity {
                     new DataPoint(count, t),
             });
             graph.addSeries(series);
-            DocumentReference exerciseRef = db.collection("users")
-                    .document(user.getUid())
-                    .collection("steps")
-                    .document(snapshot.getId());
             Map<String, Object> updates = new HashMap<>();
             updates.put("steps",  t);
             db.collection("users").document(user.getUid()).collection("steps")
@@ -136,5 +140,13 @@ public class StepGraph extends AppCompatActivity {
         startActivity(intent);
 
     }
+    public void onStepCounter(View view){
+        Intent intent;
+        intent = new Intent(this, StepCounter.class);
+        startActivity(intent);
+
+    }
+
+
 
 }
