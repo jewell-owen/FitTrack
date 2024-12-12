@@ -1,13 +1,19 @@
 package com.example.fittrack.workout;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -85,12 +91,23 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     private boolean countdown = false;
     String subRest_time = "";
     int position, totalSec, timerMin, timerHour;
+    private int tMin, tSec;
 
     private String date = "";
 
     private TimerModel viewModel;
     private boolean clockRunning = false;
-    private int secondsReal;
+
+    private Button new_restTime;
+    private Button first_restTime;
+    private Button second_restTime;
+    private Button third_restTime;
+    // Done
+    private Button done_restTime;
+
+    private TextView popupBorder;
+    private NumberPicker numpickMin;
+    private NumberPicker numpickSec;
 
     public ActiveWorkoutFragment() {
         // Required empty public constructor
@@ -303,18 +320,35 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         }
 
 
+        startStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (countdown){
+                    seconds = 0;
+                }
+                countdown = false;
+
+                if (running){
+                    startStopButton.setText(R.string.start);
+                    running = false;
+                }
+                else{
+                    startStopButton.setText(R.string.stop);
+                    running = true;
+                }
+                timerRunning();
+            }
+        });
 
         // Resets the timer when pressing the "Reset" button
-        resetButton.setOnClickListener(v -> viewModel.reset());
-        startStopButton.setOnClickListener(v -> {
-            if (!clockRunning) {
-                viewModel.start();
-                clockRunning = true;
-            } else {
-                viewModel.stop();
-                clockRunning = false;
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                countdown = false;
+                running = false;
+                seconds = 0;
+                timerRunning();
             }
-            updateStartStopButton(clockRunning);
         });
 
 
@@ -322,68 +356,139 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         restTimerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                running = false;
-                wasRunning = false;
+                    countdown = true;
+                    running = true;
 
-                // get the time as a string
-                String rest_time = restTimerTextView.getText().toString();
-                rest_time = rest_time.substring(0, 4);
-                subRest_time = rest_time.replaceAll(":", "");
-                //Log.d("TAGoh", "TIME: " + subRest_time);
+                    // Fix the start/stop button
+                    startStopButton.setText(R.string.stop);
 
-                // Convert that to an int
-                int myNum = Integer.parseInt(subRest_time);
-//                    // Add another second so the timer looks neater
-//                    myNum += 1;
+                    // Gets the time from the rest time
+                    String subString = restTimerTextView.getText().toString().replace(":", "");
+                    int rest_time = Integer.parseInt(subString);
 
-                seconds = myNum % 100;
+                    String timerText = restTimerTextView.getText().toString();
+                    int minutes = 0, secondsPart = 0;
 
-                // Converting to seconds
-                if (String.valueOf(myNum).length() >= 3) {
-                    position = 3;
-                    totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                    timerMin += totalSec;
-                    //Log.d("tagMineTwo", "" + timerMin);
-                    if (String.valueOf(myNum).length() >= 4) {
-                        position = 4;
-                        totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                        timerMin += totalSec * 10;
-                        //Log.d("tagMinOne", "" + timerMin);
-                        if (String.valueOf(myNum).length() >= 5) {
-                            position = 5;
-                            totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                            timerHour += totalSec;
-                            if (String.valueOf(myNum).length() >= 6) {
-                                position = 6;
-                                totalSec = (myNum / (int) Math.pow(10, position - 1)) % 10;
-                                timerHour += totalSec * 10;
-                            }
+                    // Parse the string (assume MM:SS format)
+                    if (timerText.contains(":")) {
+                        String[] parts = timerText.split(":");
+                        if (parts.length == 2) { // MM:SS
+                            minutes = Integer.parseInt(parts[0]);
+                            secondsPart = Integer.parseInt(parts[1]);
                         }
                     }
-                    if (!countdown) {
+
+                    // Convert the parsed time into total seconds
+                    seconds = (minutes * 60) + secondsPart;
+                    seconds *= 1000; // Convert to milliseconds
+
+                    timerRunning();
+            }
+        });
+
+        restTimerTextView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                // For pop up window
+                // Inflate the layout for the popup menu
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popUpView = inflater.inflate(R.layout.fragment_active_workout_popup, null);
 
 
-                        timerMin *= 60;
-                        timerHour *= 3600;
-                        seconds += timerMin;
-                        seconds += timerHour;
-                        Log.d("tagSeconds", "sec: " + seconds);
-                        seconds *= 1000;
-                        // This boolean will make the timer count backwards
-                        countdown = true;
-                        timerRunning();
+                // Creates pop up window
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                // Lets tap outside popup menu to dismiss it
+                Boolean focusable = true;
+                final PopupWindow popupWindow = new PopupWindow(popUpView, width, height, focusable);
+
+
+                // Show the popup window
+                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+                // elements
+                new_restTime = popUpView.findViewById(R.id.new_resttime);
+                first_restTime = popUpView.findViewById(R.id.first_resttime);
+                second_restTime = popUpView.findViewById(R.id.second_resttime);
+                third_restTime = popUpView.findViewById(R.id.third_resttime);
+                // Done
+                done_restTime = popUpView.findViewById(R.id.new_resttime);
+
+                popupBorder = popUpView.findViewById(R.id.popupBorder);
+                numpickMin = popUpView.findViewById(R.id.numPickMin);
+                numpickSec = popUpView.findViewById(R.id.numPickSec);
+
+
+
+                NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
+                    @Override
+                    public String format(int value) {
+                        int temp = value * 5;
+                        return "" + temp;
                     }
+                };
+                numpickSec.setFormatter(formatter);
 
-                }
-                timerMin *= 60;
-                timerHour *= 3600;
-                seconds += timerMin;
-                seconds += timerHour;
-                Log.d("tagSeconds", "sec: " + seconds);
-                seconds *= 1000;
-                // This boolean will make the timer count backwards
-                countdown = true;
-                timerRunning();
+                numpickMin.setMinValue(0);
+                numpickMin.setMaxValue(5);
+                numpickSec.setMinValue(0);
+                numpickSec.setMaxValue(12);
+
+                //new rest time
+                new_restTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        popupBorder.setVisibility(View.VISIBLE);
+                        numpickMin.setVisibility(View.VISIBLE);
+                        numpickSec.setVisibility(View.VISIBLE);
+                        // User presses this when they are done with the time
+                        new_restTime.setText(R.string.rest_time_done);
+                        // Changing the values of the rest time
+                        new_restTime.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                tMin = numpickMin.getValue();
+                                tSec = numpickSec.getValue();
+                                tSec *= 5; // Due to formatting the picker
+                                showTime(tMin, tSec);
+                                popupWindow.dismiss();
+                            }
+                        });
+                    }
+                });
+
+                // First Rest time
+                first_restTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String newRestTime = first_restTime.getText().toString();
+                        restTimerTextView.setText(newRestTime);
+                        popupWindow.dismiss();
+                    }
+                });
+
+                // First Rest time
+                second_restTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String newRestTime = second_restTime.getText().toString();
+                        restTimerTextView.setText(newRestTime);
+                        popupWindow.dismiss();
+                    }
+                });
+
+                // First Rest time
+                third_restTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String newRestTime = third_restTime.getText().toString();
+                        restTimerTextView.setText(newRestTime);
+                        popupWindow.dismiss();
+                    }
+                });
+
+                return true;
             }
         });
 
@@ -721,34 +826,29 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         handler.post(new Runnable() {
             @Override
             public void run() {
-                int hours = seconds /3600000 ;
+                int hours = seconds / 3600000;
                 int minutes = (seconds % 3600000) / 60000;
                 int secs = (seconds % 60000) / 1000;
-                int millis = seconds % 1000;
                 String time = String.format("%02d:%02d:%02d", hours, minutes, secs);
-
                 timerTextView.setText(time);
 
-                if (running) {
-                    handler.postDelayed(this, 100);
-                    seconds += 100;
-                }
 
-                if (wasRunning){
-                    seconds = 0;
-                }
-
-                // For counting down from the rest time
-                if (countdown){
+                if (countdown && seconds > 0){
                     handler.postDelayed(this, 100);
                     seconds -= 100;
-                    if (timerTextView.getText().equals("00:00:00")){
-                        countdown = false;
-                    }
+                }
+                else if (running) {
+                    handler.postDelayed(this, 100);
+                    seconds += 100;
                 }
             }
 
         });
+    }
+
+    public void showTime(int tMin, int tSec){
+        String formattedTime = String.format("%02d:%02d", tMin, tSec);
+        restTimerTextView.setText(formattedTime);
     }
 
 
