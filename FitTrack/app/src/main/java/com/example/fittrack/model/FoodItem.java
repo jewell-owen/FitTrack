@@ -1,16 +1,29 @@
 package com.example.fittrack.model;
 
-import com.google.firebase.firestore.IgnoreExtraProperties;
-
 public class FoodItem {
     private String foodName;
-    private String brandName;
-    private int calories;     // Example attribute, adjust based on the API response.
 
-    public FoodItem(String foodName, String brandName, int calories) {
-        this.foodName = foodName;
-        this.brandName = brandName;
+    public void setCalories(double calories) {
         this.calories = calories;
+    }
+
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
+    }
+
+    private double calories;
+
+
+
+    private String meal;// Example attribute, adjust based on the API response.
+
+
+    public FoodItem() {}
+
+    public FoodItem(String foodName, double calories, String meal) {
+        this.foodName = foodName;
+        this.calories = calories;
+        this.meal = meal;
     }
 
     // Getters and setters
@@ -18,11 +31,16 @@ public class FoodItem {
         return foodName;
     }
 
-    public String getBrandName() {
-        return brandName;
+
+    public String getMeal() {
+        return meal;
     }
 
-    public int getCalories() {
+    public void setMeal(String meal) {
+        this.meal = meal;
+    }
+
+    public double getCalories() {
         return calories;
     }
 }
