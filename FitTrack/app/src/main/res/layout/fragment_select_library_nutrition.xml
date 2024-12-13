@@ -56,53 +56,30 @@
 
 
     <Button
-        android:id="@+id/exercise_select_name_filter_btn"
+        android:id="@+id/nutrition_select_common_name_filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="110dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/button_background"
-        android:text="Name"
+        android:text="Common\nName"
         android:textColor="@color/light_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nutrition_select_et" />
 
     <Button
-        android:id="@+id/exercise_select_muscle_filter_btn"
+        android:id="@+id/nutrition_select_brand_filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="13dp"
         android:background="@drawable/button_background"
-        android:text="Muscle"
+        android:text="Brand"
         android:textColor="@color/light_text"
-        app:layout_constraintStart_toEndOf="@id/exercise_select_name_filter_btn"
-        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn" />
+        app:layout_constraintStart_toEndOf="@id/nutrition_select_common_name_filter_btn"
+        app:layout_constraintTop_toTopOf="@id/nutrition_select_common_name_filter_btn" />
 
-    <Button
-        android:id="@+id/exercise_select_type_filter_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="13dp"
-        android:background="@drawable/button_background"
-        android:text="Type"
-        android:textColor="@color/light_text"
-        app:layout_constraintEnd_toStartOf="@id/exercise_select_difficulty_filter_btn"
-        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn" />
-
-    <Button
-        android:id="@+id/exercise_select_difficulty_filter_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/button_background"
-        android:text="Difficulty"
-        android:textColor="@color/light_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/exercise_select_name_filter_btn" />
 
     <ImageButton
         android:id="@+id/nutrition_select_search_btn"
@@ -126,7 +103,7 @@
         android:background="@color/background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exercise_select_name_filter_btn">
+        app:layout_constraintTop_toBottomOf="@id/nutrition_select_common_name_filter_btn">
 
         <LinearLayout
             android:id="@+id/nutrition_select_card_ll"

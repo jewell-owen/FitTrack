@@ -14,11 +14,15 @@
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
     <string name="other">Other</string>
-    <string name="calories_format">Calories: %d</string>
+
+    <string name="calories_format">Calories: %s</string>
     <string name="rest_time_done">DONE</string>
     <string name="new_rest_time">NEW</string>
     <string name="first_rest_time">1:00</string>
     <string name="second_rest_time">2:00</string>
     <string name="third_rest_time">3:00</string>
+
+
+
 
 </resources>
