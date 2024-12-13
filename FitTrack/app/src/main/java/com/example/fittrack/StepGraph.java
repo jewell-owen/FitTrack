@@ -37,6 +37,10 @@ public class StepGraph extends AppCompatActivity {
     private int point;
     DocumentSnapshot snapshot;
 
+    /**
+     * initilize step graph
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
@@ -108,6 +112,11 @@ public class StepGraph extends AppCompatActivity {
                 });
 
     }
+
+    /**
+     * add a new point to the graph
+     * @param view
+     */
         public void onButton (View view){
 
             String hold = (String) steps.getText().toString();
@@ -130,16 +139,30 @@ public class StepGraph extends AppCompatActivity {
             count ++;
         }
 
+    /**
+     * go to main menu
+     * @param view
+     */
     public void onMenu(View view){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * go to weight graph
+     * @param view
+     */
     public void onWeight(View view){
         Intent intent;
         intent = new Intent(this, WeightGraph.class);
         startActivity(intent);
 
     }
+
+    /**
+     * go to step counter
+     * @param view
+     */
     public void onStepCounter(View view){
         Intent intent;
         intent = new Intent(this, StepCounter.class);

@@ -47,7 +47,10 @@ public class WeightGraph extends AppCompatActivity {
     private Query mQueryExercises;
 
 
-
+    /**
+     * initilize weight graph
+     * @param savedInstanceState
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weightgraph);
@@ -118,6 +121,10 @@ public class WeightGraph extends AppCompatActivity {
 
     }
 
+    /**
+     * add a new weight
+     * @param view
+     */
     public void onButton(View view) {
 
         String hold = (String) weight.getText().toString();
@@ -141,10 +148,19 @@ public class WeightGraph extends AppCompatActivity {
         count ++;
     }
 
+    /**
+     * go to main menu
+     * @param view
+     */
     public void onMenu(View view){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * go to step graph
+     * @param view
+     */
     public void onStep(View view){
         Intent intent;
         intent = new Intent(this, StepGraph.class);

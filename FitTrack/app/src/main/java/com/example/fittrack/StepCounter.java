@@ -62,6 +62,11 @@ public class StepCounter extends AppCompatActivity {
 
     private final SensorEventListener sensorListener = new SensorEventListener() {
 
+        /**
+         *
+         * Initilize the Step counter
+         * @param sensorEvent
+         */
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
             Handler handler = new Handler();
@@ -111,6 +116,17 @@ public class StepCounter extends AppCompatActivity {
 //    }
 
 
+    /**
+     * request permission for step counter
+     *
+     * @param requestCode The request code passed in {@link #requestPermissions(
+     * android.app.Activity, String[], int)}
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never null.
+     *
+     */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
@@ -123,6 +139,10 @@ public class StepCounter extends AppCompatActivity {
         }
     }
 
+    /**
+     * Go to the Step graph
+     * @param view
+     */
     public void onStepCounter(View view) {
         Intent intent;
         intent = new Intent(this, StepGraph.class);
