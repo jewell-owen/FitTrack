@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fittrack.R;
 import com.example.fittrack.adapter.LogWorkoutAdapter;
-import com.example.fittrack.model.TimerModel;
+import com.example.fittrack.viewmodel.TimerModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,11 +46,24 @@ import java.util.Objects;
 
 import android.os.Handler;
 
+/**
+ * A fragment used to handle all of the functionality for logging workouts
+ */
 public class ActiveWorkoutFragment extends Fragment implements View.OnClickListener, LogWorkoutAdapter.OnExerciseSelectedListener {
 
-
+    /**
+     * FireStore data base reference
+     */
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * Firebase authentication reference
+     */
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    /**
+     * Firebase user reference
+     */
     FirebaseUser user = mAuth.getCurrentUser();
 
     private Query mQueryExercises;
@@ -109,6 +122,9 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     private NumberPicker numpickMin;
     private NumberPicker numpickSec;
 
+    /**
+     * Required empty public constructor
+     */
     public ActiveWorkoutFragment() {
         // Required empty public constructor
     }
@@ -125,11 +141,18 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         return new WorkoutFragment();
     }
 
+    /**
+     * Required onClick
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         int id = view.getId();
     }
 
+    /**
+     * onStart method to start listening for Firestore updates
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -141,6 +164,9 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
     }
 
+    /**
+     * onStop method to stop listening for Firestore updates
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -149,6 +175,11 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         }
     }
 
+    /**
+     * Called when the fragment is first created, checks rest timer time
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,6 +193,9 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         });
     }
 
+    /**
+     * Called when the fragment is visible to the user and actively running and updates timer
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -171,15 +205,18 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (clockRunning) {
-            viewModel.stop(); // Pause timer when fragment goes inactive
-            updateStartStopButton(false);
-        }
-    }
-
+    /**
+     * Called to create view for the fragment, handles almost all initialization
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view for the fragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -214,6 +251,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         Log.d("TAG", "Workout ID: " + plannedWorkoutID);
         Log.d("TAG", "Name: " + plannedWorkoutName);
 
+        //Handle logic for workout from a plan or freestyle workout depending on user selection
         if (!Objects.equals(plannedWorkoutName, "None")) {
             if (!newWorkoutCreated){
                 Map<String, Object> newWorkout = new HashMap<>();
@@ -319,7 +357,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
         }
 
-
+        //Starts and stops timer
         startStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -492,7 +530,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
             }
         });
 
-
+        //Delete workout in FireStore
         cancelWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -520,6 +558,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
             }
         });
 
+        // Update workout data in FireStore
         finishWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -558,6 +597,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
             }
         });
 
+        // Go to custom exercise creation fragment
         addCustomExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -574,6 +614,7 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
             }
         });
 
+        // Go to API library exercise selection fragment
         addLibraryExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -594,6 +635,10 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         return view;
     }
 
+    /**
+     * Updates the start/stop button text based on the running state
+     * @param isRunning True if the timer is running, false otherwise
+     */
     private void updateStartStopButton(boolean isRunning) {
         if (isRunning) {
             startStopButton.setBackgroundColor(getResources().getColor(R.color.redButton));
@@ -604,12 +649,20 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         }
     }
 
+    /**
+     * Formats the time in milliseconds to a string in the format "MM:SS"
+     * @param millis time in milliseconds
+     * @return formatted time as a string
+     */
     private String formatTime(long millis) {
         long minutes = (millis / 60000);
         long seconds = (millis % 60000) / 1000;
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 
+    /**
+     * Initializes the RecyclerView for displaying exercises in the workout
+     */
     private void initSavedWorkoutExercisesRecyclerView() {
         if (mQueryExercises == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
@@ -636,7 +689,10 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         mAdapterExercises.startListening(); // Ensure the adapter starts listening for changes.
     }
 
-
+    /**
+     * Handles the click event for a specific exercise to go view full information in new fragment
+     * @param exercise DocumentSnapshot representing the exercise
+     */
     @Override
     public void onExerciseMoreInfo(DocumentSnapshot exercise) {
         Bundle bundle = new Bundle();
@@ -655,6 +711,10 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 .commit();
     }
 
+    /**
+     * Handles the click event for a specific exercise to be deleted
+     * @param exercise DocumentSnapshot representing the exercise to be deleted
+     */
     @Override
     public void onExerciseDeleted(DocumentSnapshot exercise) {
         DocumentReference workoutRef = db.collection("users")
@@ -682,6 +742,11 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
 
     }
 
+    /**
+     * Handles the click event for a specific exercise to have its sets increased
+     * @param snapshot DocumentSnapshot representing the exercise
+     * @param sets Current number of sets
+     */
     @Override
     public void onSetAdded(DocumentSnapshot snapshot, int sets) {
         DocumentReference exerciseRef = db.collection("users")
@@ -709,6 +774,11 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 });
     }
 
+    /**
+     * Handles the click event for a specific exercise to have its sets decreased
+     * @param snapshot DocumentSnapshot representing the exercise
+     * @param sets Current number of sets
+     */
     @Override
     public void onSetDeleted(DocumentSnapshot snapshot, int sets) {
         DocumentReference exerciseRef = db.collection("users")
@@ -758,6 +828,12 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 });
     }
 
+    /**
+     * Handles the click event for a specific exercise to have its weight changed
+     * @param snapshot DocumentSnapshot representing the exercise
+     * @param set Current set
+     * @param weight New weight
+     */
     @Override
     public void onWeightChanged(DocumentSnapshot snapshot, String set, String weight) {
         // Reference to the workout document in Firestore
@@ -789,6 +865,12 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
                 });
     }
 
+    /**
+     * Handles the click event for a specific exercise to have its reps changed
+     * @param snapshot DocumentSnapshot representing the exercise
+     * @param set Current set
+     * @param reps New reps
+     */
     @Override
     public void onRepsChanged(DocumentSnapshot snapshot, String set, String reps) {
         // Reference to the workout document in Firestore
@@ -821,7 +903,9 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
     }
 
 
-// Function that controls the timer
+    /**
+     * Starts the timer
+     */
     public void timerRunning() {
         handler.post(new Runnable() {
             @Override
@@ -846,6 +930,11 @@ public class ActiveWorkoutFragment extends Fragment implements View.OnClickListe
         });
     }
 
+    /**
+     * Updates the rest timer text
+     * @param tMin Time in minutes
+     * @param tSec Time in seconds
+     */
     public void showTime(int tMin, int tSec){
         String formattedTime = String.format("%02d:%02d", tMin, tSec);
         restTimerTextView.setText(formattedTime);

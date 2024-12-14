@@ -15,6 +15,9 @@ import com.example.fittrack.model.SavedWorkout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
+/**
+ * RecyclerView adapter for a list of saved workouts. Cards include names and buttons to go to workout for viewing or editing
+ */
 public class SavedWorkoutAdapter extends FirestoreAdapter<SavedWorkoutAdapter.ViewHolder> {
 
     public interface OnWorkoutSelectedListener {

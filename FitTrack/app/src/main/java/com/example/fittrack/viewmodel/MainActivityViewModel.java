@@ -3,6 +3,9 @@ package com.example.fittrack.viewmodel;
 import androidx.lifecycle.ViewModel;
 
 
+/**
+ * ViewModel class for managing the main activity.
+ */
 public class MainActivityViewModel extends ViewModel {
 
     private boolean mIsSigningIn;

@@ -15,6 +15,9 @@ import com.example.fittrack.model.Exercise;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
+/**
+ * Recycler view adapter for exercise cards as the result of API search.
+ */
 public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder> {
 
     public interface OnExerciseSelectedListener {

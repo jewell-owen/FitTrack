@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * An activity that handles the step graph functionality.
+ */
 public class StepGraph extends AppCompatActivity {
     private EditText steps;
     private Button b_addSteps, b_menu, b_weight,b_counter;

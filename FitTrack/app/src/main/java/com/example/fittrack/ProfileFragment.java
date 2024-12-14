@@ -30,6 +30,9 @@ import com.google.firebase.firestore.Query;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A fragment that handles user profile functionality.
+ */
 public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter.OnExerciseSelectedListener {
 
     private static final String TAG = "ProfileFragment";

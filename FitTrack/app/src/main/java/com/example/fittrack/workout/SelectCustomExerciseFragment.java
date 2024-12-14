@@ -29,10 +29,24 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A fragment used to handle the functionality for creating a custom exercise to add to logged or saved workouts.
+ */
 public class SelectCustomExerciseFragment extends Fragment implements View.OnClickListener {
 
+    /**
+     * FireStore data base reference
+     */
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * Firebase authentication reference
+     */
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    /**
+     * Firebase user reference
+     */
     FirebaseUser user = mAuth.getCurrentUser();
 
     private ImageButton customExerciseBackButton;
@@ -65,6 +79,18 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
 
     private static final String[] difficulties = {"select difficulty","beginner", "intermediate","expert"};
 
+    /**
+     * Called to have the fragment instantiate its user interface view and handles all other initialization
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +115,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, types);
         ArrayAdapter<String> difficultyAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, difficulties);
 
+        //Set options for muscle spinner
         muscleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         customExerciseMuscleSpinner.setAdapter(muscleAdapter);
         customExerciseMuscleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -104,6 +131,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         }
         );
 
+        //Set options for equipment spinner
         equipmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         customExerciseEquipmentSpinner.setAdapter(equipmentAdapter);
         customExerciseEquipmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -119,6 +147,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         }
         );
 
+        //Set options for type spinner
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         customExerciseTypeSpinner.setAdapter(typeAdapter);
         customExerciseTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -134,6 +163,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         }
         );
 
+        //Set options for difficulty spinner
         difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         customExerciseDifficultySpinner.setAdapter(difficultyAdapter);
         customExerciseDifficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -149,6 +179,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         }
         );
 
+        //Set click listener for back button to pop fragment off back stack
         customExerciseBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,6 +187,7 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
             }
         });
 
+        //Set click listener for save button to add exercise to workout
         customExerciseSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -237,6 +269,10 @@ public class SelectCustomExerciseFragment extends Fragment implements View.OnCli
         return view;
     }
 
+    /**
+     * Required onClick
+     * @param view The view that was clicked.
+     */
     @Override
     public void onClick(View view) {
         int id = view.getId();

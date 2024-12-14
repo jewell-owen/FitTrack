@@ -28,6 +28,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An activity that handles user account creation with firebase
+ */
 public class SignupActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText, confirmPassText;
@@ -35,18 +38,6 @@ public class SignupActivity extends AppCompatActivity {
     private Button loginButton;
     private FirebaseAuth mAuth;
     FirebaseFirestore db;
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if(currentUser != null){
-//            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

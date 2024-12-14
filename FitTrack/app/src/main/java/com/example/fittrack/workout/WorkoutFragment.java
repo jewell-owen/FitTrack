@@ -26,9 +26,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link WorkoutFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A fragment used as the home screen for all other workout functionality.
  */
 public class WorkoutFragment extends Fragment implements View.OnClickListener {
 
@@ -59,6 +57,9 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
     private String date = "";
 
 
+    /**
+     * Required empty public constructor
+     */
     public WorkoutFragment() {
         // Required empty public constructor
     }
@@ -80,11 +81,20 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
         return fragment;
     }
 
+    /**
+     * Required onClick
+     * @param view The view that was clicked
+     */
     @Override
     public void onClick(View view) {
         int id = view.getId();
     }
 
+    /**
+     * Called when the view is created
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +104,18 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view and handles all other initialization
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return the view for the fragment's UI
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,7 +191,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-
+        //Go to plan workouts screen
         plannedWorkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,6 +205,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
 
         });
 
+        //Go to saved workout planss screen
         myWorkoutsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -195,6 +218,7 @@ public class WorkoutFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        // Go to logged workouts history screen
         workoutHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

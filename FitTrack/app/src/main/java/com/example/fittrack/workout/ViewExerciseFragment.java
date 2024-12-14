@@ -24,6 +24,9 @@ import org.json.JSONException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A fragment used to handle the functionality for viewing the full information for an exercise.
+ */
 public class ViewExerciseFragment extends Fragment implements View.OnClickListener {
 
     private ImageButton viewExerciseBackButton;
@@ -38,6 +41,18 @@ public class ViewExerciseFragment extends Fragment implements View.OnClickListen
     private String difficulty = "";
     private String instructions = "";
 
+    /**
+     * Called to have the fragment instantiate its user interface view and handles all other initialization
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return the view for the fragment's UI
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +72,7 @@ public class ViewExerciseFragment extends Fragment implements View.OnClickListen
             instructions = "Instructions: " +  getArguments().getString("instructions");
         }
 
+        // Set up the back button click listener to pop fragment off back stack
         viewExerciseBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,6 +88,15 @@ public class ViewExerciseFragment extends Fragment implements View.OnClickListen
         return view;
     }
 
+    /**
+     * Creates a new CardView with the provided values
+     * @param type The type of exercise
+     * @param muscle The muscle targeted
+     * @param equipment The equipment used
+     * @param difficulty The difficulty of the exercise
+     * @param instructions The instructions for the exercise
+     * @return The created CardView
+     */
     private CardView createCardView(String type, String muscle, String equipment, String difficulty, String instructions) {
         // Inflate the CardView layout
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -93,9 +118,10 @@ public class ViewExerciseFragment extends Fragment implements View.OnClickListen
         return cardView;
     }
 
-
-
-
+    /**
+     * Required onClick
+     * @param view The view that was clicked
+     */
         @Override
     public void onClick(View view) {
 

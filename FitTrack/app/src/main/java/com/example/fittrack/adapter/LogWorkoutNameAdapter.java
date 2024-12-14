@@ -19,6 +19,9 @@ import com.example.fittrack.model.LogWorkout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
+/**
+ * RecyclerView adapter for a list of logged workouts.
+ */
 public class LogWorkoutNameAdapter extends FirestoreAdapter<LogWorkoutNameAdapter.ViewHolder> {
 
         public interface OnLoggedWorkoutSelectedListener {

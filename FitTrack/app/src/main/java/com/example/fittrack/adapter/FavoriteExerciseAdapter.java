@@ -15,6 +15,9 @@ import com.example.fittrack.model.Exercise;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
+/**
+ * Recycler view adapter for saved favorite exercise in user profile
+ */
 public class FavoriteExerciseAdapter extends FirestoreAdapter<FavoriteExerciseAdapter.ViewHolder>{
 
     public interface OnExerciseSelectedListener {

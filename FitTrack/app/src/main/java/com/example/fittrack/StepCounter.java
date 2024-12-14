@@ -21,6 +21,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+/**
+ * An activity that handles the step counter functionality.
+ */
 public class StepCounter extends AppCompatActivity {
 
     private SensorManager sensorManager;

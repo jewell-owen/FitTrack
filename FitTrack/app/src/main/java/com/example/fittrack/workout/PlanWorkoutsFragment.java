@@ -32,10 +32,24 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * A fragment used to handle all of the functionality for assigning workout plans to a specific date
+ */
 public class PlanWorkoutsFragment extends Fragment implements View.OnClickListener {
 
+    /**
+     * FireStore data base reference
+     */
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /**
+     * Firebase authentication reference
+     */
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    /**
+     * Firebase user reference
+     */
     FirebaseUser user = mAuth.getCurrentUser();
 
     private ImageButton planWorkoutsBackButton;
@@ -53,11 +67,27 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
 
     private boolean isUserSelection = false;
 
+    /**
+     * Required onClick
+     * @param view view for the fragment
+     */
     @Override
     public void onClick(View view) {
         int id = view.getId();
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view and handles all other initialization
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +110,7 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
             return false;
         });
 
+        // Handle the selection of a workout from the spinner
         planWorkoutsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
@@ -132,6 +163,10 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         return view;
     }
 
+    /**
+     * Gets all of the user's saved workout plans to add to spinner options along with rest and none
+     * @param workoutAdapter
+     */
     private void fetchWorkouts(ArrayAdapter<String> workoutAdapter) {
         CollectionReference workoutsRef = db.collection("users").document(user.getUid()).collection("workouts");
 
@@ -163,6 +198,9 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         });
     }
 
+    /**
+     * Fetches the plan for the selected date from FireStore and updates the spinner accordingly
+     */
     private void fetchPlanForSelectedDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String formattedDate = sdf.format(selectedDate.getTime());
@@ -193,6 +231,9 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         });
     }
 
+    /**
+     * Opens the date picker dialog to allow the user to select a date
+     */
     private void openDatePicker() {
         int year = selectedDate.get(Calendar.YEAR);
         int month = selectedDate.get(Calendar.MONTH);
@@ -209,11 +250,18 @@ public class PlanWorkoutsFragment extends Fragment implements View.OnClickListen
         datePickerDialog.show();
     }
 
+    /**
+     * Changes the selected date by the specified number of days
+     * @param dayOffset the number of days to change
+     */
     private void changeDate(int dayOffset) {
         selectedDate.add(Calendar.DAY_OF_MONTH, dayOffset);
         updateDateButton();
     }
 
+    /**
+     * Updates the text on the date button to display the selected date in a readable format
+     */
     private void updateDateButton() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
         String formattedDate = sdf.format(selectedDate.getTime());

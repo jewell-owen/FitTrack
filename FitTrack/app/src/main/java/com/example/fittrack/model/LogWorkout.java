@@ -4,6 +4,10 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import java.util.ArrayList;
 
+/**
+ * Class to represent a logged workout.
+ */
+
 @IgnoreExtraProperties
 public class LogWorkout {
 

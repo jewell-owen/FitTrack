@@ -1,4 +1,4 @@
-package com.example.fittrack.model;
+package com.example.fittrack.viewmodel;
 
 import android.os.Handler;
 
@@ -6,6 +6,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+/**
+ * ViewModel class for managing the timer functionality.
+ */
 public class TimerModel extends ViewModel {
     private MutableLiveData<Long> remainingTimeLiveData = new MutableLiveData<>(120000L); // Default 2 minutes
     private long endTime = 0L;

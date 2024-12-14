@@ -3,7 +3,7 @@ package com.example.fittrack.model;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
 /**
- * Restaurant POJO.
+ * Class to represent an exercise.
  */
 @IgnoreExtraProperties
 public class Exercise {

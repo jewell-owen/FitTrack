@@ -22,6 +22,9 @@ import com.example.fittrack.model.SavedWorkout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
+/**
+ * RecyclerView adapter for logging workouts functionality. Includes exercise cards with sets and reps.
+ */
 public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHolder> {
 
     public interface OnExerciseSelectedListener {

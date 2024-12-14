@@ -28,6 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * An activity that handles the weight graph functionality.
+ */
 public class WeightGraph extends AppCompatActivity {
 
     private EditText weight;

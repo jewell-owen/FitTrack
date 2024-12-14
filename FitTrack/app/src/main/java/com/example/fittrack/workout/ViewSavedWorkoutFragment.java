@@ -32,6 +32,9 @@ import com.google.firebase.firestore.Query;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A fragment used to handle the functionality for viewing and editing a saved workout plan.
+ */
 public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickListener,  ExerciseAdapter.OnExerciseSelectedListener{
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -62,10 +65,19 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
     private String id = "";
     private boolean newWorkoutCreated = false;
 
+    /**
+     * Required empty public constructor
+     */
     public ViewSavedWorkoutFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Auto generated static constructor
+     * @param param1 parameter 1
+     * @param param2 parameter 2
+     * @return A new instance of fragment ViewSavedWorkoutFragment.
+     */
     public static ViewSavedWorkoutFragment newInstance(String param1, String param2) {
         ViewSavedWorkoutFragment fragment = new ViewSavedWorkoutFragment();
         Bundle args = new Bundle();
@@ -75,11 +87,20 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         return fragment;
     }
 
+    /**
+     * Required onClick
+     * @param view The view that was clicked
+     */
     @Override
     public void onClick(View view) {
         int id = view.getId();
     }
 
+    /**
+     * Called when the view is created
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +110,9 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         }
     }
 
+    /**
+     * Called when the view is started to start listening for FireStore updates
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -100,6 +124,9 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
 
     }
 
+    /**
+     * Called when the view is stopped to stop listening for FireStore updates
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -108,6 +135,18 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         }
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view and handles all other initialization
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return the view for the fragment's UI
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +167,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         myWorkoutExercisesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
 
+        //Get workout if it already exists
         if (getArguments() != null){
             workout = getArguments().getString("workout");
             id = getArguments().getString("id");
@@ -141,6 +181,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
             mQueryExercises = query;
             initSavedWorkoutExercisesRecyclerView();
         }
+        //Create a new workout
         else {
             CollectionReference workoutRef = db.collection("users")
                     .document(user.getUid())
@@ -174,6 +215,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
             }
         }
 
+        // Set up the back button click listener to pop fragment off back stack
         savedWorkoutBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,6 +224,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
 
         });
 
+        // Go to API exercise selection fragment
         savedWorkoutAddExistingExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,6 +241,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
             }
         });
 
+        // Go to custom exercise creation fragment
         savedWorkoutAddCustomExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,6 +258,7 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
             }
         });
 
+        // Update the workout data in Firestore
         savedWorkoutSaveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -252,6 +297,9 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         return view;
     }
 
+    /**
+     * Initializes the RecyclerView for the saved workout exercises
+     */
     private void initSavedWorkoutExercisesRecyclerView() {
         if (mQueryExercises == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
@@ -277,6 +325,10 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
         myWorkoutExercisesRecyclerView.setAdapter(mAdapterExercises);
     }
 
+    /**
+     * Called when an exercise is deleted from the workout
+     * @param exercise DocumentSnapshot of the exercise to be deleted
+     */
     @Override
     public void onExerciseDeleted(DocumentSnapshot exercise) {
         //In this case this method is called when delete button is clicked not the exercise itself
@@ -305,6 +357,10 @@ public class ViewSavedWorkoutFragment extends Fragment implements View.OnClickLi
 
     }
 
+    /**
+     * Called when an exercise is clicked to go to fragment to view more information
+     * @param exercise DocumentSnapshot of the exercise to be viewed
+     */
     public void onExerciseMoreInfo(DocumentSnapshot exercise) {
         Bundle bundle = new Bundle();
         bundle.putString("name", exercise.getString("name"));

@@ -35,6 +35,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An activity that handles user account authentication with firebase
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private Button loginButton;

@@ -5,7 +5,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 import java.util.ArrayList;
 
 /**
- * Restaurant POJO.
+ * Class to represent a saved workout.
  */
 @IgnoreExtraProperties
 public class SavedWorkout {

@@ -34,6 +34,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * A fragment used to handle the functionality for viewing the information of a specific logged workout from history.
+ */
 public class WorkoutHistoryFragment extends Fragment implements View.OnClickListener, LoggedWorkoutAdapter.OnExerciseSelectedListener {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -52,6 +56,9 @@ public class WorkoutHistoryFragment extends Fragment implements View.OnClickList
 
 ;
 
+    /**
+     * Required empty public constructor
+     */
     public WorkoutHistoryFragment() {
         // Required empty public constructor
     }
@@ -68,11 +75,18 @@ public class WorkoutHistoryFragment extends Fragment implements View.OnClickList
         return new WorkoutHistoryFragment();
     }
 
+    /**
+     * Required onClick
+     * @param view The view that was clicked
+     */
     @Override
     public void onClick(View view) {
         int id = view.getId();
     }
 
+    /**
+     * Called when the view is started to start listening for FireStore updates
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -84,6 +98,9 @@ public class WorkoutHistoryFragment extends Fragment implements View.OnClickList
 
     }
 
+    /**
+     * Called when the view is stopped to stop listening for FireStore updates
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -92,6 +109,11 @@ public class WorkoutHistoryFragment extends Fragment implements View.OnClickList
         }
     }
 
+    /**
+     * Called when the view is created
+     * @param savedInstanceState If the fragment is being re-created from
+     * a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +121,18 @@ public class WorkoutHistoryFragment extends Fragment implements View.OnClickList
         }
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view and handles all other initialization
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return the view for the fragment's UI
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,6 +163,9 @@ public class WorkoutHistoryFragment extends Fragment implements View.OnClickList
         return view;
     }
 
+    /**
+     * Initializes the recycler view for the workout history exercises
+     */
     private void initSavedWorkoutExercisesRecyclerView() {
         if (mQueryExercises == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
@@ -154,7 +191,10 @@ public class WorkoutHistoryFragment extends Fragment implements View.OnClickList
         workoutHistoryExercisesRecyclerView.setAdapter(mAdapterExercises);
     }
 
-
+    /**
+     * Called when a workout exercise is selected to go to fragment to view full information about the exercise
+     * @param exercise DocumentSnapshot of the exercise that was selected
+     */
     @Override
     public void onExerciseMoreInfo(DocumentSnapshot exercise) {
         Bundle bundle = new Bundle();
