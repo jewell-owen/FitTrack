@@ -45,6 +45,11 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * This fragment provides functionality for searching, selecting, and adding nutritional data
+ * (e.g., food items and calories) to specific meals in a fitness tracking application.
+ * It integrates with the Nutritionix API for food data retrieval and Firebase Firestore for data storage.
+ */
 public class SelectLibraryNutritionFragment extends Fragment implements View.OnClickListener {
 
     private EditText foodSearchEditText;
@@ -79,6 +84,15 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
     private List<String> lunchFoodList = new ArrayList<>();
     private List<String> dinnerFoodList = new ArrayList<>();
     private List<String> otherFoodList = new ArrayList<>();
+
+    /**
+     * Called to initialize the fragment's UI and handle event listeners.
+     *
+     * @param inflater           LayoutInflater object to inflate views in the fragment.
+     * @param container          Parent view containing the fragment's UI.
+     * @param savedInstanceState Saved instance state, if available.
+     * @return The fragment's root view.
+     */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -137,7 +151,11 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
     }
 
 
-
+    /**
+     * Fetches food data from the Nutritionix API.
+     *
+     * @param query The search term entered by the user.
+     */
     private void fetchFoodData(String query) {
         executor.execute(() -> {
             String appId = BuildConfig.API_ID_NUTRITION;
@@ -180,6 +198,13 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
         });
     }
 
+    /**
+     * Converts the input stream into a string.
+     *
+     * @param inputStream The input stream containing data.
+     * @return The data as a string.
+     * @throws Exception If an error occurs while reading the stream.
+     */
     private String convertStreamToString(InputStream inputStream) throws Exception {
         StringBuilder result = new StringBuilder();
         byte[] buffer = new byte[1024];
@@ -190,6 +215,11 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
         return result.toString();
     }
 
+    /**
+     * Parses JSON response from Nutritionix API and displays food data.
+     *
+     * @param jsonResponse The JSON response as a string.
+     */
     private void parseAndDisplayFoodData(String jsonResponse) {
         try {
             JSONObject jsonObject = new JSONObject(jsonResponse);
@@ -210,6 +240,11 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
         }
     }
 
+    /**
+     * Fetches detailed nutritional data for a specific food item.
+     *
+     * @param foodName The name of the food item to fetch.
+     */
     private void fetchDetailedFoodData(String foodName) {
         String appId = BuildConfig.API_ID_NUTRITION;
         String appKey = BuildConfig.API_KEY_NUTRITION;
@@ -253,6 +288,10 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
         }
     }
 
+    /**
+     * Parses the JSON response from the Nutritionix API and extracts food details to display as cards.
+     * @param jsonResponse The JSON response string from the Nutritionix API.
+     */
     private void displayDetailedFoodData(String jsonResponse) {
         try {
             JSONObject jsonObject = new JSONObject(jsonResponse);
@@ -274,6 +313,12 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
         }
     }
 
+    /**
+     * Creates a card view displaying food name, calories, and action buttons.
+     * @param foodName The name of the food item.
+     * @param calories The calorie content of the food item.
+     * @return A populated CardView with food details and buttons.
+     */
     private CardView createFoodCard(String foodName, double calories) {
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -326,6 +371,11 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
         return cardView;
     }
 
+    /**
+     * Updates the meal data with the selected food item and updates UI elements accordingly.
+     * @param foodName The name of the selected food item.
+     * @param calories The calorie content of the selected food item.
+     */
     private void updateMealData(String foodName, double calories) {
         // Add the food item to the RecyclerView
         if (mealType.equals("Breakfast")) {
@@ -343,12 +393,22 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
         }
     }
 
+    /**
+     * Adds a food item to the RecyclerView for the specified meal type.
+     * @param recyclerView The RecyclerView to update.
+     * @param foodName The name of the food item to add.
+     */
     private void addItemToRecyclerView(RecyclerView recyclerView, String foodName) {
         // Assuming you have a list of food items for each meal type
 //        foodItemsList.add(foodName);
 //        recyclerView.getAdapter().notifyDataSetChanged();  // Update the RecyclerView with new food item
     }
 
+    /**
+     * Updates the total calories displayed for a specific meal type.
+     * @param totalCaloriesTextView The TextView displaying the total calories.
+     * @param calories The calories to add to the total.
+     */
     private void updateTotalCalories(TextView totalCaloriesTextView, double calories) {
         // Convert calories to integer and update the total
 //        double totalCalories = String.valueOf(totalCaloriesTextView.getText().toString())
@@ -356,6 +416,11 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
 //        totalCaloriesTextView.setText(String.valueOf(totalCalories));  // Update total calories
     }
 
+    /**
+     * Adds the selected food item to Firebase under the user's collection for the selected date and meal.
+     * @param foodName The name of the food item.
+     * @param calories The calorie content of the food item.
+     */
     private void addToFirebase(String foodName, double calories) {
         // Store the food and calories in Firebase under the user's meal collection for the selected date
         CollectionReference mealRef = db.collection("users")
@@ -384,11 +449,20 @@ public class SelectLibraryNutritionFragment extends Fragment implements View.OnC
     }
 
 
+    /**
+     * Updates the visual style of filter buttons to indicate selection.
+     * @param selectedButton The button representing the selected filter.
+     * @param unselectedButton The button representing the unselected filter.
+     */
     private void updateFilterButtonStyle(Button selectedButton, Button unselectedButton) {
         selectedButton.setBackground(getResources().getDrawable(R.drawable.button_background_secondary));
         unselectedButton.setBackground(getResources().getDrawable(R.drawable.button_background));
     }
 
+    /**
+     * Handles generic click events for the fragment.
+     * @param v The view that was clicked.
+     */
     @Override
     public void onClick(View v) {
         // Handle additional click events if needed

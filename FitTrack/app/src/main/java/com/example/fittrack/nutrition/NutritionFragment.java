@@ -42,46 +42,53 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-
+/**
+ * NutritionFragment is responsible for managing the nutrition tracking features
+ * within the FitTrack application. This fragment displays meals (breakfast, lunch,
+ * dinner, and other) along with their respective calories for a selected date.
+ * It integrates with Firebase Firestore to store and retrieve meal data.
+ *
+ * Users can navigate between days, add meals from a library, and set daily calorie goals.
+ */
 public class NutritionFragment extends Fragment implements  NutritionAdapter.onFoodSelectedListener {
 
+    // Instance variables for UI components
+    private Button dateBtn; // Button to display and open date picker
+    private ImageButton previousDayBtn, nextDayBtn; // Buttons to navigate days
+    private ImageButton breakfastAddBtn, lunchAddBtn, dinnerAddBtn, otherAddBtn; // Buttons to add meals
+    private ImageButton editGoalBtn, saveGoalBtn; // Buttons to edit and save calorie goals
 
-    private Button dateBtn;
-    private ImageButton previousDayBtn, nextDayBtn, breakfastAddBtn, lunchAddBtn, dinnerAddBtn, otherAddBtn;
+    private Calendar selectedDate; // Tracks the currently selected date
+    private String dateId; // Unique identifier for the selected date
 
-    private Calendar selectedDate;
+    // Firebase references
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
-    private String dateId;
-
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    FirebaseUser user = mAuth.getCurrentUser();
-
+    // Firestore queries for different meals
     private Query mQueryExercisesBreakfast;
-    private NutritionAdapter mAdapterExercisesBreakfast;
-
     private Query mQueryExercisesLunch;
-    private NutritionAdapter mAdapterExercisesLunch;
-
     private Query mQueryExercisesDinner;
-    private NutritionAdapter mAdapterExercisesDinner;
-
     private Query mQueryExercisesOther;
+
+    // Adapters for meal RecyclerViews
+    private NutritionAdapter mAdapterExercisesBreakfast;
+    private NutritionAdapter mAdapterExercisesLunch;
+    private NutritionAdapter mAdapterExercisesDinner;
     private NutritionAdapter mAdapterExercisesOther;
 
+    // RecyclerViews for meal lists
     private RecyclerView breakfastRecycler, lunchRecycler, dinnerRecycler, otherRecycler;
 
+    // UI components for calorie display
     private TextView totalCaloriesTv, breakfastCaloriesTv, lunchCaloriesTv, dinnerCaloriesTv, otherCaloriesTv;
-
-    private ImageButton editGoalBtn, saveGoalBtn;
-
-    private TextView goalTv;
-    private EditText goalEt;
-
-    String nutrition = "";
+    private TextView goalTv; // TextView for displaying calorie goal
+    private EditText goalEt; // EditText for entering calorie goal
 
     private String goal;
 
+    // Calorie data variables
     private double breakfastCaloriesText = 0;
     private double lunchCaloriesText = 0;
     private double dinnerCaloriesText = 0;
@@ -89,20 +96,31 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
     private double totalCalories = 0;
     private int numFood;
 
-    private boolean isEditing = false;
+    private boolean isEditing = false; // Tracks whether the calorie goal is being edited
 
-
-
+    /**
+     * Default constructor for NutritionFragment.
+     * Required for instantiation by the Android framework.
+     */
     public NutritionFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Called to do initial creation of the fragment. Initializes instance variables.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state,
+     *                           this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     }
 
+    /**
+     * Called when the fragment becomes visible. Starts Firebase listeners for real-time data updates.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -126,6 +144,9 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
 
     }
 
+    /**
+     * Called when the fragment is no longer visible. Stops Firebase listeners to save resources.
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -146,6 +167,14 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         }
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The root view for the fragment's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -339,6 +368,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         return rootView;
     }
 
+    /**
+     * Initializes the RecyclerView for the breakfast meal with data fetched from Firestore.
+     * Ensures that the adapter is set up and calories for the breakfast section are updated.
+     */
     private void initBreakfastRecyclerView() {
         if (mQueryExercisesBreakfast == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
@@ -362,6 +395,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         breakfastRecycler.setAdapter(mAdapterExercisesBreakfast);
     }
 
+    /**
+     * Initializes the RecyclerView for the lunch meal with data fetched from Firestore.
+     * Ensures that the adapter is set up and calories for the lunch section are updated.
+     */
     private void initLunchRecyclerView() {
         if (mQueryExercisesLunch == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
@@ -385,6 +422,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         lunchRecycler.setAdapter(mAdapterExercisesLunch);
     }
 
+    /**
+     * Initializes the RecyclerView for the dinner meal with data fetched from Firestore.
+     * Ensures that the adapter is set up and calories for the dinner section are updated.
+     */
     private void initDinnerRecyclerView() {
         if (mQueryExercisesDinner == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
@@ -407,6 +448,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         dinnerRecycler.setAdapter(mAdapterExercisesDinner);
     }
 
+    /**
+     * Initializes the RecyclerView for the other meal with data fetched from Firestore.
+     * Ensures that the adapter is set up and calories for the other section are updated.
+     */
     private void initOtherRecyclerView() {
         if (mQueryExercisesOther == null) {
             Log.w("TAG", "No query, not initializing RecyclerView");
@@ -430,7 +475,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         otherRecycler.setAdapter(mAdapterExercisesOther);
     }
 
-    // Method to open the DatePickerDialog
+    /**
+     * Opens a DatePickerDialog to allow the user to select a specific date.
+     * The selected date is then used to update the displayed date and fetch nutrition data.
+     */
     private void openDatePicker() {
         int year = selectedDate.get(Calendar.YEAR);
         int month = selectedDate.get(Calendar.MONTH);
@@ -447,14 +495,23 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         datePickerDialog.show();
     }
 
-    // Method to change the date by a given number of days (positive for next day, negative for previous day)
+    /**
+     * Changes the selected date by a given offset in days.
+     * Updates the displayed date and fetches data for the newly selected date.
+     *
+     * @param dayOffset The number of days to move forward or backward.
+     */
     private void changeDate(int dayOffset) {
         selectedDate.add(Calendar.DAY_OF_MONTH, dayOffset);
         updateDateButton();
         fetchNutritionForSelectedDate();
     }
 
-    // Method to update the date displayed on the button
+    /**
+     * Updates the text of the date button to display the currently selected date.
+     * If the selected date is today, the button will display "Today" instead of the date.
+     * Also sets the dateId for the selected date and triggers fetching nutrition data.
+     */
     private void updateDateButton() {
         SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
         String formattedDate = sdf.format(selectedDate.getTime());
@@ -474,6 +531,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         fetchNutritionForSelectedDate();
     }
 
+    /**
+     * Fetches and updates the nutrition data for the currently selected date.
+     * This method retrieves the document from Firestore for the user's meal plans.
+     */
     private void fetchNutritionForSelectedDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String formattedDate = sdf.format(selectedDate.getTime());
@@ -491,6 +552,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
         });
     }
 
+    /**
+     * Updates the total calories for breakfast by fetching data from Firestore.
+     * Retrieves and sums up the calories for all food items in the breakfast collection.
+     */
     public void updateBreakfastCalories () {
         db.collection("users")
                 .document(user.getUid())
@@ -520,6 +585,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
                 });
     }
 
+    /**
+     * Updates the total calories for lunch by fetching data from Firestore.
+     * Retrieves and sums up the calories for all food items in the lunch collection.
+     */
     public void updateLunchCalories () {
         db.collection("users")
                 .document(user.getUid())
@@ -549,6 +618,11 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
                 });
     }
 
+
+    /**
+     * Updates the total calories for dinner by fetching data from Firestore.
+     * Retrieves and sums up the calories for all food items in the dinner collection.
+     */
     public void updateDinnerCalories () {
         db.collection("users")
                 .document(user.getUid())
@@ -578,6 +652,10 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
                 });
     }
 
+    /**
+     * Updates the total calories for other by fetching data from Firestore.
+     * Retrieves and sums up the calories for all food items in the other collection.
+     */
     public void updateOtherCalories () {
         db.collection("users")
                 .document(user.getUid())
@@ -608,9 +686,13 @@ public class NutritionFragment extends Fragment implements  NutritionAdapter.onF
                 });
     }
 
-
+    /**
+     * Handles navigation to a detailed view or action for a specific food item.
+     *
+     * @param snapshot The {@link DocumentSnapshot} containing details of the selected food item.
+     */
     @Override
     public void onGoToFood(DocumentSnapshot snapshot) {
-
+        // To be implemented: Logic for navigating to food item details or editing.
     }
 }
