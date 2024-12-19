@@ -16,18 +16,39 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * Recycler view adapter for exercise cards as the result of API search.
+ * RecyclerView adapter for displaying exercise cards resulting from an API search.
+ * Extends {@link FirestoreAdapter} to manage Firestore query snapshots.
  */
 public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder> {
 
+    /**
+     * Listener interface for handling user interactions with exercise items.
+     */
     public interface OnExerciseSelectedListener {
 
+        /**
+         * Called when an exercise is deleted.
+         *
+         * @param exercise The {@link DocumentSnapshot} representing the exercise.
+         */
         void onExerciseDeleted(DocumentSnapshot exercise);
+
+        /**
+         * Called when more information about an exercise is requested.
+         *
+         * @param exercise The {@link DocumentSnapshot} representing the exercise.
+         */
         void onExerciseMoreInfo(DocumentSnapshot exercise);
     }
 
     private OnExerciseSelectedListener mListener;
 
+    /**
+     * Constructs an {@code ExerciseAdapter}.
+     *
+     * @param query    The Firestore query used to retrieve exercise data.
+     * @param listener The listener for user interactions with exercise items.
+     */
     public ExerciseAdapter(Query query, OnExerciseSelectedListener listener) {
         super(query);
         mListener = listener;
@@ -45,18 +66,38 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
         holder.bind(getSnapshot(position), mListener);
     }
 
-
+    /**
+     * ViewHolder for displaying an individual exercise card.
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        /** TextView for the exercise name. */
         TextView nameView;
+
+        /** TextView for the exercise's targeted muscle group. */
         TextView muscleView;
+
+        /** TextView for the exercise's required equipment. */
         TextView equipmentView;
+
+        /** TextView for the type of exercise. */
         TextView typeView;
+
+        /** TextView for the difficulty level of the exercise. */
         TextView difficultyView;
 
+        /** Button for deleting the exercise. */
         ImageButton deleteExerciseButton;
+
+        /** Button for requesting more information about the exercise. */
         ImageButton moreInfoExerciseButton;
 
+
+        /**
+         * Constructs a {@code ViewHolder}.
+         *
+         * @param itemView The view representing an exercise card.
+         */
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -71,6 +112,12 @@ public class ExerciseAdapter extends FirestoreAdapter<ExerciseAdapter.ViewHolder
 
         }
 
+        /**
+         * Binds an exercise snapshot to the view.
+         *
+         * @param snapshot The Firestore {@link DocumentSnapshot} containing exercise data.
+         * @param listener The listener for user interactions with this item.
+         */
         public void bind(final DocumentSnapshot snapshot,
                          final OnExerciseSelectedListener listener) {
 

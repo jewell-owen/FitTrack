@@ -23,27 +23,71 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * RecyclerView adapter for logging workouts functionality. Includes exercise cards with sets and reps.
+ * RecyclerView adapter for managing and displaying workout logging functionality.
+ * Handles the display of exercises, their sets, and repetitions, with interactions
+ * for adding/deleting sets and modifying weights/reps.
+ *
+ * Adapter for managing the logging of workouts in a RecyclerView.
+ * Includes functionality to handle exercise cards, sets, reps, and user interactions.
  */
 public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHolder> {
 
+    /**
+     * Listener interface to handle various user interactions with exercises and sets.
+     */
     public interface OnExerciseSelectedListener {
 
+        /**
+         * Triggered when more information about an exercise is requested.
+         * @param snapshot The Firestore snapshot of the selected exercise.
+         */
         void onExerciseMoreInfo(DocumentSnapshot snapshot);
 
+        /**
+         * Triggered when an exercise is deleted.
+         * @param snapshot The Firestore snapshot of the selected exercise.
+         */
         void onExerciseDeleted(DocumentSnapshot snapshot);
 
+        /**
+         * Triggered when a new set is added to an exercise.
+         * @param snapshot The Firestore snapshot of the selected exercise.
+         * @param sets The new number of sets after addition.
+         */
         void onSetAdded(DocumentSnapshot snapshot, int sets);
 
+        /**
+         * Triggered when a set is deleted from an exercise.
+         * @param snapshot The Firestore snapshot of the selected exercise.
+         * @param sets The new number of sets after deletion.
+         */
         void onSetDeleted(DocumentSnapshot snapshot, int sets);
 
+        /**
+         * Triggered when the weight of a specific set is changed.
+         * @param snapshot The Firestore snapshot of the selected exercise.
+         * @param set The set identifier (e.g., "one", "two").
+         * @param weight The new weight value.
+         */
         void onWeightChanged(DocumentSnapshot snapshot, String set, String weight);
 
+        /**
+         * Triggered when the repetitions of a specific set are changed.
+         * @param snapshot The Firestore snapshot of the selected exercise.
+         * @param set The set identifier (e.g., "one", "two").
+         * @param reps The new repetitions value.
+         */
         void onRepsChanged(DocumentSnapshot snapshot, String set, String reps);
     }
 
     private LogWorkoutAdapter.OnExerciseSelectedListener mListener;
 
+    /**
+     * Constructs a new LogWorkoutAdapter.
+     *
+     * @param query Firestore query to retrieve the list of exercises.
+     * @param listener Listener to handle user interactions with the exercises.
+     */
     public LogWorkoutAdapter(Query query, LogWorkoutAdapter.OnExerciseSelectedListener listener) {
         super(query);
         mListener = listener;
@@ -61,6 +105,10 @@ public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHo
         holder.bind(getSnapshot(position), mListener);
     }
 
+    /**
+     * ViewHolder class for individual exercise cards.
+     * Manages UI components for displaying and modifying sets, weights, and reps.
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameView;
@@ -91,6 +139,11 @@ public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHo
          EditText repsEt6;
 
 
+        /**
+         * Constructs a ViewHolder and initializes UI components.
+         *
+         * @param itemView The layout view for an individual exercise card.
+         */
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -123,6 +176,12 @@ public class LogWorkoutAdapter extends FirestoreAdapter<LogWorkoutAdapter.ViewHo
 
         }
 
+        /**
+         * Binds data from the given snapshot to the ViewHolder.
+         *
+         * @param snapshot The Firestore snapshot containing exercise data.
+         * @param listener Listener to handle user interactions.
+         */
         public void bind(final DocumentSnapshot snapshot,
                          final LogWorkoutAdapter.OnExerciseSelectedListener listener) {
 

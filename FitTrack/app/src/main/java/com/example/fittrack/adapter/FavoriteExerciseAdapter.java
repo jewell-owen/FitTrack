@@ -16,17 +16,32 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * Recycler view adapter for saved favorite exercise in user profile
+ * RecyclerView adapter for displaying saved favorite exercises in a user's profile.
+ * Extends {@link FirestoreAdapter} to manage Firestore query snapshots.
  */
 public class FavoriteExerciseAdapter extends FirestoreAdapter<FavoriteExerciseAdapter.ViewHolder>{
 
+    /**
+     * Listener interface for handling user interactions with favorite exercise items.
+     */
     public interface OnExerciseSelectedListener {
 
+        /**
+         * Called when more information about a favorite exercise is requested.
+         *
+         * @param exercise The {@link DocumentSnapshot} representing the exercise.
+         */
         void onExerciseMoreInfo(DocumentSnapshot exercise);
     }
 
     private FavoriteExerciseAdapter.OnExerciseSelectedListener mListener;
 
+    /**
+     * Constructs a {@code FavoriteExerciseAdapter}.
+     *
+     * @param query    The Firestore query used to retrieve favorite exercise data.
+     * @param listener The listener for user interactions with favorite exercise items.
+     */
     public FavoriteExerciseAdapter(Query query, FavoriteExerciseAdapter.OnExerciseSelectedListener listener) {
         super(query);
         mListener = listener;
@@ -45,12 +60,22 @@ public class FavoriteExerciseAdapter extends FirestoreAdapter<FavoriteExerciseAd
     }
 
 
+    /**
+     * ViewHolder for displaying an individual favorite exercise card.
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        /** TextView for the exercise name. */
         TextView nameView;
 
+        /** Button for accessing more information about the exercise. */
         ImageButton moreInfoExerciseButton;
 
+        /**
+         * Constructs a {@code ViewHolder}.
+         *
+         * @param itemView The view representing a favorite exercise card.
+         */
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -60,6 +85,12 @@ public class FavoriteExerciseAdapter extends FirestoreAdapter<FavoriteExerciseAd
 
         }
 
+        /**
+         * Binds a favorite exercise snapshot to the view.
+         *
+         * @param snapshot The Firestore {@link DocumentSnapshot} containing exercise data.
+         * @param listener The listener for user interactions with this item.
+         */
         public void bind(final DocumentSnapshot snapshot,
                          final FavoriteExerciseAdapter.OnExerciseSelectedListener listener) {
 

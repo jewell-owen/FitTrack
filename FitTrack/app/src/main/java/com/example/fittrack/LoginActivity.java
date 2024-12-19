@@ -36,7 +36,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * An activity that handles user account authentication with firebase
+ * Activity for user authentication with Firebase.
+ * Handles user login and redirects to main activity upon successful authentication.
+ * Provides an option for users to navigate to the signup screen.
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -59,6 +61,11 @@ public class LoginActivity extends AppCompatActivity {
 //        }
 //    }
 
+    /**
+     * Sets up the activity's UI elements and authentication logic.
+     * Initializes FirebaseAuth and handles login and signup actions.
+     * @param savedInstanceState The saved instance state for restoring activity's state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

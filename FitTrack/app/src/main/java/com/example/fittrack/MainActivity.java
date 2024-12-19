@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,6 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 /**
  * The main activity of the application.
+ * Manages the bottom navigation and handles user authentication.
+ * Displays different fragments based on the user's selection in the navigation menu.
  */
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -36,8 +37,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private MainActivityViewModel mViewModel;
 
-
-
+    /**
+     * Called when the activity is first created.
+     * Initializes the bottom navigation view, sets up the authentication check,
+     * and prepares the view model for the activity.
+     * @param savedInstanceState The saved instance state for restoring activity's state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,53 +52,59 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.Profile);
         bottomNavigationView.setBackgroundColor(getResources().getColor(R.color.top_background));
 
+        // Firebase Authentication check
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-        if (user == null){
+        if (user == null) {
+            // If user is not authenticated, navigate to the login screen
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         }
 
+        // Initialize the ViewModel
         mViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
-
-
     }
 
-
-
+    /**
+     * Handles navigation item selection in the bottom navigation view.
+     * Replaces the current fragment with the selected one.
+     * @param item The selected menu item.
+     * @return true if the fragment transaction was successful, false otherwise.
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        if ((item.getItemId() == R.id.Profile)) {
+        if (item.getItemId() == R.id.Profile) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, profileFragment)
                     .commit();
             return true;
-        } else if ((item.getItemId() == R.id.Friends)) {
+        } else if (item.getItemId() == R.id.Friends) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, friendsFragment)
                     .commit();
             return true;
-        } else if ((item.getItemId() == R.id.Workout)) {
+        } else if (item.getItemId() == R.id.Workout) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, workoutFragment)
                     .commit();
             return true;
-        } else if ((item.getItemId() == R.id.Stats)) {
+        } else if (item.getItemId() == R.id.Stats) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, statsFragment)
                     .commit();
             return true;
-        } else if ((item.getItemId() == R.id.Nutrition)) {
+        } else if (item.getItemId() == R.id.Nutrition) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.flFragment, nutritionFragment)

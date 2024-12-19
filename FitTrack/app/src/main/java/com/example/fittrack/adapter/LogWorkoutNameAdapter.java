@@ -20,23 +20,44 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * RecyclerView adapter for a list of logged workouts.
+ * RecyclerView adapter for displaying a list of logged workouts.
+ * This adapter retrieves data from a Firestore query and populates each item in the list.
  */
 public class LogWorkoutNameAdapter extends FirestoreAdapter<LogWorkoutNameAdapter.ViewHolder> {
 
-        public interface OnLoggedWorkoutSelectedListener {
+    /**
+     * Interface to handle interactions with logged workout items.
+     */
+    public interface OnLoggedWorkoutSelectedListener {
 
-            void onGoToWorkout(DocumentSnapshot snapshot);
-
-        }
+        /**
+         * Called when a logged workout is selected.
+         *
+         * @param snapshot The Firestore document snapshot of the selected workout.
+         */
+        void onGoToWorkout(DocumentSnapshot snapshot);
+    }
 
         private LogWorkoutNameAdapter.OnLoggedWorkoutSelectedListener mListener;
 
+        /**
+         * Constructor for the LogWorkoutNameAdapter.
+         *
+         * @param query    The Firestore query to retrieve logged workout data.
+         * @param listener The listener to handle interactions with workout items.
+         */
         public LogWorkoutNameAdapter(Query query, LogWorkoutNameAdapter.OnLoggedWorkoutSelectedListener listener) {
             super(query);
             mListener = listener;
         }
 
+        /**
+         * Inflates the layout for a single logged workout item.
+         *
+         * @param parent   The parent ViewGroup.
+         * @param viewType The type of view (not used here).
+         * @return A ViewHolder instance containing the item layout.
+         */
         @NonNull
         @Override
         public LogWorkoutNameAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,11 +65,20 @@ public class LogWorkoutNameAdapter extends FirestoreAdapter<LogWorkoutNameAdapte
             return new LogWorkoutNameAdapter.ViewHolder(inflater.inflate(R.layout.card_logged_workout, parent, false));
         }
 
+        /**
+         * Binds the data from the Firestore snapshot to the ViewHolder.
+         *
+         * @param holder   The ViewHolder to bind data to.
+         * @param position The position of the item in the adapter.
+         */
         @Override
         public void onBindViewHolder(@NonNull LogWorkoutNameAdapter.ViewHolder holder, int position) {
             holder.bind(getSnapshot(position), mListener);
         }
 
+        /**
+         * ViewHolder class to hold references to the views in each item layout.
+         */
         static class ViewHolder extends RecyclerView.ViewHolder {
 
             TextView nameView;
@@ -57,7 +87,11 @@ public class LogWorkoutNameAdapter extends FirestoreAdapter<LogWorkoutNameAdapte
 
 
 
-
+            /**
+             * Constructs a ViewHolder and initializes its views.
+             *
+             * @param itemView The root view of the item layout.
+             */
             public ViewHolder(View itemView) {
                 super(itemView);
 
@@ -68,6 +102,12 @@ public class LogWorkoutNameAdapter extends FirestoreAdapter<LogWorkoutNameAdapte
 
             }
 
+            /**
+             * Binds the Firestore document data to the views.
+             *
+             * @param snapshot The Firestore document snapshot containing the workout data.
+             * @param listener The listener for item interactions.
+             */
             public void bind(final DocumentSnapshot snapshot,
                              final LogWorkoutNameAdapter.OnLoggedWorkoutSelectedListener listener) {
 

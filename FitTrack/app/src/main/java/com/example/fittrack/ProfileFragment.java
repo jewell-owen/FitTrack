@@ -31,7 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A fragment that handles user profile functionality.
+ * A fragment representing the user's profile, allowing them to view and update personal information,
+ * manage favorite exercises, and interact with other profile-related features.
  */
 public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter.OnExerciseSelectedListener {
 
@@ -45,7 +46,6 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private TextView profileUserEmailTv, profileFriendIdTv, profileGoalTv;
     private EditText profileGoalEt;
     private ImageButton editGoalBtn, saveGoalBtn, btn_graph;
-//    private ImageButton editGoalBtn, saveGoalBtn;
     private ImageButton editWeightBtn, saveWeightBtn;
     private ImageButton deleteProfileBtn;
     private Button favoriteCustomExerciseBtn, favoriteLibraryExerciseBtn;
@@ -57,10 +57,21 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
     private FavoriteExerciseAdapter mAdapterExercises;
     private String favoriteId = "";
 
+    /**
+     * Default constructor for the ProfileFragment.
+     */
     public ProfileFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Inflates the fragment's layout and initializes UI elements and interactions.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate the views.
+     * @param container The parent container that the fragment's UI should be attached to.
+     * @param savedInstanceState A bundle containing data about the previous instance state, if available.
+     * @return A View representing the fragment's layout.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -72,6 +83,11 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         return view;
     }
 
+    /**
+     * Initializes the UI components of the profile fragment.
+     *
+     * @param view The root view of the fragment.
+     */
     private void initializeUI(View view) {
         btn_graph = view.findViewById(R.id.profile_graph_btn);
         logoutButton = view.findViewById(R.id.profile_logout_btn);
@@ -90,6 +106,7 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         profileWeightTv = view.findViewById(R.id.profile_weight_tv);
         profileWeightEt = view.findViewById(R.id.profile_weight_et);
 
+        // Setting up click listeners for various UI elements
         btn_graph.setOnClickListener(v -> onGraph(view));
         logoutButton.setOnClickListener(v -> handleLogout());
         editGoalBtn.setOnClickListener(v -> enableGoalEditing());
@@ -98,48 +115,33 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         favoriteCustomExerciseBtn.setOnClickListener(v -> openCustomExerciseSelector());
         editWeightBtn.setOnClickListener(v -> enableWeightEditing());
         saveWeightBtn.setOnClickListener(v -> saveWeightToFirestore());
-
         deleteProfileBtn.setOnClickListener(v -> deleteProfile());
 
+        // Fetch user data from Firestore
         db.collection("users").document(user.getUid()).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        // If the document exists, get the workout name and assign it to the TextView
                         String goal = documentSnapshot.getString("goal");
                         String weight = documentSnapshot.getString("weight");
-                        if (goal != null) {
-                            profileGoalTv.setText(goal);
-
-                        }
-                        else {
-                            profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
-                        }
-                        if (weight != null) {
-                            profileWeightTv.setText(weight);
-                        } else {
-                            profileWeightTv.setText("Weight");
-                        }
+                        profileGoalTv.setText(goal != null ? goal : "Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
+                        profileWeightTv.setText(weight != null ? weight : "Weight");
                     } else {
-                        // If the document does not exist, set the TextView to "None"
                         profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
                         profileWeightTv.setText("Weight");
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error fetching planned workout", e);
-                    // Handle failure by setting a fallback value
-                    profileGoalTv.setText("Set a Goal! Writing a goal down significantly increases the likelihood of achieving it!");
-                    profileWeightTv.setText("Weight");
-                });
+                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching planned workout", e));
 
-
-
+        // Set user email and friend ID
         if (user != null) {
             profileUserEmailTv.setText(user.getEmail());
             profileFriendIdTv.setText(user.getUid());
         }
     }
 
+    /**
+     * Configures the RecyclerView to display favorite exercises.
+     */
     private void setupRecyclerView() {
         myFavoriteExerciseRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mAdapterExercises = new FavoriteExerciseAdapter(mQueryExercises, this) {
@@ -160,6 +162,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         myFavoriteExerciseRecyclerView.setAdapter(mAdapterExercises);
     }
 
+    /**
+     * Fetches favorite exercises for the current user from Firestore.
+     */
     private void fetchFavoriteExercises() {
         db.collection("users").document(user.getUid()).collection("favorite")
                 .get()
@@ -178,6 +183,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                 .addOnFailureListener(e -> Log.e(TAG, "Error fetching favorite exercises", e));
     }
 
+    /**
+     * Creates a placeholder favorite exercise if no favorite exercises are found in Firestore.
+     */
     private void createPlaceholderFavorite() {
         Map<String, Object> placeholder = new HashMap<>();
         placeholder.put("name", "Select a favorite exercise");
@@ -192,6 +200,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                 .addOnFailureListener(e -> Log.e(TAG, "Error creating placeholder favorite", e));
     }
 
+    /**
+     * Enables the goal editing mode, showing the input field and hiding the display.
+     */
     private void enableGoalEditing() {
         saveGoalBtn.setVisibility(View.VISIBLE);
         editGoalBtn.setVisibility(View.GONE);
@@ -199,6 +210,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         profileGoalTv.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Saves the new goal to Firestore.
+     */
     private void saveGoalToFirestore() {
         String newGoal = profileGoalEt.getText().toString();
 
@@ -216,6 +230,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         }
     }
 
+    /**
+     * Enables the weight editing mode, showing the input field and hiding the display.
+     */
     private void enableWeightEditing() {
         saveWeightBtn.setVisibility(View.VISIBLE);
         editWeightBtn.setVisibility(View.GONE);
@@ -223,6 +240,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         profileWeightTv.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Saves the new weight to Firestore.
+     */
     private void saveWeightToFirestore() {
         String newWeight = profileWeightEt.getText().toString();
         if (user != null) {
@@ -239,7 +259,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
         }
     }
 
-
+    /**
+     * Logs the user out of the app and navigates to the login screen.
+     */
     private void handleLogout() {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getContext(), LoginActivity.class);
@@ -248,11 +270,18 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
             getActivity().finish();
         }
     }
+
+    /**
+     * Opens the graph screen to display user's progress.
+     */
     private void onGraph(View view) {
         Intent intent = new Intent(getContext(), WeightGraph.class);
         startActivity(intent);
     }
 
+    /**
+     * Deletes the user's profile and account from Firestore and Firebase Authentication.
+     */
     private void deleteProfile() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -260,48 +289,29 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
             return;
         }
 
-        // Reference to the Firestore user document
         DocumentReference userRef = db.collection("users")
                 .document(currentUser.getUid());
 
-        // Delete the Firestore document
         userRef.delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "User document successfully deleted from Firestore.");
-
-                        // Delete the user account from Firebase Authentication
-                        currentUser.delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d(TAG, "User account successfully deleted.");
-
-                                        // Redirect to LoginActivity
-                                        Intent intent = new Intent(getContext(), LoginActivity.class);
-                                        startActivity(intent);
-                                        if (getActivity() != null) {
-                                            getActivity().finish();
-                                        }
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.e(TAG, "Error deleting user account", e);
-                                    }
-                                });
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User document successfully deleted from Firestore.");
+                    currentUser.delete()
+                            .addOnSuccessListener(aVoid1 -> {
+                                Log.d(TAG, "User account successfully deleted.");
+                                Intent intent = new Intent(getContext(), LoginActivity.class);
+                                startActivity(intent);
+                                if (getActivity() != null) {
+                                    getActivity().finish();
+                                }
+                            })
+                            .addOnFailureListener(e -> Log.e(TAG, "Error deleting user account", e));
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "Error deleting user document from Firestore", e);
-                    }
-                });
+                .addOnFailureListener(e -> Log.e(TAG, "Error deleting user document from Firestore", e));
     }
 
+    /**
+     * Opens the library exercise selector fragment.
+     */
     private void openLibraryExerciseSelector() {
         SelectLibraryExerciseFragment fragment = new SelectLibraryExerciseFragment();
         Bundle args = new Bundle();
@@ -314,6 +324,9 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                 .commit();
     }
 
+    /**
+     * Opens the custom exercise selector fragment.
+     */
     private void openCustomExerciseSelector() {
         SelectCustomExerciseFragment fragment = new SelectCustomExerciseFragment();
         Bundle args = new Bundle();
@@ -326,6 +339,11 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                 .commit();
     }
 
+    /**
+     * Handles the event when an exercise is selected to view more information.
+     *
+     * @param exercise The selected exercise document.
+     */
     @Override
     public void onExerciseMoreInfo(DocumentSnapshot exercise) {
         ViewExerciseFragment fragment = new ViewExerciseFragment();
@@ -342,6 +360,4 @@ public class ProfileFragment extends Fragment implements FavoriteExerciseAdapter
                 .addToBackStack(null)
                 .commit();
     }
-
-
 }

@@ -20,18 +20,35 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 
 /**
- * Recycler View adapter for viewing a logged workout history.
+ * RecyclerView adapter for viewing a logged workout history.
+ *
+ * This adapter binds the data from a Firestore query to views for displaying details of logged workouts,
+ * such as exercise name, weights, and repetitions for each set.
  */
 public class LoggedWorkoutAdapter extends FirestoreAdapter<LoggedWorkoutAdapter.ViewHolder>{
 
+    /**
+     * Listener interface for handling actions on individual exercises in the workout log.
+     */
     public interface OnExerciseSelectedListener {
 
+        /**
+         * Callback invoked when the "More Info" button for an exercise is clicked.
+         *
+         * @param snapshot The Firestore {@link DocumentSnapshot} representing the exercise.
+         */
         void onExerciseMoreInfo(DocumentSnapshot snapshot);
 
     }
 
     private LoggedWorkoutAdapter.OnExerciseSelectedListener mListener;
 
+    /**
+     * Constructs a new LoggedWorkoutAdapter.
+     *
+     * @param query    The Firestore query to fetch logged workout data.
+     * @param listener The listener to handle user interactions with the exercises.
+     */
     public LoggedWorkoutAdapter(Query query, LoggedWorkoutAdapter.OnExerciseSelectedListener listener) {
         super(query);
         mListener = listener;
@@ -49,6 +66,9 @@ public class LoggedWorkoutAdapter extends FirestoreAdapter<LoggedWorkoutAdapter.
         holder.bind(getSnapshot(position), mListener);
     }
 
+    /**
+     * ViewHolder class for individual items in the workout log RecyclerView.
+     */
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameView;
@@ -79,6 +99,11 @@ public class LoggedWorkoutAdapter extends FirestoreAdapter<LoggedWorkoutAdapter.
         TextView repsTv6;
 
 
+        /**
+         * Constructs a new ViewHolder for an individual logged workout item.
+         *
+         * @param itemView The view representing an item in the RecyclerView.
+         */
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -111,6 +136,12 @@ public class LoggedWorkoutAdapter extends FirestoreAdapter<LoggedWorkoutAdapter.
 
         }
 
+        /**
+         * Binds the data from a Firestore document to the ViewHolder's UI elements.
+         *
+         * @param snapshot The Firestore {@link DocumentSnapshot} containing the workout data.
+         * @param listener  The listener for handling user interactions with the exercise.
+         */
         public void bind(final DocumentSnapshot snapshot,
                          final LoggedWorkoutAdapter.OnExerciseSelectedListener listener) {
 
